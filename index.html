@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>美股研究 Dashboard</title>
+  <style>
+    :root {
+      --bg-dark: #0d1117;
+      --bg-card: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --red: #f85149;
+      --yellow: #d29922;
+      --orange: #db6d28;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 20px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    h1 { font-size: 24px; font-weight: 600; }
+    .update-time { color: var(--text-muted); font-size: 14px; }
+    
+    .grid { display: grid; gap: 20px; }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 1200px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .card h2 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    
+    /* Alerts */
+    .alerts { grid-column: span 2; }
+    .alert-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .alert-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .alert-earnings { background: rgba(210, 153, 34, 0.2); color: var(--yellow); }
+    .alert-price { background: rgba(248, 81, 73, 0.2); color: var(--red); }
+    .alert-data { background: rgba(139, 148, 158, 0.2); color: var(--text-muted); }
+    .no-alerts { color: var(--green); }
+    
+    /* Market Regime */
+    .regime-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    @media (max-width: 768px) { .regime-grid { grid-template-columns: repeat(2, 1fr); } }
+    .regime-item { text-align: center; }
+    .regime-name { font-size: 12px; color: var(--text-muted); }
+    .regime-value { font-size: 18px; font-weight: 600; margin: 4px 0; }
+    .regime-trend { font-size: 13px; }
+    .trend-up { color: var(--green); }
+    .trend-down { color: var(--red); }
+    .trend-flat { color: var(--text-muted); }
+    
+    /* Score Table */
+    .score-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .score-table th, .score-table td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .score-table th {
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .score-table tr:hover { background: rgba(88, 166, 255, 0.05); }
+    .symbol { font-weight: 600; color: var(--accent); }
+    .score-bar {
+      display: inline-block;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--border);
+      width: 60px;
+      position: relative;
+    }
+    .score-bar-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      border-radius: 4px;
+    }
+    .score-high { background: var(--green); }
+    .score-mid { background: var(--yellow); }
+    .score-low { background: var(--red); }
+    .price { font-family: 'SF Mono', Consolas, monospace; }
+    .change-pos { color: var(--green); }
+    .change-neg { color: var(--red); }
+    .confidence { color: var(--text-muted); font-size: 12px; }
+    .explain { font-size: 12px; color: var(--text-muted); max-width: 200px; }
+    
+    /* Company Cards */
+    .company-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 16px; margin-top: 24px; }
+    .company-card { padding: 20px; }
+    .company-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .company-symbol { font-size: 20px; font-weight: 700; color: var(--accent); }
+    .company-name { font-size: 13px; color: var(--text-muted); }
+    .company-score {
+      font-size: 28px;
+      font-weight: 700;
+      text-align: right;
+    }
+    .company-score-label { font-size: 11px; color: var(--text-muted); }
+    .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .metric { }
+    .metric-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+    .metric-value { font-size: 16px; font-weight: 600; }
+    
+    /* Footer */
+    footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 13px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📈 美股研究 Dashboard</h1>
+      <div class="update-time">更新時間：2026-02-01 20:11:28 (Asia/Taipei)</div>
+    </header>
+    
+    <!-- Alerts Section -->
+    <div class="grid grid-2" style="margin-bottom: 24px;">
+      <div class="card alerts">
+        <h2>🚨 Alerts（紅燈區）</h2>
+        <div class="alert-list">
+<span class="alert-item alert-price">📉 AVT 5日變動 +21.4%</span>
+<span class="alert-item alert-price">📉 AMD 單日變動 -6.1%</span>
+
+        </div>
+      </div>
+      
+      <div class="card">
+        <h2>🌍 市場狀態</h2>
+        <div class="regime-grid">
+
+          <div class="regime-item">
+            <div class="regime-name">S&P 500</div>
+            <div class="regime-value">6,939.03</div>
+            <div class="regime-trend trend-flat">→ 震盪 (+1.37%)</div>
+          </div>
+
+          <div class="regime-item">
+            <div class="regime-name">Nasdaq</div>
+            <div class="regime-value">23,461.82</div>
+            <div class="regime-trend trend-flat">→ 震盪 (+0.95%)</div>
+          </div>
+
+          <div class="regime-item">
+            <div class="regime-name">10Y Treasury</div>
+            <div class="regime-value">4.24</div>
+            <div class="regime-trend trend-flat">→ 震盪 (+2.69%)</div>
+          </div>
+
+          <div class="regime-item">
+            <div class="regime-name">US Dollar</div>
+            <div class="regime-value">97.15</div>
+            <div class="regime-trend trend-flat">→ 震盪 (-1.29%)</div>
+          </div>
+
+          <div class="regime-item">
+            <div class="regime-name">Crude Oil</div>
+            <div class="regime-value">65.55</div>
+            <div class="regime-trend trend-up">↑ 上升 (+14.36%)</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+    <!-- Score Table -->
+    <div class="card" style="margin-bottom: 24px;">
+      <h2>📊 Research Score Heatmap</h2>
+      <table class="score-table">
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>價格</th>
+            <th>日變動</th>
+            <th>Total Score</th>
+            <th>Quality</th>
+            <th>Value</th>
+            <th>Momentum</th>
+            <th>信心度</th>
+            <th>說明</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td><span class="symbol">GOOG</span></td>
+            <td class="price">$338.53</td>
+            <td><span class="change-neg">-0.04%</span></td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>74</span>
+                <span class="score-bar"><span class="score-bar-fill score-high" style="width: 74%;"></span></span>
+              </div>
+            </td>
+            <td>85</td>
+            <td>60</td>
+            <td>75</td>
+            <td><span class="confidence">80%</span></td>
+            <td><span class="explain">毛利率59%；PE=33.5；20D=+7.4%</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="symbol">TSM</span></td>
+            <td class="price">$330.56</td>
+            <td><span class="change-neg">-2.65%</span></td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>70</span>
+                <span class="score-bar"><span class="score-bar-fill score-high" style="width: 70%;"></span></span>
+              </div>
+            </td>
+            <td>85</td>
+            <td>70</td>
+            <td>50</td>
+            <td><span class="confidence">80%</span></td>
+            <td><span class="explain">毛利率60%；PE=31.9；20D=+3.4%</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="symbol">MSFT</span></td>
+            <td class="price">$430.29</td>
+            <td><span class="change-neg">-0.74%</span></td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>69</span>
+                <span class="score-bar"><span class="score-bar-fill score-high" style="width: 69%;"></span></span>
+              </div>
+            </td>
+            <td>95</td>
+            <td>60</td>
+            <td>45</td>
+            <td><span class="confidence">80%</span></td>
+            <td><span class="explain">毛利率69%；PE=27.0；20D=-9.0%</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="symbol">AMZN</span></td>
+            <td class="price">$239.30</td>
+            <td><span class="change-neg">-1.01%</span></td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>64</span>
+                <span class="score-bar"><span class="score-bar-fill score-mid" style="width: 64%;"></span></span>
+              </div>
+            </td>
+            <td>70</td>
+            <td>60</td>
+            <td>60</td>
+            <td><span class="confidence">80%</span></td>
+            <td><span class="explain">毛利率50%；PE=34.1；20D=+5.7%</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="symbol">NVDA</span></td>
+            <td class="price">$191.13</td>
+            <td><span class="change-neg">-0.72%</span></td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>63</span>
+                <span class="score-bar"><span class="score-bar-fill score-mid" style="width: 63%;"></span></span>
+              </div>
+            </td>
+            <td>95</td>
+            <td>35</td>
+            <td>50</td>
+            <td><span class="confidence">80%</span></td>
+            <td><span class="explain">毛利率70%；PE=47.7；20D=+1.2%</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="symbol">AVT</span></td>
+            <td class="price">$62.39</td>
+            <td><span class="change-neg">-0.56%</span></td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>62</span>
+                <span class="score-bar"><span class="score-bar-fill score-mid" style="width: 62%;"></span></span>
+              </div>
+            </td>
+            <td>40</td>
+            <td>70</td>
+            <td>85</td>
+            <td><span class="confidence">80%</span></td>
+            <td><span class="explain">毛利率11%；PE=25.4；20D=+26.4%</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="symbol">AMD</span></td>
+            <td class="price">$236.73</td>
+            <td><span class="change-neg">-6.13%</span></td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>58</span>
+                <span class="score-bar"><span class="score-bar-fill score-mid" style="width: 58%;"></span></span>
+              </div>
+            </td>
+            <td>70</td>
+            <td>40</td>
+            <td>60</td>
+            <td><span class="confidence">80%</span></td>
+            <td><span class="explain">毛利率51%；PE=131.5；日變動-6.1%</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="symbol">NFLX</span></td>
+            <td class="price">$83.49</td>
+            <td><span class="change-pos">+0.40%</span></td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>54</span>
+                <span class="score-bar"><span class="score-bar-fill score-mid" style="width: 54%;"></span></span>
+              </div>
+            </td>
+            <td>65</td>
+            <td>60</td>
+            <td>35</td>
+            <td><span class="confidence">80%</span></td>
+            <td><span class="explain">毛利率48%；PE=33.0；20D=-8.2%</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="symbol">CRWD</span></td>
+            <td class="price">$441.40</td>
+            <td><span class="change-neg">-0.72%</span></td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>51</span>
+                <span class="score-bar"><span class="score-bar-fill score-mid" style="width: 51%;"></span></span>
+              </div>
+            </td>
+            <td>65</td>
+            <td>35</td>
+            <td>50</td>
+            <td><span class="confidence">65%</span></td>
+            <td><span class="explain">毛利率74%；20D=-2.7%</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="symbol">QQQ</span></td>
+            <td class="price">$621.87</td>
+            <td><span class="change-neg">-1.20%</span></td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>50</span>
+                <span class="score-bar"><span class="score-bar-fill score-mid" style="width: 50%;"></span></span>
+              </div>
+            </td>
+            <td>50</td>
+            <td>50</td>
+            <td>50</td>
+            <td><span class="confidence">65%</span></td>
+            <td><span class="explain">PE=33.6；20D=+1.4%</span></td>
+          </tr>
+
+          <tr>
+            <td><span class="symbol">NET</span></td>
+            <td class="price">$177.35</td>
+            <td><span class="change-neg">-1.69%</span></td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span>39</span>
+                <span class="score-bar"><span class="score-bar-fill score-low" style="width: 39%;"></span></span>
+              </div>
+            </td>
+            <td>45</td>
+            <td>35</td>
+            <td>35</td>
+            <td><span class="confidence">65%</span></td>
+            <td><span class="explain">毛利率75%；20D=-9.5%</span></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Company Deep Dive Cards -->
+    <h2 style="font-size: 18px; margin-bottom: 16px;">🔍 公司深度資訊</h2>
+    <div class="company-grid">
+
+      <div class="card company-card">
+        <div class="company-header">
+          <div>
+            <div class="company-symbol">NVDA</div>
+            <div class="company-name">NVIDIA Corporation</div>
+          </div>
+          <div class="company-score" style="color: var(--yellow);">
+            63
+            <div class="company-score-label">Research Score</div>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric">
+            <div class="metric-label">股價</div>
+            <div class="metric-value">$191.13</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">P/E</div>
+            <div class="metric-value">47.7</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">毛利率</div>
+            <div class="metric-value">70.0%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">營業利益率</div>
+            <div class="metric-value">63.2%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FCF</div>
+            <div class="metric-value">$53.3B</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">負債/權益</div>
+            <div class="metric-value">9.1</div>
+          </div>
+          <div class="metric" style="grid-column: span 2;">
+            <div class="metric-label">下次財報</div>
+            <div class="metric-value">None</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card company-card">
+        <div class="company-header">
+          <div>
+            <div class="company-symbol">TSM</div>
+            <div class="company-name">Taiwan Semiconductor</div>
+          </div>
+          <div class="company-score" style="color: var(--green);">
+            70
+            <div class="company-score-label">Research Score</div>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric">
+            <div class="metric-label">股價</div>
+            <div class="metric-value">$330.56</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">P/E</div>
+            <div class="metric-value">31.9</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">毛利率</div>
+            <div class="metric-value">59.9%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">營業利益率</div>
+            <div class="metric-value">53.8%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FCF</div>
+            <div class="metric-value">$619.1B</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">負債/權益</div>
+            <div class="metric-value">18.2</div>
+          </div>
+          <div class="metric" style="grid-column: span 2;">
+            <div class="metric-label">下次財報</div>
+            <div class="metric-value">None</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card company-card">
+        <div class="company-header">
+          <div>
+            <div class="company-symbol">GOOG</div>
+            <div class="company-name">Alphabet Inc.</div>
+          </div>
+          <div class="company-score" style="color: var(--green);">
+            74
+            <div class="company-score-label">Research Score</div>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric">
+            <div class="metric-label">股價</div>
+            <div class="metric-value">$338.53</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">P/E</div>
+            <div class="metric-value">33.5</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">毛利率</div>
+            <div class="metric-value">59.2%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">營業利益率</div>
+            <div class="metric-value">30.5%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FCF</div>
+            <div class="metric-value">$48.0B</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">負債/權益</div>
+            <div class="metric-value">11.4</div>
+          </div>
+          <div class="metric" style="grid-column: span 2;">
+            <div class="metric-label">下次財報</div>
+            <div class="metric-value">None</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card company-card">
+        <div class="company-header">
+          <div>
+            <div class="company-symbol">NFLX</div>
+            <div class="company-name">Netflix Inc.</div>
+          </div>
+          <div class="company-score" style="color: var(--yellow);">
+            54
+            <div class="company-score-label">Research Score</div>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric">
+            <div class="metric-label">股價</div>
+            <div class="metric-value">$83.49</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">P/E</div>
+            <div class="metric-value">33.0</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">毛利率</div>
+            <div class="metric-value">48.5%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">營業利益率</div>
+            <div class="metric-value">24.5%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FCF</div>
+            <div class="metric-value">$24.8B</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">負債/權益</div>
+            <div class="metric-value">63.8</div>
+          </div>
+          <div class="metric" style="grid-column: span 2;">
+            <div class="metric-label">下次財報</div>
+            <div class="metric-value">None</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card company-card">
+        <div class="company-header">
+          <div>
+            <div class="company-symbol">QQQ</div>
+            <div class="company-name">Invesco QQQ Trust</div>
+          </div>
+          <div class="company-score" style="color: var(--yellow);">
+            50
+            <div class="company-score-label">Research Score</div>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric">
+            <div class="metric-label">股價</div>
+            <div class="metric-value">$621.87</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">P/E</div>
+            <div class="metric-value">33.6</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">毛利率</div>
+            <div class="metric-value">N/A</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">營業利益率</div>
+            <div class="metric-value">N/A</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FCF</div>
+            <div class="metric-value">N/A</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">負債/權益</div>
+            <div class="metric-value">N/A</div>
+          </div>
+          <div class="metric" style="grid-column: span 2;">
+            <div class="metric-label">下次財報</div>
+            <div class="metric-value">None</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card company-card">
+        <div class="company-header">
+          <div>
+            <div class="company-symbol">AVT</div>
+            <div class="company-name">Avnet Inc.</div>
+          </div>
+          <div class="company-score" style="color: var(--yellow);">
+            62
+            <div class="company-score-label">Research Score</div>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric">
+            <div class="metric-label">股價</div>
+            <div class="metric-value">$62.39</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">P/E</div>
+            <div class="metric-value">25.4</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">毛利率</div>
+            <div class="metric-value">10.6%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">營業利益率</div>
+            <div class="metric-value">2.7%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FCF</div>
+            <div class="metric-value">$112M</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">負債/權益</div>
+            <div class="metric-value">64.1</div>
+          </div>
+          <div class="metric" style="grid-column: span 2;">
+            <div class="metric-label">下次財報</div>
+            <div class="metric-value">None</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card company-card">
+        <div class="company-header">
+          <div>
+            <div class="company-symbol">MSFT</div>
+            <div class="company-name">Microsoft Corporation</div>
+          </div>
+          <div class="company-score" style="color: var(--green);">
+            69
+            <div class="company-score-label">Research Score</div>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric">
+            <div class="metric-label">股價</div>
+            <div class="metric-value">$430.29</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">P/E</div>
+            <div class="metric-value">27.0</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">毛利率</div>
+            <div class="metric-value">68.6%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">營業利益率</div>
+            <div class="metric-value">47.1%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FCF</div>
+            <div class="metric-value">$53.6B</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">負債/權益</div>
+            <div class="metric-value">31.5</div>
+          </div>
+          <div class="metric" style="grid-column: span 2;">
+            <div class="metric-label">下次財報</div>
+            <div class="metric-value">None</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card company-card">
+        <div class="company-header">
+          <div>
+            <div class="company-symbol">AMD</div>
+            <div class="company-name">Advanced Micro Devices</div>
+          </div>
+          <div class="company-score" style="color: var(--yellow);">
+            58
+            <div class="company-score-label">Research Score</div>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric">
+            <div class="metric-label">股價</div>
+            <div class="metric-value">$236.73</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">P/E</div>
+            <div class="metric-value">131.5</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">毛利率</div>
+            <div class="metric-value">51.5%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">營業利益率</div>
+            <div class="metric-value">13.7%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FCF</div>
+            <div class="metric-value">$3.2B</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">負債/權益</div>
+            <div class="metric-value">6.4</div>
+          </div>
+          <div class="metric" style="grid-column: span 2;">
+            <div class="metric-label">下次財報</div>
+            <div class="metric-value">None</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card company-card">
+        <div class="company-header">
+          <div>
+            <div class="company-symbol">CRWD</div>
+            <div class="company-name">CrowdStrike Holdings</div>
+          </div>
+          <div class="company-score" style="color: var(--yellow);">
+            51
+            <div class="company-score-label">Research Score</div>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric">
+            <div class="metric-label">股價</div>
+            <div class="metric-value">$441.40</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">P/E</div>
+            <div class="metric-value">N/A</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">毛利率</div>
+            <div class="metric-value">74.3%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">營業利益率</div>
+            <div class="metric-value">-5.6%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FCF</div>
+            <div class="metric-value">$1.4B</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">負債/權益</div>
+            <div class="metric-value">20.2</div>
+          </div>
+          <div class="metric" style="grid-column: span 2;">
+            <div class="metric-label">下次財報</div>
+            <div class="metric-value">None</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card company-card">
+        <div class="company-header">
+          <div>
+            <div class="company-symbol">NET</div>
+            <div class="company-name">Cloudflare Inc.</div>
+          </div>
+          <div class="company-score" style="color: var(--red);">
+            39
+            <div class="company-score-label">Research Score</div>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric">
+            <div class="metric-label">股價</div>
+            <div class="metric-value">$177.35</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">P/E</div>
+            <div class="metric-value">N/A</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">毛利率</div>
+            <div class="metric-value">75.2%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">營業利益率</div>
+            <div class="metric-value">-6.7%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FCF</div>
+            <div class="metric-value">$356M</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">負債/權益</div>
+            <div class="metric-value">260.0</div>
+          </div>
+          <div class="metric" style="grid-column: span 2;">
+            <div class="metric-label">下次財報</div>
+            <div class="metric-value">None</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card company-card">
+        <div class="company-header">
+          <div>
+            <div class="company-symbol">AMZN</div>
+            <div class="company-name">Amazon.com Inc.</div>
+          </div>
+          <div class="company-score" style="color: var(--yellow);">
+            64
+            <div class="company-score-label">Research Score</div>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric">
+            <div class="metric-label">股價</div>
+            <div class="metric-value">$239.30</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">P/E</div>
+            <div class="metric-value">34.1</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">毛利率</div>
+            <div class="metric-value">50.0%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">營業利益率</div>
+            <div class="metric-value">11.1%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">FCF</div>
+            <div class="metric-value">$26.1B</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">負債/權益</div>
+            <div class="metric-value">43.4</div>
+          </div>
+          <div class="metric" style="grid-column: span 2;">
+            <div class="metric-label">下次財報</div>
+            <div class="metric-value">None</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    
+    <footer>
+      <p>🥷 Ninja A | OpenClaw 自動更新 | 資料來源：Yahoo Finance</p>
+      <p style="margin-top: 8px;">⚠️ 部分基本面資料可能延遲或不完整，請以官方財報為準</p>
+    </footer>
+  </div>
+</body>
+</html>
