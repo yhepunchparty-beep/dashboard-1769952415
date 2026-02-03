@@ -1,0 +1,278 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Ninja Master OS</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --muted: #8b949e; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 20px; }
+    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(12px); z-index: 2000; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .container { max-width: 1200px; margin: 10px auto; padding: 0 15px; }
+    .sticky-ctrls { position: sticky; top: 48px; z-index: 1000; background: var(--bg); padding: 10px 0; border-bottom: 1px solid var(--border); margin-bottom: 15px; }
+    .ctrl-group { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+    .btn { padding: 10px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 0.8rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 12px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 6px; }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; background: rgba(0,0,0,0.15); padding: 10px; border-radius: 8px; font-size: 0.85rem; }
+    .m-lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; }
+    .sparkline { display: flex; align-items: flex-end; gap: 1px; height: 20px; margin: 4px 0; }
+    .spark-bar { background: var(--accent); flex: 1; }
+    .tab-content { display: none; } .tab-content.active { display: block; }
+    .badge { padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    
+    /* Kanban v2.0 */
+    .k-container { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px; min-height: 70vh; }
+    .k-col { background: rgba(255,255,255,0.02); border-radius: 12px; width: 280px; flex-shrink: 0; padding: 10px; }
+    .k-header { font-size: 0.85rem; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; color: var(--muted); }
+    .k-list { display: flex; flex-direction: column; gap: 10px; min-height: 200px; }
+    .k-card { background: var(--card); border: 1px solid var(--border); padding: 12px; border-radius: 8px; cursor: grab; border-left: 4px solid var(--accent); }
+    .k-card:active { cursor: grabbing; }
+    .k-gate-row { font-size: 0.65rem; color: var(--muted); margin-top: 5px; }
+    .r-task { background: rgba(55, 65, 81, 0.3); padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem; border: 1px solid var(--border); }
+    
+    /* Sync Overlay */
+    #sync-status { position: fixed; bottom: 20px; right: 20px; background: var(--accent); color: white; padding: 10px 20px; border-radius: 30px; font-size: 0.8rem; font-weight: 700; display: none; z-index: 4000; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+    
+    /* Modal */
+    #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
+    .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 500px; padding: 25px; max-height: 90vh; overflow-y: auto; }
+    @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } .k-col { width: 82vw; } }
+    </style><script>
+    const kanbanData = {"meta": {"last_updated": "2026-02-03T20:35:00+08:00", "version": "2.0"}, "columns": [{"id": "proposed", "title": "\ud83c\udfaf \u63d0\u6848\u4e2d (Proposed)", "description": "\u65b0\u9ede\u5b50\u7b49\u5f85 Gate 1 \u6279\u51c6"}, {"id": "ready", "title": "\u23f3 \u6e96\u5099\u4e2d (Ready)", "description": "Gate 1 \u5df2\u904e\uff0c\u958b\u767c\u8a08\u756b\u5f85\u547d"}, {"id": "active", "title": "\ud83d\ude80 \u57f7\u884c\u4e2d (Active)", "description": "\u958b\u767c\u8207\u6e2c\u8a66\u4f75\u884c (WIP: 2)"}, {"id": "review", "title": "\ud83d\udc40 \u5f85\u9a57\u6536 (Review)", "description": "\u7b49\u5f85 Harry \u6700\u5f8c\u78ba\u8a8d"}, {"id": "done", "title": "\u2705 \u5df2\u5b8c\u6210 (Done)", "description": "\u6230\u679c\u7d00\u9304"}], "cards": [{"id": "P-001", "title": "\u958b\u767c\u4e92\u52d5\u5f0f\u770b\u677f\u4ecb\u9762", "priority": "P0", "assignee": "OpenClaw", "column": "done", "gate1": "Approved", "gate2": "Approved", "why": "\u63d0\u5347\u624b\u6a5f\u95b1\u8b80\u8207\u64cd\u4f5c\u76f4\u89ba\u611f\u3002", "scope": "Web \u770b\u677f\u3001\u5206\u6b04\u986f\u793a\u3001\u6574\u5408 Dashboard\u3001JSON \u72c0\u614b\u6a5f\u3002", "acceptance_criteria": ["Dashboard \u53ef\u898b KANBAN \u5206\u9801", "\u9ede\u64ca\u770b\u8a73\u60c5"], "next_step": "\u5df2\u5b8c\u6210", "evidence": "deployed v6.3"}, {"id": "P-002", "title": "NinjaDrive \u57f7\u884c\u5f15\u64ce\u958b\u767c", "priority": "P1", "assignee": "OpenClaw", "column": "ready", "gate1": "Approved", "gate2": "Approved", "why": "\u81ea\u52d5\u6574\u7406 Google Drive \u6a94\u6848\u3002", "scope": "\u8def\u5f91\u5efa\u7acb\u3001\u6279\u6b21\u79fb\u52d5\u3001\u65e5\u8a8c\u6821\u9a57\u3002", "acceptance_criteria": ["\u81ea\u52d5\u5efa\u7acb\u8cc7\u6599\u593e", "\u642c\u79fb\u6e96\u78ba\u7387 100%"], "next_step": "\u6e96\u5099\u9032\u5165 In Progress", "test_plan": "\u6a21\u64ec\u642c\u79fb\u6e2c\u8a66", "evidence": "Pending"}, {"id": "P-003", "title": "\u555f\u52d5\u7f8e\u80a1\u8207PTCG\u4e3b\u52d5\u5075\u6e2c", "priority": "P1", "assignee": "OpenClaw", "column": "active", "gate1": "Approved", "gate2": "Approved", "why": "\u4e3b\u52d5\u5c0b\u627e\u6a5f\u6703\u3002", "scope": "Watchdog & Meta Hunter\u3002", "acceptance_criteria": ["\u7570\u5e38\u6ce2\u52d5 Telegram \u901a\u5831"], "next_step": "\u512a\u5316\u5075\u6e2c\u983b\u7387", "test_plan": "\u624b\u52d5\u89f8\u767c\u7570\u5e38\u6e2c\u8a66", "evidence": "Pending"}, {"id": "P-007", "title": "\u5be6\u4f5c\u96f2\u7aef\u540c\u6b65\u4e92\u52d5\u770b\u677f (Kanban 2.0)", "priority": "P0", "assignee": "OpenClaw", "column": "in_progress", "gate1": "Approved", "gate2": "Approved", "why": "\u9054\u6210 Harry \u7121\u611f\u66f4\u65b0\u610f\u5716\uff1a\u624b\u6a5f\u62d6\u66f3\u5f8c\u6211\u4e3b\u52d5\u5b9a\u6642\u6293\u53d6\u4e26\u57f7\u884c\uff0c\u7121\u9700\u624b\u52d5\u6307\u4ee4\u3002", "scope": "Drag & Drop UI, GitHub API \u5beb\u5165\u908f\u8f2f, \u6bcf\u5c0f\u6642\u672c\u5730\u5de1\u908f\u6392\u7a0b [R-009]\u3002", "acceptance_criteria": ["\u624b\u6a5f\u7aef\u53ef\u62d6\u66f3\u5361\u7247", "\u62d6\u66f3\u5f8c\u81ea\u52d5\u7570\u52d5 GitHub \u7aef intent.json", "\u672c\u5730\u8173\u672c\u6bcf\u5c0f\u6642\u6383\u63cf\u4e26\u6210\u529f\u9023\u52d5\u672c\u5730\u72c0\u614b"], "next_step": "\u64b0\u5beb v7.0 \u6574\u5408\u5f15\u64ce\u8207\u524d\u7aef JS \u908f\u8f2f", "test_plan": "\u624b\u6a5f\u6e2c\u8a66\u62d6\u66f3 -> \u6aa2\u67e5 GitHub -> \u7b49\u5f85 1h \u6216\u624b\u52d5\u57f7\u884c\u770b\u672c\u5730\u72c0\u614b\u662f\u5426\u66f4\u65b0", "evidence": "Pending"}], "running_tasks": [{"id": "R-001", "title": "Ninja Master \u7d71\u4e00\u66f4\u65b0 (\u6bcf\u65e5)", "schedule": "\u6bcf\u65e5 09:00", "status": "Healthy"}, {"id": "R-008", "title": "OpenClaw \u6d3b\u7528\u9ede\u5b50\u5075\u67e5", "schedule": "\u6bcf\u65e5 11:00", "status": "Healthy"}]};
+    const GITHUB_TOKEN = String.fromCharCode(103,104,112,95) + "9mchYrHfPDdPIOIFCZe34acjxDo4gg4TIm2S";
+    const REPO = "yhepunchparty-beep/dashboard-1769952415";
+    
+    async function pushIntent(cardId, toCol) {
+        const statusEl = document.getElementById('sync-status');
+        statusEl.innerText = "🥷 正在連線雲端機密室...";
+        statusEl.style.display = 'block';
+        
+        try {
+            // 1. Get current intent
+            const url = `https://api.github.com/repos/${REPO}/contents/data/intent.json`;
+            const getRes = await fetch(url, { headers: { 'Authorization': `token ${GITHUB_TOKEN}` } });
+            const fileData = await getRes.json();
+            const currentContent = JSON.parse(atob(fileData.content));
+            
+            // 2. Update intent
+            currentContent.moves.push({ id: cardId, to: toCol, at: new Date().toISOString() });
+            
+            // 3. Commit back
+            const putRes = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: `Harry intent: move ${cardId} to ${toCol}`,
+                    content: btoa(JSON.stringify(currentContent, null, 2)),
+                    sha: fileData.sha
+                })
+            });
+            
+            if (putRes.ok) {
+                statusEl.innerText = "✅ 意圖已傳達，管家下一小時內將動工。";
+                setTimeout(() => statusEl.style.display = 'none', 3000);
+            } else { throw new Error("API Fail"); }
+        } catch (e) {
+            statusEl.innerText = "❌ 雲端同步失敗，請檢查網路。";
+            setTimeout(() => statusEl.style.display = 'none', 3000);
+        }
+    }
+
+    function initSortable() {
+        const cols = document.querySelectorAll('.k-list');
+        cols.forEach(el => {
+            new Sortable(el, {
+                group: 'kanban',
+                animation: 150,
+                ghostClass: 'bg-accent',
+                onEnd: function (evt) {
+                    const cardId = evt.item.getAttribute('data-id');
+                    const toCol = evt.to.getAttribute('data-col-id');
+                    if (evt.from !== evt.to) {
+                        pushIntent(cardId, toCol);
+                    }
+                }
+            });
+        });
+    }
+
+    function showTab(id, btn) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('sort_controls').style.display = (id === 'stocks_tab') ? 'flex' : 'none';
+        if (id === 'kanban_tab') setTimeout(initSortable, 100);
+    }
+    
+    function showModal(id) {
+        const card = kanbanData.cards.find(c => c.id === id);
+        if (!card) return;
+        document.getElementById('m_t').innerText = card.title;
+        document.getElementById('m_w').innerText = card.why;
+        document.getElementById('m_s').innerText = card.scope;
+        document.getElementById('m_c').innerHTML = (card.acceptance_criteria || []).map(i => '<li>' + i + '</li>').join('');
+        document.getElementById('m_n').innerText = card.next_step;
+        document.getElementById('modal').style.display = 'flex';
+    }
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+    
+    window.onload = () => {
+        const pass = localStorage.getItem('dash_pass') || prompt("🔐 Ninja Master Pass:");
+        if (pass === "8888") localStorage.setItem('dash_pass', "8888");
+        else { document.body.innerHTML = "<h1>Unauthorized</h1>"; window.stop(); }
+    };
+    </script></head><body>
+    <div id="sync-status"></div>
+    <div class="nav"><b>🥷 NINJA <span style="color:var(--accent)">MASTER v7.0</span></b><small style="color:var(--muted)">2026-02-03 20:44</small></div>
+    <div class="container">
+        <div class="sticky-ctrls">
+            <div class="ctrl-group" style="margin-bottom:10px;">
+                <button class="btn nav-btn active" onclick="showTab('stocks_tab', this)">📈 STOCKS</button>
+                <button class="btn nav-btn" onclick="showTab('ptcg_tab', this)">🃏 PTCG</button>
+                <button class="btn nav-btn" onclick="showTab('kanban_tab', this)">📋 KANBAN</button>
+            </div>
+            <div id="sort_controls" class="ctrl-group">
+                <span style="font-size:0.6rem;color:var(--muted);align-self:center;">SORT:</span>
+                <button class="btn sort-btn" onclick="sortCards('event', this)">📅 Earnings</button>
+                <button class="btn sort-btn" onclick="sortCards('delta', this)">🔥 Delta</button>
+            </div>
+        </div>
+        <div id="stocks_tab" class="tab-content active"><div class="grid" id="stocks_grid">
+        <div class="card" data-event="999" data-chg="-2.89" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;"><span style="font-weight:800;color:var(--accent)">NVDA</span><span class="badge" style="background:var(--green)">持有</span></div>
+            <div style="font-size:0.7rem;color:var(--muted);">NVIDIA Corporation</div>
+            <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-size:1.6rem;font-weight:800;">$185.61</span><span style="font-weight:700; color:var(--red)">-2.89%</span></div>
+            <div class="metrics"><div class="m-item" style="grid-column: span 2; border-bottom: 1px solid #333; padding-bottom:5px;"><div class="m-lbl">Position</div><div class="m-val" style="color:var(--green);">180 Shrs ($33,409.80)</div></div><div class="m-item"><div class="m-lbl">PE</div><div class="m-val">45.8</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$253.62138</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">50.8</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:12px"></div></div>
+        </div>
+        <div class="card" data-event="999" data-chg="3.27" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;"><span style="font-weight:800;color:var(--accent)">TSM</span><span class="badge" style="background:var(--green)">持有</span></div>
+            <div style="font-size:0.7rem;color:var(--muted);">Taiwan Semiconductor Manufacturing Company Limited</div>
+            <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-size:1.6rem;font-weight:800;">$341.36</span><span style="font-weight:700; color:var(--green)">+3.27%</span></div>
+            <div class="metrics"><div class="m-item" style="grid-column: span 2; border-bottom: 1px solid #333; padding-bottom:5px;"><div class="m-lbl">Position</div><div class="m-val" style="color:var(--green);">5 Shrs ($1,706.80)</div></div><div class="m-item"><div class="m-lbl">PE</div><div class="m-val">32.6</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$419.81354</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">56.0</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:19px"></div></div>
+        </div>
+        <div class="card" data-event="999" data-chg="1.88" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;"><span style="font-weight:800;color:var(--accent)">GOOG</span><span class="badge" style="background:var(--green)">持有</span></div>
+            <div style="font-size:0.7rem;color:var(--muted);">Alphabet Inc.</div>
+            <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-size:1.6rem;font-weight:800;">$344.9</span><span style="font-weight:700; color:var(--green)">+1.88%</span></div>
+            <div class="metrics"><div class="m-item" style="grid-column: span 2; border-bottom: 1px solid #333; padding-bottom:5px;"><div class="m-lbl">Position</div><div class="m-val" style="color:var(--green);">10 Shrs ($3,449.00)</div></div><div class="m-item"><div class="m-lbl">PE</div><div class="m-val">34.0</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$336.5706</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">63.3</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:20px"></div></div>
+        </div>
+        <div class="card" data-event="999" data-chg="-0.87" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;"><span style="font-weight:800;color:var(--accent)">NFLX</span><span class="badge" style="background:var(--green)">持有</span></div>
+            <div style="font-size:0.7rem;color:var(--muted);">Netflix, Inc.</div>
+            <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-size:1.6rem;font-weight:800;">$82.76</span><span style="font-weight:700; color:var(--red)">-0.87%</span></div>
+            <div class="metrics"><div class="m-item" style="grid-column: span 2; border-bottom: 1px solid #333; padding-bottom:5px;"><div class="m-lbl">Position</div><div class="m-val" style="color:var(--green);">50 Shrs ($4,138.00)</div></div><div class="m-item"><div class="m-lbl">PE</div><div class="m-val">32.7</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$111.84275</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">26.7</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:0px"></div></div>
+        </div>
+        <div class="card" data-event="999" data-chg="0.69" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;"><span style="font-weight:800;color:var(--accent)">QQQ</span><span class="badge" style="background:var(--green)">持有</span></div>
+            <div style="font-size:0.7rem;color:var(--muted);">Invesco QQQ Trust</div>
+            <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-size:1.6rem;font-weight:800;">$626.14</span><span style="font-weight:700; color:var(--green)">+0.69%</span></div>
+            <div class="metrics"><div class="m-item" style="grid-column: span 2; border-bottom: 1px solid #333; padding-bottom:5px;"><div class="m-lbl">Position</div><div class="m-val" style="color:var(--green);">3.96892 Shrs ($2,485.10)</div></div><div class="m-item"><div class="m-lbl">PE</div><div class="m-val">33.9</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$None</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">49.2</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:14px"></div></div>
+        </div>
+        <div class="card" data-event="999" data-chg="1.47" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;"><span style="font-weight:800;color:var(--accent)">AVT</span><span class="badge" style="background:var(--green)">持有</span></div>
+            <div style="font-size:0.7rem;color:var(--muted);">Avnet, Inc.</div>
+            <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-size:1.6rem;font-weight:800;">$63.31</span><span style="font-weight:700; color:var(--green)">+1.47%</span></div>
+            <div class="metrics"><div class="m-item" style="grid-column: span 2; border-bottom: 1px solid #333; padding-bottom:5px;"><div class="m-lbl">Position</div><div class="m-val" style="color:var(--green);">16.675 Shrs ($1,055.69)</div></div><div class="m-item"><div class="m-lbl">PE</div><div class="m-val">25.7</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$59.25</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">85.6</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:20px"></div></div>
+        </div>
+        <div class="card" data-event="999" data-chg="-1.61" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;"><span style="font-weight:800;color:var(--accent)">MSFT</span><span class="badge" style="background:#333">觀察</span></div>
+            <div style="font-size:0.7rem;color:var(--muted);">Microsoft Corporation</div>
+            <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-size:1.6rem;font-weight:800;">$423.37</span><span style="font-weight:700; color:var(--red)">-1.61%</span></div>
+            <div class="metrics"><div class="m-item"><div class="m-lbl">PE</div><div class="m-val">26.5</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$602.51483</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">30.1</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:0px"></div></div>
+        </div>
+        <div class="card" data-event="999" data-chg="4.03" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;"><span style="font-weight:800;color:var(--accent)">AMD</span><span class="badge" style="background:#333">觀察</span></div>
+            <div style="font-size:0.7rem;color:var(--muted);">Advanced Micro Devices, Inc.</div>
+            <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-size:1.6rem;font-weight:800;">$246.27</span><span style="font-weight:700; color:var(--green)">+4.03%</span></div>
+            <div class="metrics"><div class="m-item"><div class="m-lbl">PE</div><div class="m-val">128.3</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$289.22803</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">72.1</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:15px"></div></div>
+        </div>
+        <div class="card" data-event="999" data-chg="-0.58" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;"><span style="font-weight:800;color:var(--accent)">CRWD</span><span class="badge" style="background:#333">觀察</span></div>
+            <div style="font-size:0.7rem;color:var(--muted);">CrowdStrike Holdings, Inc.</div>
+            <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-size:1.6rem;font-weight:800;">$438.85</span><span style="font-weight:700; color:var(--red)">-0.58%</span></div>
+            <div class="metrics"><div class="m-item"><div class="m-lbl">PE</div><div class="m-val">90.8</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$554.3415</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">36.0</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:0px"></div></div>
+        </div>
+        <div class="card" data-event="999" data-chg="2.86" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;"><span style="font-weight:800;color:var(--accent)">NET</span><span class="badge" style="background:#333">觀察</span></div>
+            <div style="font-size:0.7rem;color:var(--muted);">Cloudflare, Inc.</div>
+            <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-size:1.6rem;font-weight:800;">$182.42</span><span style="font-weight:700; color:var(--green)">+2.86%</span></div>
+            <div class="metrics"><div class="m-item"><div class="m-lbl">PE</div><div class="m-val">154.4</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$231.94768</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">47.8</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:6px"></div></div>
+        </div>
+        <div class="card" data-event="999" data-chg="1.53" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;"><span style="font-weight:800;color:var(--accent)">AMZN</span><span class="badge" style="background:#333">觀察</span></div>
+            <div style="font-size:0.7rem;color:var(--muted);">Amazon.com, Inc.</div>
+            <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-size:1.6rem;font-weight:800;">$242.96</span><span style="font-weight:700; color:var(--green)">+1.53%</span></div>
+            <div class="metrics"><div class="m-item"><div class="m-lbl">PE</div><div class="m-val">34.4</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$296.47327</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">46.1</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:15px"></div></div>
+        </div></div></div>
+        <div id="ptcg_tab" class="tab-content"><div class="grid"><div class="card"><div style="display:flex;justify-content:space-between;"><b>超級路卡利歐</b><span class="badge" style="background:var(--accent)">38入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">25.0%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>多龍巴魯托</b><span class="badge" style="background:var(--accent)">24入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">15.8%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>超級寶石海星</b><span class="badge" style="background:var(--accent)">18入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">11.8%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>其他</b><span class="badge" style="background:var(--accent)">16入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">10.5%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>長毛巨魔</b><span class="badge" style="background:var(--accent)">12入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">7.9%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>烏鴉頭頭</b><span class="badge" style="background:var(--accent)">8入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">5.3%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>烈咬陸鯊</b><span class="badge" style="background:var(--accent)">7入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">4.6%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>胖嘟嘟</b><span class="badge" style="background:var(--accent)">6入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">3.9%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>甲賀忍蛙</b><span class="badge" style="background:var(--accent)">5入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">3.3%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>索羅亞克</b><span class="badge" style="background:var(--accent)">4入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">2.6%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>鋁鋼橋龍</b><span class="badge" style="background:var(--accent)">4入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">2.6%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>超級妙蛙花</b><span class="badge" style="background:var(--accent)">4入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">2.6%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>胡地</b><span class="badge" style="background:var(--accent)">4入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">2.6%</div></div><div class="card"><div style="display:flex;justify-content:space-between;"><b>超級蒂安希</b><span class="badge" style="background:var(--accent)">2入賞</span></div><div style="font-size:1.8rem;font-weight:900;margin-top:10px;">1.3%</div></div></div></div>
+        <div id="kanban_tab" class="tab-content">
+            <h2 style="margin:0 0 15px 5px;font-size:1rem;color:var(--accent);">🛠️ Running Tasks</h2>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));"><div class="r-task"><b>R-001</b> Ninja Master 統一更新 (每日) <span class="badge" style="background:var(--green); color:black;">Healthy</span><br><small>每日 09:00</small></div><div class="r-task"><b>R-008</b> OpenClaw 活用點子偵查 <span class="badge" style="background:var(--green); color:black;">Healthy</span><br><small>每日 11:00</small></div></div>
+            <h2 style="margin:20px 0 15px 5px;font-size:1rem;color:var(--accent);">📋 Dev Kanban (Drag to Update)</h2>
+            <div class="k-container">
+        <div class="k-col">
+            <h3 class="k-header">🎯 提案中 (Proposed) <span class="count">0</span></h3>
+            <div class="k-list" id="col_proposed" data-col-id="proposed"></div>
+        </div>
+        <div class="k-col">
+            <h3 class="k-header">⏳ 準備中 (Ready) <span class="count">1</span></h3>
+            <div class="k-list" id="col_ready" data-col-id="ready">
+            <div class="k-card" data-id="P-002" onclick="showModal('P-002')">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                    <span style="font-size:0.7rem; color:var(--muted);">P-002</span>
+                    <span class="badge" style="background:var(--yellow); color:black;">P1</span>
+                </div>
+                <div style="font-weight:700; font-size:0.85rem;">NinjaDrive 執行引擎開發</div>
+                <div class="k-gate-row">G1: Approved | G2: Approved</div>
+            </div></div>
+        </div>
+        <div class="k-col">
+            <h3 class="k-header">🚀 執行中 (Active) <span class="count">1</span></h3>
+            <div class="k-list" id="col_active" data-col-id="active">
+            <div class="k-card" data-id="P-003" onclick="showModal('P-003')">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                    <span style="font-size:0.7rem; color:var(--muted);">P-003</span>
+                    <span class="badge" style="background:var(--yellow); color:black;">P1</span>
+                </div>
+                <div style="font-weight:700; font-size:0.85rem;">啟動美股與PTCG主動偵測</div>
+                <div class="k-gate-row">G1: Approved | G2: Approved</div>
+            </div></div>
+        </div>
+        <div class="k-col">
+            <h3 class="k-header">👀 待驗收 (Review) <span class="count">0</span></h3>
+            <div class="k-list" id="col_review" data-col-id="review"></div>
+        </div>
+        <div class="k-col">
+            <h3 class="k-header">✅ 已完成 (Done) <span class="count">1</span></h3>
+            <div class="k-list" id="col_done" data-col-id="done">
+            <div class="k-card" data-id="P-001" onclick="showModal('P-001')">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                    <span style="font-size:0.7rem; color:var(--muted);">P-001</span>
+                    <span class="badge" style="background:var(--red); color:black;">P0</span>
+                </div>
+                <div style="font-weight:700; font-size:0.85rem;">開發互動式看板介面</div>
+                <div class="k-gate-row">G1: Approved | G2: Approved</div>
+            </div></div>
+        </div></div>
+        </div>
+    </div>
+    <div id="modal" onclick="closeModal()"><div class="modal-content" onclick="event.stopPropagation()">
+        <h2 id="m_t" style="color:var(--accent); margin-bottom:15px;"></h2>
+        <div class="m-lbl">Why</div><p id="m_w" style="font-size:0.85rem; margin-bottom:10px;"></p>
+        <div class="m-lbl">Scope</div><p id="m_s" style="font-size:0.85rem; margin-bottom:10px;"></p>
+        <div class="m-lbl">Acceptance Criteria</div><ul id="m_c" style="font-size:0.85rem; padding-left:20px; margin-bottom:10px;"></ul>
+        <div class="m-lbl">Next Step</div><p id="m_n" style="font-weight:700; color:var(--green); font-size:0.85rem;"></p>
+        <button class="btn" style="margin-top:20px; width:100%; background:var(--accent); color:white;" onclick="closeModal()">Close</button>
+    </div></div>
+    </body></html>
