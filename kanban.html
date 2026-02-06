@@ -11,7 +11,10 @@
     .k-col { background: rgba(255,255,255,0.02); border-radius: 12px; width: 280px; flex-shrink: 0; padding: 10px; scroll-snap-align: start; }
     .k-header { font-size: 0.85rem; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; color: var(--muted); }
     .k-list { display: flex; flex-direction: column; gap: 10px; min-height: 200px; }
-    .k-card { background: var(--card); border: 1px solid var(--border); padding: 12px; border-radius: 8px; cursor: grab; border-left: 4px solid var(--accent); -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+    .k-card { background: var(--card); border: 1px solid var(--border); padding: 12px; border-radius: 8px; cursor: default; border-left: 4px solid var(--accent); -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+    .drag-handle { cursor: grab; font-size: 0.95rem; opacity: 0.7; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+    .drag-handle:active { cursor: grabbing; }
+    .k-container, .k-list { touch-action: pan-y; }
     .r-task { background: rgba(55, 65, 81, 0.3); padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem; border: 1px solid var(--border); }
     #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
     .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 500px; padding: 25px; }
@@ -83,9 +86,11 @@
                     const title = esc(cardTitle(c));
                     const intro = esc(cardIntro(c));
                     parts += '<div class="k-card" data-id="' + esc(c.id) + '">'
-                      + '<div style="display:flex;justify-content:space-between;">'
+                      + '<div style="display:flex;justify-content:space-between;align-items:center;">'
                       + '<small>' + esc(c.id) + '</small>'
-                      + '<div><small style="color:var(--red);margin-right:8px;">' + esc(c.priority || '') + '</small>'
+                      + '<div style="display:flex;align-items:center;gap:8px;">'
+                      + '<span class="drag-handle" title="拖曳">≡</span>'
+                      + '<small style="color:var(--red);">' + esc(c.priority || '') + '</small>'
                       + '<button class="del-btn" onclick="event.stopPropagation();deleteCard('' + esc(c.id) + '')">🗑️</button></div>'
                       + '</div>'
                       + '<div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('' + esc(c.id) + '')">' + title + '</div>'
@@ -110,6 +115,7 @@
             new Sortable(el, {
                 group: 'kanban',
                 animation: 150,
+                handle: '.drag-handle',
                 // iOS Safari: reduce accidental scroll vs drag
                 delay: 150,
                 delayOnTouchOnly: true,
@@ -209,7 +215,7 @@
 
     window.onload = () => { boot(); };
 </script></head><body>
-    <div class="nav"><b>📋 NINJA <span style="color:var(--accent)">KANBAN</span></b><small style="color:var(--muted)">2026-02-06 08:31</small></div>
+    <div class="nav"><b>📋 NINJA <span style="color:var(--accent)">KANBAN</span></b><small style="color:var(--muted)">2026-02-06 08:34</small></div>
     <div class="container">
         <div style="margin-bottom:15px;"><a href="index.html" style="color:var(--accent); text-decoration:none; margin-right:20px;">📈 Stocks Dashboard</a><a href="ptcg.html" style="color:var(--accent); text-decoration:none;">🃏 PTCG Dashboard</a></div>
         <h2 style="margin-bottom:15px; font-size:1rem; color:var(--accent);">🛠️ Running Tasks</h2>
