@@ -1,236 +1,737 @@
-
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Ninja Kanban OS</title>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-<style>
-    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --muted: #8b949e; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 20px; }
-    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(12px); z-index: 2000; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .container { max-width: 1200px; margin: 15px auto; padding: 0 15px; }
-    .k-container { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px; min-height: 70vh; scroll-snap-type: x mandatory; }
-    .k-col { background: rgba(255,255,255,0.02); border-radius: 12px; width: 280px; flex-shrink: 0; padding: 10px; scroll-snap-align: start; }
-    .k-header { font-size: 0.85rem; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; color: var(--muted); }
-    .k-list { display: flex; flex-direction: column; gap: 10px; min-height: 200px; }
-    .k-card { background: var(--card); border: 1px solid var(--border); padding: 12px; border-radius: 8px; cursor: default; border-left: 4px solid var(--accent); -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
-    .drag-handle { cursor: grab; font-size: 0.95rem; opacity: 0.7; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); }
-    .drag-handle:active { cursor: grabbing; }
-    .k-container, .k-list { touch-action: pan-y; }
-    .r-task { background: rgba(55, 65, 81, 0.3); padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem; border: 1px solid var(--border); }
-    #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
-    .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 500px; padding: 25px; }
-    .badge { font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; color: white; }
-    .del-btn { background: transparent; border: none; cursor: pointer; font-size: 0.75rem; opacity: 0.5; transition: opacity 0.2s; }
-    .del-btn:hover { opacity: 1; }
-    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--green); color: black; padding: 12px 24px; border-radius: 8px; display: none; z-index: 4000; font-weight: 600; }
-</style>
-<script>
-    let kData = null;
-
-    function esc(s) {
-        return String(s || '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
-
-    function cardTitle(c) { return (c.product || c.name || c.title || '').trim(); }
-    function cardIntro(c) { return (c.intro || c.summary || c.why || '').trim(); }
-
-    async function fetchKanban() {
-        const r = await fetch('/api/kanban', { cache: 'no-store' });
-        if (!r.ok) throw new Error('fetch /api/kanban failed: ' + r.status);
-        return await r.json();
-    }
-
-    function badgeColor(status) {
-        const s = String(status || '').toLowerCase();
-        if (s.startsWith('healthy') || s === 'ok') return 'var(--green)';
-        if (s.startsWith('degraded') || s.startsWith('warning') || s.startsWith('recover')) return 'var(--yellow)';
-        if (s.startsWith('error') || s.startsWith('fail')) return 'var(--red)';
-        return 'var(--muted)';
-    }
-
-    function renderKanban(kb) {
-        kData = kb;
-
-        // Running tasks
-        const runningWrap = document.getElementById('running_wrap');
-        if (runningWrap) {
-            const tasks = (kb.running_tasks || []);
-            let html = '';
-            for (const t of tasks) {
-                const st = (t.status || 'N/A');
-                const color = badgeColor(st);
-                html += '<div class="r-task">'
-                  + '<b>' + esc(t.id || '') + '</b> ' + esc(t.title || '') + ' '
-                  + '<span class="badge" style="background:' + color + '; color:black;">' + esc(st) + '</span>'
-                  + '<br><small>' + esc(t.schedule || '') + '</small>'
-                  + (t.note ? ('<br><small style="color:var(--muted)">' + esc(t.note) + '</small>') : '')
-                  + '</div>';
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ninja Kanban</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --surface-hover: #1c2128;
+            --border: #30363d;
+            --border-subtle: #21262d;
+            --text: #e6edf3;
+            --text-secondary: #7d8590;
+            --accent: #2f81f7;
+            --accent-soft: rgba(47, 129, 247, 0.15);
+            --success: #3fb950;
+            --warning: #d29922;
+            --danger: #f85149;
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 16px 20px;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .nav-link {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+        
+        .nav-link:hover {
+            background: var(--surface);
+            color: var(--text);
+        }
+        
+        .nav-link.active {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+        
+        /* Main Board */
+        .board {
+            padding: 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .board-inner {
+            display: flex;
+            gap: 16px;
+            min-width: max-content;
+            padding-bottom: 40px;
+        }
+        
+        /* Column */
+        .column {
+            width: 300px;
+            flex-shrink: 0;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 140px);
+        }
+        
+        .column-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .column-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .column-dot.proposed { background: var(--text-secondary); }
+        .column-dot.ready { background: var(--accent); }
+        .column-dot.active { background: var(--warning); }
+        .column-dot.review { background: var(--success); }
+        .column-dot.done { background: var(--success); opacity: 0.5; }
+        
+        .column-title {
+            font-size: 14px;
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .column-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--bg);
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        
+        .column-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        /* Card */
+        .card {
+            background: var(--bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative;
+        }
+        
+        .card:hover {
+            border-color: var(--border);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+        
+        .card.dragging {
+            opacity: 0.5;
+            transform: rotate(2deg);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .card-id {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+        
+        .card-priority {
+            margin-left: auto;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        
+        .card-priority.P0 { background: rgba(248, 81, 73, 0.2); color: var(--danger); }
+        .card-priority.P1 { background: rgba(210, 153, 34, 0.2); color: var(--warning); }
+        .card-priority.P2 { background: rgba(125, 133, 144, 0.2); color: var(--text-secondary); }
+        
+        .card-title {
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .card-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        
+        .card-footer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-subtle);
+        }
+        
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
+        .card-meta svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: var(--surface);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 560px;
+            max-height: 85vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        
+        .modal-id {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-family: monospace;
+            margin-bottom: 8px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .modal-section {
+            margin-bottom: 24px;
+        }
+        
+        .modal-section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        
+        .modal-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text);
+        }
+        
+        .modal-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .modal-meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .modal-meta-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .modal-meta-value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+        }
+        
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--surface-hover);
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        
+        /* Running Tasks Section */
+        .tasks-section {
+            margin: 20px;
+            padding: 16px 20px;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+        }
+        
+        .tasks-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        
+        .tasks-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .task-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg);
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid var(--border-subtle);
+        }
+        
+        .task-status {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        
+        .task-status.healthy { background: var(--success); }
+        .task-status.degraded { background: var(--warning); }
+        .task-status.error { background: var(--danger); }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+                gap: 12px;
             }
-            runningWrap.innerHTML = html;
+            
+            .nav-links {
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 4px;
+            }
+            
+            .column {
+                width: 280px;
+            }
+            
+            .board {
+                padding: 12px;
+            }
+            
+            .modal {
+                max-height: 90vh;
+                border-radius: 12px;
+            }
+        }
+        
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🥷 Ninja Kanban</div>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Stocks</a>
+                <a href="ptcg.html" class="nav-link">PTCG</a>
+                <a href="kanban.html" class="nav-link active">Kanban</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="tasks-section" id="tasks-section">
+        <div class="tasks-title">Running Tasks</div>
+        <div class="tasks-list" id="tasks-list"></div>
+    </div>
+
+    <main class="board">
+        <div class="board-inner" id="board"></div>
+    </main>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-id" id="modal-id"></div>
+                <div class="modal-title" id="modal-title"></div>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                <button class="btn btn-primary" onclick="moveCard()">Move →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let kanbanData = null;
+        let currentCard = null;
+
+        // Fetch data
+        async function fetchData() {
+            try {
+                const res = await fetch('data/kanban_state.json', { cache: 'no-store' });
+                if (!res.ok) throw new Error('Failed to fetch');
+                kanbanData = await res.json();
+                renderBoard();
+                renderTasks();
+            } catch (e) {
+                console.error('Fetch error:', e);
+                document.getElementById('board').innerHTML = 
+                    '<div style="padding:40px;text-align:center;color:var(--text-secondary)">' +
+                    'Failed to load kanban data. Please try again later.' +
+                    '</div>';
+            }
         }
 
-        // Columns
-        const colsWrap = document.getElementById('kanban_cols');
-        if (colsWrap) {
-            const columns = kb.columns || [];
-            const cards = kb.cards || [];
-            let html = '';
-            for (const col of columns) {
+        // Render board
+        function renderBoard() {
+            const board = document.getElementById('board');
+            const columns = kanbanData.columns || [];
+            const cards = kanbanData.cards || [];
+
+            board.innerHTML = columns.map(col => {
                 const colCards = cards.filter(c => c.column === col.id);
-                let parts = '';
-                for (const c of colCards) {
-                    const title = esc(cardTitle(c));
-                    const intro = esc(cardIntro(c));
-                    parts += '<div class="k-card" data-id="' + esc(c.id) + '">'
-                      + '<div style="display:flex;justify-content:space-between;align-items:center;">'
-                      + '<small>' + esc(c.id) + '</small>'
-                      + '<div style="display:flex;align-items:center;gap:8px;">'
-                      + '<span class="drag-handle" title="拖曳">≡</span>'
-                      + '<small style="color:var(--red);">' + esc(c.priority || '') + '</small>'
-                      + '<button class="del-btn" onclick="event.stopPropagation();deleteCard('' + esc(c.id) + '')">🗑️</button></div>'
-                      + '</div>'
-                      + '<div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('' + esc(c.id) + '')">' + title + '</div>'
-                      + (intro ? ('<div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">' + intro + '</div>') : '')
-                      + '</div>';
-                }
+                return `
+                    <div class="column" data-column="${col.id}">
+                        <div class="column-header">
+                            <div class="column-dot ${col.id}"></div>
+                            <div class="column-title">${col.title}</div>
+                            <div class="column-count">${colCards.length}</div>
+                        </div>
+                        <div class="column-body" id="col-${col.id}">
+                            ${colCards.map(card => renderCard(card)).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
-                html += '<div class="k-col">'
-                  + '<h3 class="k-header">' + esc(col.title || '') + ' <span>' + colCards.length + '</span></h3>'
-                  + '<div class="k-list" data-col-id="' + esc(col.id) + '">' + parts + '</div>'
-                  + '</div>';
-            }
-            colsWrap.innerHTML = html;
-        }
-
-        initSortable();
-    }
-
-    function initSortable() {
-        const lists = document.querySelectorAll('.k-list');
-        lists.forEach(el => {
-            new Sortable(el, {
-                group: 'kanban',
-                animation: 150,
-                handle: '.drag-handle',
-                // iOS Safari: reduce accidental scroll vs drag
-                delay: 150,
-                delayOnTouchOnly: true,
-                touchStartThreshold: 8,
-                forceFallback: true,
-                fallbackOnBody: true,
-                onEnd: async (e) => {
-                    const cardId = e.item.dataset.id;
-                    const fromCol = e.from.dataset.colId;
-                    const toCol = e.to.dataset.colId;
-                    const position = e.newIndex;
-                    console.log('Moved', cardId, fromCol, '→', toCol, 'pos', position);
-
-                    try {
-                        const pass = localStorage.getItem('dash_pass') || '';
-                        const r = await fetch('/api/kanban/move', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-Dash-Pass': pass,
-                            },
-                            body: JSON.stringify({ cardId: cardId, from: fromCol, to: toCol, position: position })
-                        });
-                        if (!r.ok) throw new Error('save failed: ' + r.status);
-                        showToast('已儲存：' + cardId + ' → ' + toCol);
-                    } catch (err) {
-                        console.error(err);
-                        showToast('儲存失敗（稍後重整）');
-                    }
+            // Initialize drag and drop
+            columns.forEach(col => {
+                const el = document.getElementById(`col-${col.id}`);
+                if (el) {
+                    new Sortable(el, {
+                        group: 'kanban',
+                        animation: 150,
+                        ghostClass: 'dragging',
+                        delay: 100,
+                        delayOnTouchOnly: true,
+                        onEnd: (evt) => {
+                            const cardId = evt.item.dataset.id;
+                            const newCol = evt.to.closest('.column').dataset.column;
+                            updateCardColumn(cardId, newCol);
+                        }
+                    });
                 }
             });
-        });
-    }
-
-    function showModal(id) {
-        const c = (kData && kData.cards ? kData.cards.find(x => x.id === id) : null); if (!c) return;
-        document.getElementById('m_id').innerText = c.id;
-        document.getElementById('m_t').innerText = c.product || c.name || c.title;
-        document.getElementById('m_w').innerText = c.intro || c.summary || c.why || 'No description';
-        document.getElementById('m_scope').innerText = c.scope || 'N/A';
-        document.getElementById('m_next').innerText = c.next_step || 'N/A';
-
-        const ev = c.evidence || '';
-        const link = (typeof ev === 'string') ? (ev.match(/https?:\/\/\S+/) || [null])[0] : null;
-        const el = document.getElementById('m_link');
-        if (link) {
-            el.innerHTML = '<a href="' + link + '" target="_blank" style="color:var(--accent);text-decoration:none;">Open source link</a>';
-            el.style.display = 'block';
-        } else {
-            el.innerHTML = '';
-            el.style.display = 'none';
         }
 
-        document.getElementById('modal').style.display = 'flex';
-    }
-    function closeModal() { document.getElementById('modal').style.display = 'none'; }
-    function deleteCard(id) {
-        if (!confirm('🗑️ 確定要刪除 ' + id + '？（否決此提案）')) return;
-        const cardEl = document.querySelector('[data-id="' + id + '"]');
-        if (cardEl) cardEl.remove();
-        if (kData && kData.cards) kData.cards = kData.cards.filter(c => c.id !== id);
-        showToast('已刪除 ' + id);
-        // Save deletion intent to localStorage for sync
-        let deletions = JSON.parse(localStorage.getItem('kanban_deletions') || '[]');
-        deletions.push({ id: id, time: Date.now() });
-        localStorage.setItem('kanban_deletions', JSON.stringify(deletions));
-    }
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.innerText = msg;
-        t.style.display = 'block';
-        setTimeout(() => { t.style.display = 'none'; }, 2000);
-    }
-
-    async function boot() {
-        const pass = localStorage.getItem('dash_pass') || prompt("🔐 Pass:");
-        if (pass === "8888") localStorage.setItem('dash_pass', "8888");
-        else { document.body.innerHTML = "<h1>Blocked</h1>"; window.stop(); return; }
-
-        try {
-            const kb = await fetchKanban();
-            renderKanban(kb);
-        } catch (e) {
-            console.error(e);
+        // Render card
+        function renderCard(card) {
+            const title = card.product || card.title || card.name || 'Untitled';
+            const desc = card.intro || card.why || card.summary || '';
+            const priority = card.priority || 'P2';
+            
+            return `
+                <div class="card" data-id="${card.id}" onclick="openModal('${card.id}')">
+                    <div class="card-header">
+                        <span class="card-id">${card.id}</span>
+                        <span class="card-priority ${priority}">${priority}</span>
+                    </div>
+                    <div class="card-title">${escapeHtml(title)}</div>
+                    ${desc ? `<div class="card-desc">${escapeHtml(desc)}</div>` : ''}
+                    <div class="card-footer">
+                        ${card.monetization_value ? `
+                            <div class="card-meta">
+                                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm.5-9h-1v4h3V8h-2V5z"/></svg>
+                                ${card.monetization_value}/5
+                            </div>
+                        ` : ''}
+                        ${card.implementation_effort ? `
+                            <div class="card-meta">
+                                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/></svg>
+                                ${card.implementation_effort}/5
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
         }
 
-        // polling (Phase 1): refresh every 8s
-        setInterval(async () => {
-            try {
-                const kb = await fetchKanban();
-                renderKanban(kb);
-            } catch (e) {
-                console.error(e);
+        // Render running tasks
+        function renderTasks() {
+            const tasks = kanbanData.running_tasks || [];
+            const container = document.getElementById('tasks-list');
+            
+            container.innerHTML = tasks.map(task => {
+                const statusClass = task.status?.toLowerCase() || 'healthy';
+                return `
+                    <div class="task-badge">
+                        <span class="task-status ${statusClass}"></span>
+                        <span>${task.id}: ${task.title}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Open modal
+        function openModal(cardId) {
+            const card = kanbanData.cards.find(c => c.id === cardId);
+            if (!card) return;
+            
+            currentCard = card;
+            
+            document.getElementById('modal-id').textContent = card.id;
+            document.getElementById('modal-title').textContent = card.product || card.title || card.name || 'Untitled';
+            
+            const sections = [];
+            
+            if (card.intro || card.why) {
+                sections.push(`
+                    <div class="modal-section">
+                        <div class="modal-section-title">Description</div>
+                        <div class="modal-text">${escapeHtml(card.intro || card.why)}</div>
+                    </div>
+                `);
             }
-        }, 8000);
-    }
+            
+            if (card.scope) {
+                sections.push(`
+                    <div class="modal-section">
+                        <div class="modal-section-title">Scope</div>
+                        <div class="modal-text">${escapeHtml(card.scope)}</div>
+                    </div>
+                `);
+            }
+            
+            if (card.next_step) {
+                sections.push(`
+                    <div class="modal-section">
+                        <div class="modal-section-title">Next Step</div>
+                        <div class="modal-text">${escapeHtml(card.next_step)}</div>
+                    </div>
+                `);
+            }
+            
+            sections.push(`
+                <div class="modal-section">
+                    <div class="modal-section-title">Metadata</div>
+                    <div class="modal-meta-grid">
+                        <div class="modal-meta-item">
+                            <div class="modal-meta-label">Priority</div>
+                            <div class="modal-meta-value">${card.priority || 'P2'}</div>
+                        </div>
+                        <div class="modal-meta-item">
+                            <div class="modal-meta-label">Column</div>
+                            <div class="modal-meta-value">${card.column || 'proposed'}</div>
+                        </div>
+                        ${card.monetization_value ? `
+                            <div class="modal-meta-item">
+                                <div class="modal-meta-label">Monetization</div>
+                                <div class="modal-meta-value">${card.monetization_value}/5</div>
+                            </div>
+                        ` : ''}
+                        ${card.implementation_effort ? `
+                            <div class="modal-meta-item">
+                                <div class="modal-meta-label">Effort</div>
+                                <div class="modal-meta-value">${card.implementation_effort}/5</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `);
+            
+            if (card.evidence) {
+                sections.push(`
+                    <div class="modal-section">
+                        <div class="modal-section-title">Evidence</div>
+                        <div class="modal-text"><a href="${escapeHtml(card.evidence)}" target="_blank" style="color:var(--accent)">View Source →</a></div>
+                    </div>
+                `);
+            }
+            
+            document.getElementById('modal-body').innerHTML = sections.join('');
+            document.getElementById('modal').classList.add('active');
+        }
 
-    window.onload = () => { boot(); };
-</script></head><body>
-    <div class="nav"><b>📋 NINJA <span style="color:var(--accent)">KANBAN</span></b><small style="color:var(--muted)">2026-02-11 19:31</small></div>
-    <div class="container">
-        <div style="margin-bottom:15px;"><a href="index.html" style="color:var(--accent); text-decoration:none; margin-right:20px;">📈 Stocks Dashboard</a><a href="ptcg.html" style="color:var(--accent); text-decoration:none;">🃏 PTCG Dashboard</a></div>
-        <h2 style="margin-bottom:15px; font-size:1rem; color:var(--accent);">🛠️ Running Tasks</h2>
-        <div id="running_wrap" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:10px;"><div class="r-task"><b>R-001</b> Ninja Master 統一更新 (每日) <span class="badge" style="background:var(--green); color:black;">Healthy</span><br><small>每日 09:00</small></div><div class="r-task"><b>R-002</b> PTCG 日本環境資料抓取 <span class="badge" style="background:var(--green); color:black;">Healthy</span><br><small>每週一/四 09:00</small></div><div class="r-task"><b>R-003</b> 台灣晨報 (Morning Brief) 寄送 <span class="badge" style="background:var(--green); color:black;">Healthy</span><br><small>每日 07:30</small></div><div class="r-task"><b>R-004</b> AI 專家 X 帳號監控掃描 <span class="badge" style="background:var(--green); color:black;">Healthy</span><br><small>每日 10:00</small></div><div class="r-task"><b>R-005</b> 系統自動更新與保養 <span class="badge" style="background:var(--green); color:black;">Healthy</span><br><small>每日 04:00</small></div><div class="r-task"><b>R-006</b> 美股金庫守衛 (Watchdog) + 每日復盤 <span class="badge" style="background:var(--green); color:black;">Healthy</span><br><small>美股交易時段；每日 21:10 復盤</small></div><div class="r-task"><b>R-007</b> PTCG 黑馬獵人 (Meta Hunter) <span class="badge" style="background:var(--green); color:black;">Healthy</span><br><small>每日 12:00</small></div><div class="r-task"><b>R-008</b> OpenClaw 活用點子偵查 <span class="badge" style="background:var(--yellow); color:black;">Degraded</span><br><small>每 3 小時</small><br><small style="color:var(--muted)">cron model misconfig fixed; awaiting next run</small></div><div class="r-task"><b>R-009</b> Kanban 看板雲端巡邏員 <span class="badge" style="background:var(--green); color:black;">Healthy</span><br><small>每小時</small></div><div class="r-task"><b>R-010</b> 午夜代碼精進 (Codex Refinery) <span class="badge" style="background:var(--green); color:black;">Healthy</span><br><small>每日 00:05</small></div><div class="r-task"><b>R-011</b> Reddit 痛苦監聽 (13 版塊) <span class="badge" style="background:var(--yellow); color:black;">Degraded</span><br><small>每 3 小時</small><br><small style="color:var(--muted)">cron model misconfig fixed; awaiting next run</small></div></div>
-        <h2 style="margin:20px 0 15px 0; font-size:1rem; color:var(--accent);">📋 Project Kanban</h2>
-        <div class="k-container" id="kanban_cols"><div class="k-col"><h3 class="k-header">🎯 提案中 (Proposed) <span>41</span></h3><div class="k-list" data-col-id="proposed"><div class="k-card" data-id="P-014"><div style="display:flex;justify-content:space-between;"><small>P-014</small><div><small style="color:var(--red);margin-right:8px;">P1</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-014')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-014')">AI 成本斷路器</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">設定花費上限＋異常重複請求偵測＋一鍵停機，避免 AI 失控燒錢。</div></div><div class="k-card" data-id="P-016"><div style="display:flex;justify-content:space-between;"><small>P-016</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-016')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-016')">收帳跟進自動化</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">發票到期自動提醒＋模板＋追蹤狀態，幫自由工作者/小商家把應收款追回來。</div></div><div class="k-card" data-id="P-021"><div style="display:flex;justify-content:space-between;"><small>P-021</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-021')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-021')">在地獲客 SOP 套件</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">把「在地獲客」從 0→1 做成照做清單＋追蹤表＋話術模板，賣模板/導入。</div></div><div class="k-card" data-id="P-025"><div style="display:flex;justify-content:space-between;"><small>P-025</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-025')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-025')">競品一頁報告</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">輸入 1–3 個競品網址，自動產出定位/價格/賣點/差異化建議，按次收費。</div></div><div class="k-card" data-id="P-035"><div style="display:flex;justify-content:space-between;"><small>P-035</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-035')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-035')">測試者招募器</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">用問卷篩選＋名單管理＋回饋表，幫產品快速招募測試者並收集回饋。</div></div><div class="k-card" data-id="P-036"><div style="display:flex;justify-content:space-between;"><small>P-036</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-036')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-036')">SOP/交接備援包</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">交接文件＋權限盤點＋SOP 模板與導入服務，降低人員風險。</div></div><div class="k-card" data-id="P-042"><div style="display:flex;justify-content:space-between;"><small>P-042</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-042')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-042')">安全檔案分享顧問包</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">提供選型＋設定指南＋模板，讓團隊安全分享檔案又不折磨。</div></div><div class="k-card" data-id="P-043"><div style="display:flex;justify-content:space-between;"><small>P-043</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-043')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-043')">免費產品信任套件</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">提供信任頁面/證據清單/變更日誌/常見問答等元件，提升免費產品採用率。</div></div><div class="k-card" data-id="P-051"><div style="display:flex;justify-content:space-between;"><small>P-051</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-051')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-051')">電商利潤漏損體檢</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">連接店鋪資料，自動找出利潤漏洞並給修正清單。</div></div><div class="k-card" data-id="P-052"><div style="display:flex;justify-content:space-between;"><small>P-052</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-052')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-052')">股權談判決策包</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">用問答表與情境模板，快速產出可談判的股權方案。</div></div><div class="k-card" data-id="P-053"><div style="display:flex;justify-content:space-between;"><small>P-053</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-053')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-053')">短影音改寫流水線</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">把新聞或文章自動改寫成短影音腳本並輸出發布清單。</div></div><div class="k-card" data-id="P-054"><div style="display:flex;justify-content:space-between;"><small>P-054</small><div><small style="color:var(--red);margin-right:8px;">P1</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-054')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-054')">外聯郵件助理</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">名單匯入後自動分批寄信並追蹤回覆。</div></div><div class="k-card" data-id="P-055"><div style="display:flex;justify-content:space-between;"><small>P-055</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-055')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-055')">目錄上架助手</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">把商品資料自動整理成可上架的目錄格式。</div></div><div class="k-card" data-id="P-056"><div style="display:flex;justify-content:space-between;"><small>P-056</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-056')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-056')">可行性快篩器</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">用表單與模板把可行性研究快速變報告。</div></div><div class="k-card" data-id="P-058"><div style="display:flex;justify-content:space-between;"><small>P-058</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-058')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-058')">派工排程看板</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">給小隊的派工排程與狀態追蹤，一頁搞定</div></div><div class="k-card" data-id="P-059"><div style="display:flex;justify-content:space-between;"><small>P-059</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-059')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-059')">資料輸入自動化</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">把重複的郵件到表格到系統輸入變成一鍵流程</div></div><div class="k-card" data-id="P-060"><div style="display:flex;justify-content:space-between;"><small>P-060</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-060')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-060')">跨境收款替代</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">快速比對可用平台與分潤代收方案</div></div><div class="k-card" data-id="P-061"><div style="display:flex;justify-content:space-between;"><small>P-061</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-061')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-061')">客服爆量分流</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">促銷期間自動分類回覆減少人工點擊</div></div><div class="k-card" data-id="P-062"><div style="display:flex;justify-content:space-between;"><small>P-062</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-062')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-062')">分階段收款管家</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">接案分段收款與自動催款讓現金流穩定</div></div><div class="k-card" data-id="P-063"><div style="display:flex;justify-content:space-between;"><small>P-063</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-063')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-063')">小店網站快建包</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">一鍵產出小商家網站與上線清單</div></div><div class="k-card" data-id="P-061"><div style="display:flex;justify-content:space-between;"><small>P-061</small><div><small style="color:var(--red);margin-right:8px;">P0</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-061')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-061')">Gateway 安全護欄</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">定期檢查連線來源與暴露面，異常即告警。</div></div><div class="k-card" data-id="P-062"><div style="display:flex;justify-content:space-between;"><small>P-062</small><div><small style="color:var(--red);margin-right:8px;">P0</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-062')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-062')">Skill 供應鏈守門</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">新技能先審核再啟用，避免風險程式進入流程。</div></div><div class="k-card" data-id="P-063"><div style="display:flex;justify-content:space-between;"><small>P-063</small><div><small style="color:var(--red);margin-right:8px;">P1</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-063')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-063')">Scout 任務轉換器</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">把研究發現自動轉成可執行任務與追蹤。</div></div><div class="k-card" data-id="P-064"><div style="display:flex;justify-content:space-between;"><small>P-064</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-064')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-064')">公司設立薪稅助手</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">用問答產出設立與薪稅流程清單，附可執行範本。</div></div><div class="k-card" data-id="P-065"><div style="display:flex;justify-content:space-between;"><small>P-065</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-065')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-065')">股權重談方案器</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">輸入投入時數與責任，產出可談判的分配方案。</div></div><div class="k-card" data-id="P-066"><div style="display:flex;justify-content:space-between;"><small>P-066</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-066')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-066')">獲客行動計畫器</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">依產業與預算生成三十天獲客任務與每日腳本。</div></div><div class="k-card" data-id="P-067"><div style="display:flex;justify-content:space-between;"><small>P-067</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-067')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-067')">待辦自動化整理員</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">把零散重複工作整理成可執行自動流程</div></div><div class="k-card" data-id="P-068"><div style="display:flex;justify-content:space-between;"><small>P-068</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-068')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-068')">早期訪談招募助手</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">協助新創快速招募用戶訪談並整理洞察</div></div><div class="k-card" data-id="P-070"><div style="display:flex;justify-content:space-between;"><small>P-070</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-070')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-070')">回饋整理儀表板</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">自動分類客戶回饋並產出優先修正清單</div></div><div class="k-card" data-id="P-072"><div style="display:flex;justify-content:space-between;"><small>P-072</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-072')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-072')">電商起盤作戰包</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">用清單與模板協助新店快速上線與首單</div></div><div class="k-card" data-id="P-073"><div style="display:flex;justify-content:space-between;"><small>P-073</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-073')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-073')">電商稅務配對助手</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">快速比對會計與稅務顧問並產出諮詢清單</div></div><div class="k-card" data-id="P-077"><div style="display:flex;justify-content:space-between;"><small>P-077</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-077')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-077')">內容發佈自動流水線</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">把撰寫排程發布整合成一鍵流程省工時</div></div><div class="k-card" data-id="P-078"><div style="display:flex;justify-content:space-between;"><small>P-078</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-078')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-078')">國貿出口實戰包</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">提供中小企業出口流程清單與文件範本</div></div><div class="k-card" data-id="P-079"><div style="display:flex;justify-content:space-between;"><small>P-079</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-079')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-079')">訂閱扣款提醒器</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">記錄續訂與試用到期，自動提醒避免被扣款</div></div><div class="k-card" data-id="P-080"><div style="display:flex;justify-content:space-between;"><small>P-080</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-080')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-080')">業務顧問配對單</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">依產業與預算快速配對可執行的業務顧問</div></div><div class="k-card" data-id="P-081"><div style="display:flex;justify-content:space-between;"><small>P-081</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-081')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-081')">獲客成本急救包</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">用診斷清單與實作模板，快速壓低獲客成本</div></div><div class="k-card" data-id="P-082"><div style="display:flex;justify-content:space-between;"><small>P-082</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-082')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-082')">醫療收據追蹤管家</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">集中保存醫療收據與請款進度，避免遺漏申報</div></div><div class="k-card" data-id="P-083"><div style="display:flex;justify-content:space-between;"><small>P-083</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-083')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-083')">房仲修繕派工單</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">把驗屋缺失轉成修繕任務並追蹤完工時程</div></div><div class="k-card" data-id="P-084"><div style="display:flex;justify-content:space-between;"><small>P-084</small><div><small style="color:var(--red);margin-right:8px;">P1</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-084')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-084')">外聯成交腳本包</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">用名單篩選與訊息模板，快速拿下第一批付費客戶。</div></div><div class="k-card" data-id="P-085"><div style="display:flex;justify-content:space-between;"><small>P-085</small><div><small style="color:var(--red);margin-right:8px;">P1</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-085')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-085')">小商家獲客止損包</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">診斷廣告虧損原因並提供低成本替代獲客流程。</div></div><div class="k-card" data-id="P-086"><div style="display:flex;justify-content:space-between;"><small>P-086</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-086')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-086')">飽和市場快篩器</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">在上架前快速判斷競爭熱度與利潤空間，避免踩雷。</div></div></div></div><div class="k-col"><h3 class="k-header">⏳ 準備中 (Ready) <span>3</span></h3><div class="k-list" data-col-id="ready"><div class="k-card" data-id="P-002"><div style="display:flex;justify-content:space-between;"><small>P-002</small><div><small style="color:var(--red);margin-right:8px;">P1</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-002')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-002')">NinjaDrive 執行引擎開發</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">自動整理 Google Drive 檔案。</div></div><div class="k-card" data-id="P-050"><div style="display:flex;justify-content:space-between;"><small>P-050</small><div><small style="color:var(--red);margin-right:8px;">P0</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-050')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-050')">技能安全護欄</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">建立技能安裝/更新的安全審查流程與白名單。</div></div><div class="k-card" data-id="P-057"><div style="display:flex;justify-content:space-between;"><small>P-057</small><div><small style="color:var(--red);margin-right:8px;">P2</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-057')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-057')">試用退費助手</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">自動產生退費申訴信與證據清單，追回款項</div></div></div></div><div class="k-col"><h3 class="k-header">🚀 執行中 (Active) <span>0</span></h3><div class="k-list" data-col-id="active"></div></div><div class="k-col"><h3 class="k-header">👀 待驗收 (Review) <span>0</span></h3><div class="k-list" data-col-id="review"></div></div><div class="k-col"><h3 class="k-header">✅ 已完成 (Done) <span>3</span></h3><div class="k-list" data-col-id="done"><div class="k-card" data-id="P-001"><div style="display:flex;justify-content:space-between;"><small>P-001</small><div><small style="color:var(--red);margin-right:8px;">P0</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-001')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-001')">開發互動式看板介面</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">提升手機閱讀與操作直覺感。</div></div><div class="k-card" data-id="P-003"><div style="display:flex;justify-content:space-between;"><small>P-003</small><div><small style="color:var(--red);margin-right:8px;">P1</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-003')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-003')">啟動美股與PTCG主動偵測</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">主動尋找機會。</div></div><div class="k-card" data-id="P-007"><div style="display:flex;justify-content:space-between;"><small>P-007</small><div><small style="color:var(--red);margin-right:8px;">P0</small><button class="del-btn" onclick="event.stopPropagation();deleteCard('P-007')">🗑️</button></div></div><div style="font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="showModal('P-007')">實作雲端同步互動看板 (Kanban 2.0)</div><div style="margin-top:6px;font-size:0.75rem;color:var(--muted);line-height:1.25;">達成 Harry 無感更新意圖：手機拖曳後我主動定時抓取並執行。</div></div></div></div></div>
-    </div>
-    <div id="modal" onclick="closeModal()"><div class="modal-content" onclick="event.stopPropagation()">
-        <small id="m_id" style="color:var(--muted);"></small>
-        <h2 id="m_t" style="color:var(--accent); margin:5px 0 10px 0;"></h2>
-        <p id="m_w" style="font-size:0.85rem; margin-bottom:10px;"></p>
-        <p style="font-size:0.75rem; color:var(--muted);"><b>Scope:</b> <span id="m_scope"></span></p>
-        <p style="font-size:0.75rem; color:var(--muted);"><b>Next:</b> <span id="m_next"></span></p>
-        <div id="m_link" style="margin-top:10px; font-size:0.8rem;"></div>
-        <button onclick="closeModal()" style="margin-top:20px; padding:8px 16px; background:var(--accent); border:none; border-radius:6px; color:white; cursor:pointer;">Close</button>
-    </div></div>
-    <div id="toast"></div>
-</body></html>
+        // Close modal
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            currentCard = null;
+        }
+
+        // Move card (placeholder)
+        function moveCard() {
+            if (!currentCard) return;
+            alert('Move functionality coming soon!');
+        }
+
+        // Update card column
+        async function updateCardColumn(cardId, newColumn) {
+            // Update local data
+            const card = kanbanData.cards.find(c => c.id === cardId);
+            if (card) {
+                card.column = newColumn;
+            }
+            
+            // TODO: Sync with backend
+            console.log(`Moved ${cardId} to ${newColumn}`);
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Close modal on overlay click
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') closeModal();
+        });
+
+        // Initial load
+        fetchData();
+        
+        // Refresh every 5 minutes
+        setInterval(fetchData, 300000);
+    </script>
+</body>
+</html>
