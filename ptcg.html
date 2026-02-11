@@ -293,7 +293,7 @@
 
     <main class="container">
         <div class="update-time">
-            最後更新：2026-02-11 22:35 Asia/Taipei｜資料來源：X.com 日本 PTCG 社群
+            最後更新：2026-02-11 22:45 Asia/Taipei｜自動抓取｜資料來源：X.com 日本 PTCG 社群
         </div>
 
         <div class="tabs">
@@ -499,6 +499,43 @@
 
         <!-- 數據分析 -->
         <div id="analysis" class="tab-content">
+            <div class="section-title">最新環境數據（週一/週四更新）</div>
+            <div class="grid" id="meta-trends-container">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon data">📊</div>
+                        <div>
+                            <div class="card-title">環境 Tier 表</div>
+                            <div class="card-handle">來源：X.com 日本社群</div>
+                        </div>
+                    </div>
+                    <div class="card-desc" id="tier-content">
+                        載入中...
+                    </div>
+                    <div class="card-meta">
+                        <span class="badge weekly">每週更新</span>
+                        <span id="update-time">--</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon radar">🏆</div>
+                        <div>
+                            <div class="card-title">最新比賽結果</div>
+                            <div class="card-handle">シティリーグ</div>
+                        </div>
+                    </div>
+                    <div class="card-desc" id="tournament-content">
+                        載入中...
+                    </div>
+                    <div class="card-meta">
+                        <span class="badge daily">即時</span>
+                        <span>🎯 優勝牌組</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="section-title">追蹤策略（最省腦）</div>
             <div class="grid">
                 <div class="card">
@@ -566,6 +603,71 @@
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
         }
+
+        // 載入 PTCG 資料
+        async function loadPTCGData() {
+            try {
+                const response = await fetch('data/ptcg_intel.json');
+                const data = await response.json();
+                
+                // 更新 Tier 表
+                const tierContent = document.getElementById('tier-content');
+                if (data.meta_trends && data.meta_trends.length > 0) {
+                    let html = '<div style="display: flex; flex-direction: column; gap: 8px;">';
+                    data.meta_trends.forEach(trend => {
+                        const tierColor = trend.tier === 'T1' ? 'var(--accent)' : 'var(--text-secondary)';
+                        html += `
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg); border-radius: 6px;">
+                                <span style="font-weight: 600;">${trend.deck}</span>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <span style="color: ${tierColor}; font-weight: 600;">${trend.tier}</span>
+                                    <span style="color: var(--text-secondary); font-size: 12px;">${trend.mentions} 次提及</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    tierContent.innerHTML = html;
+                } else {
+                    tierContent.innerHTML = '<div style="color: var(--text-secondary);">暫無資料</div>';
+                }
+                
+                // 更新比賽結果
+                const tournamentContent = document.getElementById('tournament-content');
+                if (data.raw_tweets && data.raw_tweets.length > 0) {
+                    let html = '<div style="display: flex; flex-direction: column; gap: 12px;">';
+                    data.raw_tweets.forEach(tweet => {
+                        html += `
+                            <div style="padding: 12px; background: var(--bg); border-radius: 8px; border-left: 3px solid var(--accent);">
+                                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">@${tweet.handle} · ${tweet.time}</div>
+                                <div style="font-size: 13px; line-height: 1.5;">${tweet.content}</div>
+                                <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">
+                                    ${tweet.decks.map(deck => `<span style="font-size: 11px; padding: 2px 8px; background: var(--accent-soft); color: var(--accent); border-radius: 12px;">${deck}</span>`).join('')}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    tournamentContent.innerHTML = html;
+                } else {
+                    tournamentContent.innerHTML = '<div style="color: var(--text-secondary);">暫無資料</div>';
+                }
+                
+                // 更新時間
+                if (data.meta && data.meta.last_updated) {
+                    const date = new Date(data.meta.last_updated);
+                    document.getElementById('update-time').textContent = date.toLocaleDateString('zh-TW');
+                }
+                
+            } catch (error) {
+                console.error('載入資料失敗:', error);
+                document.getElementById('tier-content').innerHTML = '<div style="color: var(--danger);">載入失敗</div>';
+                document.getElementById('tournament-content').innerHTML = '<div style="color: var(--danger);">載入失敗</div>';
+            }
+        }
+
+        // 頁面載入時執行
+        loadPTCGData();
     </script>
 </body>
 </html>
