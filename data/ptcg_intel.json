@@ -1,88 +1,41 @@
 {
   "meta": {
-    "version": "1.0",
-    "last_updated": "2026-02-11T22:45:21.902421"
+    "version": "2.0",
+    "last_updated": "2026-02-11T23:15:00+08:00",
+    "source": "browser_x_scrape"
   },
   "meta_trends": [
-    {
-      "deck": "アルセウス",
-      "mentions": 3,
-      "tier": "T1"
-    },
-    {
-      "deck": "パルキア",
-      "mentions": 3,
-      "tier": "T1"
-    },
-    {
-      "deck": "ミュウ",
-      "mentions": 3,
-      "tier": "T1"
-    },
-    {
-      "deck": "リザードン",
-      "mentions": 2,
-      "tier": "T2"
-    },
-    {
-      "deck": "ギラティナ",
-      "mentions": 2,
-      "tier": "T2"
-    },
-    {
-      "deck": "ディアルガ",
-      "mentions": 1,
-      "tier": "T2"
-    }
-  ],
-  "decklists": [
-    {
-      "deck": "アルセウス",
-      "count": 3,
-      "last_seen": "2026-02-11"
-    },
-    {
-      "deck": "パルキア",
-      "count": 3,
-      "last_seen": "2026-02-11"
-    },
-    {
-      "deck": "ミュウ",
-      "count": 3,
-      "last_seen": "2026-02-11"
-    },
-    {
-      "deck": "リザードン",
-      "count": 2,
-      "last_seen": "2026-02-11"
-    },
-    {
-      "deck": "ギラティナ",
-      "count": 2,
-      "last_seen": "2026-02-11"
-    },
-    {
-      "deck": "ディアルガ",
-      "count": 1,
-      "last_seen": "2026-02-11"
-    }
+    {"deck": "ドラパルト", "mentions": 5, "tier": "T1", "note": "ボムドラパルトが単独トップ"},
+    {"deck": "オーロンゲ", "mentions": 2, "tier": "T1", "note": "シクボ型が優勝"},
+    {"deck": "フーディン", "mentions": 2, "tier": "T2", "note": "準優勝複数"},
+    {"deck": "ガブリアス", "mentions": 1, "tier": "T2", "note": "ベスト8入賞"},
+    {"deck": "ゾロアーク", "mentions": 1, "tier": "T2", "note": "スタンプ型"},
+    {"deck": "メガルカリオ", "mentions": 1, "tier": "T2", "note": "ベルト型がベスト4"}
   ],
   "signals": [
     {
       "source": "ポケカ飯",
-      "trend": "アルセウスVSTARが連続優勝",
-      "timestamp": "2026-02-11T22:45:21.902357"
+      "trend": "シティリーグ 02/11：ドラパルトが福岡・東京で優勝・準優勝",
+      "timestamp": "2026-02-11T23:15:00+08:00"
     },
     {
-      "source": "ポケカブック",
-      "trend": "パルキアVSTAR使用率急上昇",
-      "timestamp": "2026-02-11T22:45:21.902364"
-    },
-    {
-      "source": "おすぎ",
-      "trend": "アルセウスVSTAR 28.5%、パルキアVSTAR 22.1%",
-      "timestamp": "2026-02-11T22:45:21.902367"
+      "source": "ポケカ飯",
+      "trend": "ムニキスゼロ環境 Tier表更新：ドラパルト単独トップ",
+      "timestamp": "2026-02-09T12:00:00+08:00"
     }
   ],
-  "analysis": {}
+  "raw_tweets": [
+    {
+      "handle": "pokekameshi",
+      "content": "シティリーグ：02/11(水) オレタン福岡天神店 優勝：ボムドラパルト 準優勝：フーディン",
+      "decks": ["ドラパルト", "フーディン"],
+      "time": "1小時前"
+    },
+    {
+      "handle": "pokekameshi", 
+      "content": "シティリーグ：02/11(水) Card Secret東京 優勝：オーロンゲ 準優勝：ドンカラス/ポリゴン",
+      "decks": ["オーロンゲ", "ドンカラス", "ポリゴン"],
+      "time": "1小時前"
+    }
+  ]
 }
