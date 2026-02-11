@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "version": "1.0",
+    "last_updated": "2026-02-11T22:45:21.902421"
+  },
+  "meta_trends": [
+    {
+      "deck": "アルセウス",
+      "mentions": 3,
+      "tier": "T1"
+    },
+    {
+      "deck": "パルキア",
+      "mentions": 3,
+      "tier": "T1"
+    },
+    {
+      "deck": "ミュウ",
+      "mentions": 3,
+      "tier": "T1"
+    },
+    {
+      "deck": "リザードン",
+      "mentions": 2,
+      "tier": "T2"
+    },
+    {
+      "deck": "ギラティナ",
+      "mentions": 2,
+      "tier": "T2"
+    },
+    {
+      "deck": "ディアルガ",
+      "mentions": 1,
+      "tier": "T2"
+    }
+  ],
+  "decklists": [
+    {
+      "deck": "アルセウス",
+      "count": 3,
+      "last_seen": "2026-02-11"
+    },
+    {
+      "deck": "パルキア",
+      "count": 3,
+      "last_seen": "2026-02-11"
+    },
+    {
+      "deck": "ミュウ",
+      "count": 3,
+      "last_seen": "2026-02-11"
+    },
+    {
+      "deck": "リザードン",
+      "count": 2,
+      "last_seen": "2026-02-11"
+    },
+    {
+      "deck": "ギラティナ",
+      "count": 2,
+      "last_seen": "2026-02-11"
+    },
+    {
+      "deck": "ディアルガ",
+      "count": 1,
+      "last_seen": "2026-02-11"
+    }
+  ],
+  "signals": [
+    {
+      "source": "ポケカ飯",
+      "trend": "アルセウスVSTARが連続優勝",
+      "timestamp": "2026-02-11T22:45:21.902357"
+    },
+    {
+      "source": "ポケカブック",
+      "trend": "パルキアVSTAR使用率急上昇",
+      "timestamp": "2026-02-11T22:45:21.902364"
+    },
+    {
+      "source": "おすぎ",
+      "trend": "アルセウスVSTAR 28.5%、パルキアVSTAR 22.1%",
+      "timestamp": "2026-02-11T22:45:21.902367"
+    }
+  ],
+  "analysis": {}
+}
