@@ -228,6 +228,37 @@
             border-top: 1px solid var(--border-subtle);
         }
         
+        .card-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+        }
+        
+        .card-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.15s;
+        }
+        
+        .card-btn:hover {
+            background: var(--surface-hover);
+            color: var(--text);
+        }
+        
+        .card-btn.delete:hover {
+            background: rgba(248, 81, 73, 0.15);
+            color: var(--danger);
+        }
+        
         .card-meta {
             display: flex;
             align-items: center;
@@ -536,7 +567,7 @@
                             <div class="column-count">${colCards.length}</div>
                         </div>
                         <div class="column-body" id="col-${col.id}">
-                            ${colCards.map(card => renderCard(card)).join('')}
+                            ${colCards.map(card => renderCard(card, col.id)).join('')}
                         </div>
                     </div>
                 `;
@@ -563,19 +594,20 @@
         }
 
         // Render card
-        function renderCard(card) {
+        function renderCard(card, columnId) {
             const title = card.product || card.title || card.name || 'Untitled';
             const desc = card.intro || card.why || card.summary || '';
             const priority = card.priority || 'P2';
+            const isProposed = columnId === 'proposed';
             
             return `
-                <div class="card" data-id="${card.id}" onclick="openModal('${card.id}')">
-                    <div class="card-header">
+                <div class="card" data-id="${card.id}" data-column="${columnId}">
+                    <div class="card-header" onclick="openModal('${card.id}')">
                         <span class="card-id">${card.id}</span>
                         <span class="card-priority ${priority}">${priority}</span>
                     </div>
-                    <div class="card-title">${escapeHtml(title)}</div>
-                    ${desc ? `<div class="card-desc">${escapeHtml(desc)}</div>` : ''}
+                    <div class="card-title" onclick="openModal('${card.id}')">${escapeHtml(title)}</div>
+                    ${desc ? `<div class="card-desc" onclick="openModal('${card.id}')">${escapeHtml(desc)}</div>` : ''}
                     <div class="card-footer">
                         ${card.monetization_value ? `
                             <div class="card-meta">
@@ -587,6 +619,11 @@
                             <div class="card-meta">
                                 <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/></svg>
                                 ${card.implementation_effort}/5
+                            </div>
+                        ` : ''}
+                        ${isProposed ? `
+                            <div class="card-actions">
+                                <button class="card-btn delete" onclick="event.stopPropagation(); deleteCard('${card.id}')" title="否決提案">✕</button>
                             </div>
                         ` : ''}
                     </div>
@@ -700,6 +737,24 @@
         function moveCard() {
             if (!currentCard) return;
             alert('Move functionality coming soon!');
+        }
+
+        // Delete card
+        async function deleteCard(cardId) {
+            if (!confirm('確定要否決這個提案嗎？此操作無法復原。')) return;
+            
+            // Remove from local data
+            const cardIndex = kanbanData.cards.findIndex(c => c.id === cardId);
+            if (cardIndex > -1) {
+                kanbanData.cards.splice(cardIndex, 1);
+                
+                // Re-render board
+                renderBoard();
+                renderTasks();
+                
+                // TODO: Sync with backend
+                console.log(`Deleted ${cardId}`);
+            }
         }
 
         // Update card column
