@@ -1,91 +1,95 @@
 {
   "meta": {
-    "version": "2.0",
-    "last_updated": "2026-02-12T21:05:26.554910",
-    "source": "browser_x_scrape"
+    "version": "2.1",
+    "last_updated": "2026-02-12T21:14:00.000000",
+    "source": "web_scrape_official",
+    "note": "X/Twitter blocked - used official Pokemon card site"
+  },
+  "new_expansion": {
+    "name": "ムニキスゼロ (Munikis Zero)",
+    "featured_decks": [
+      {
+        "name": "メガジガルデex (Mega Garchomp ex)",
+        "player": "ライチュ梅川",
+        "deck_code": "b5bbFf-3PpSPP-kVVkVV",
+        "key_cards": ["メガジガルデex", "ガメノデス", "コアメモリ", "ロック闘エネルギー"],
+        "strategy": "高耐久310HP + ガイアウェーブで軽減しつつ攻撃、ムニキスゼロで逆転"
+      },
+      {
+        "name": "ニダンギル (Doublade)",
+        "player": "クチート竹内",
+        "deck_code": "2RMUpM-BT9yHd-MpRMy2",
+        "key_cards": ["ニダンギル", "ゲノセクトex", "ノココッチ", "イグニッションエネルギー"],
+        "strategy": "ソードウェポンで特大ダメージ、手札のヒトツキ/ニダンギル/ギルガルド枚数で火力増加"
+      }
+    ]
   },
   "meta_trends": [
     {
+      "deck": "メガジガルデex",
+      "tier": "NEW",
+      "note": "ムニキスゼロ新卡組"
+    },
+    {
+      "deck": "ニダンギル",
+      "tier": "NEW",
+      "note": "ロマン砲デッキ"
+    },
+    {
       "deck": "アルセウス",
       "mentions": 3,
-      "tier": "T1"
+      "tier": "T1",
+      "trend": "維持"
     },
     {
       "deck": "パルキア",
       "mentions": 3,
-      "tier": "T1"
+      "tier": "T1",
+      "trend": "維持"
     },
     {
       "deck": "ミュウ",
       "mentions": 3,
-      "tier": "T1"
-    },
-    {
-      "deck": "リザードン",
-      "mentions": 2,
-      "tier": "T2"
-    },
-    {
-      "deck": "ギラティナ",
-      "mentions": 2,
-      "tier": "T2"
-    },
-    {
-      "deck": "ディアルガ",
-      "mentions": 1,
-      "tier": "T2"
+      "tier": "T1",
+      "trend": "維持"
     }
   ],
   "signals": [
     {
-      "source": "ポケカ飯",
-      "trend": "アルセウスVSTARが連続優勝",
-      "timestamp": "2026-02-12T21:05:26.554819"
+      "source": "ポケカ公式",
+      "trend": "ムニキスゼロ新卡組：メガジガルデex・ニダンギル登場",
+      "timestamp": "2026-02-12T21:14:00"
     },
     {
-      "source": "ポケカブック",
+      "source": "ポケカ飯 (前回データ)",
+      "trend": "シティリーグ：ボムドラパルト・オーロンゲ(シクボ)優勝",
+      "timestamp": "2026-02-11"
+    },
+    {
+      "source": "ポケカブック (前回データ)",
       "trend": "パルキアVSTAR使用率急上昇",
-      "timestamp": "2026-02-12T21:05:26.554831"
-    },
-    {
-      "source": "おすぎ",
-      "trend": "アルセウスVSTAR 28.5%、パルキアVSTAR 22.1%",
-      "timestamp": "2026-02-12T21:05:26.554835"
+      "timestamp": "2026-02-12"
     }
   ],
   "raw_tweets": [
     {
-      "handle": "pokekameshi",
-      "content": "城市聯賽：02/11(三) 福岡天神店 優勝：炸彈多龍巴魯托 準優勝：胡地",
-      "content_jp": "シティリーグ：02/11(水) オレタン福岡天神店 優勝：ボムドラパルト 準優勝：フーディン",
-      "decks": [
-        "多龍巴魯托",
-        "胡地"
-      ],
-      "decks_jp": [
-        "ドラパルト",
-        "フーディン"
-      ],
-      "time": "1小時前"
-    },
-    {
-      "handle": "pokekameshi",
-      "content": "城市聯賽：02/11(三) 東京 Card Secret 優勝：長毛巨魔(特性) 準優勝：烏鴉頭頭/多邊獸(賺錢型)",
-      "content_jp": "シティリーグ：02/11(水) Card Secret東京 優勝：オーロンゲ(シクボ) 準優勝：ドンカラス/ポリゴン(インカム)",
-      "decks": [
-        "長毛巨魔",
-        "烏鴉頭頭",
-        "多邊獸"
-      ],
-      "decks_jp": [
-        "オーロンゲ",
-        "ドンカラス",
-        "ポリゴン"
-      ],
-      "time": "1小時前"
+      "note": "X/Twitter blocked scraping - unable to fetch new tweets",
+      "status": "failed"
     }
   ],
   "decklists": [
+    {
+      "deck": "メガジガルデex",
+      "count": 1,
+      "last_seen": "2026-02-12",
+      "new_expansion": true
+    },
+    {
+      "deck": "ニダンギル",
+      "count": 1,
+      "last_seen": "2026-02-12",
+      "new_expansion": true
+    },
     {
       "deck": "アルセウス",
       "count": 3,
@@ -100,21 +104,10 @@
       "deck": "ミュウ",
       "count": 3,
       "last_seen": "2026-02-12"
-    },
-    {
-      "deck": "リザードン",
-      "count": 2,
-      "last_seen": "2026-02-12"
-    },
-    {
-      "deck": "ギラティナ",
-      "count": 2,
-      "last_seen": "2026-02-12"
-    },
-    {
-      "deck": "ディアルガ",
-      "count": 1,
-      "last_seen": "2026-02-12"
     }
+  ],
+  "fetch_issues": [
+    "X/Twitter blocking scrapers - need alternative method",
+    "Browser profile 'chrome' not connected - extension relay issue"
   ]
 }
