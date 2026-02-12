@@ -1,27 +1,56 @@
 {
   "meta": {
     "version": "2.0",
-    "last_updated": "2026-02-11T23:15:00+08:00",
+    "last_updated": "2026-02-12T21:05:26.554910",
     "source": "browser_x_scrape"
   },
   "meta_trends": [
-    {"deck": "多龍巴魯托", "deck_jp": "ドラパルト", "mentions": 5, "tier": "T1", "note": "炸彈多龍巴魯托單獨登頂"},
-    {"deck": "長毛巨魔", "deck_jp": "オーロンゲ", "mentions": 2, "tier": "T1", "note": "特性型獲勝"},
-    {"deck": "胡地", "deck_jp": "フーディン", "mentions": 2, "tier": "T2", "note": "多次準優勝"},
-    {"deck": "烈咬陸鯊", "deck_jp": "ガブリアス", "mentions": 1, "tier": "T2", "note": "八強入賞"},
-    {"deck": "索羅亞克", "deck_jp": "ゾロアーク", "mentions": 1, "tier": "T2", "note": "印章型"},
-    {"deck": "超級路卡利歐", "deck_jp": "メガルカリオ", "mentions": 1, "tier": "T2", "note": "腰帶型四強"}
+    {
+      "deck": "アルセウス",
+      "mentions": 3,
+      "tier": "T1"
+    },
+    {
+      "deck": "パルキア",
+      "mentions": 3,
+      "tier": "T1"
+    },
+    {
+      "deck": "ミュウ",
+      "mentions": 3,
+      "tier": "T1"
+    },
+    {
+      "deck": "リザードン",
+      "mentions": 2,
+      "tier": "T2"
+    },
+    {
+      "deck": "ギラティナ",
+      "mentions": 2,
+      "tier": "T2"
+    },
+    {
+      "deck": "ディアルガ",
+      "mentions": 1,
+      "tier": "T2"
+    }
   ],
   "signals": [
     {
-      "source": "寶可夢卡牌飯",
-      "trend": "城市聯賽 02/11：多龍巴魯托在福岡、東京獲得優勝與準優勝",
-      "timestamp": "2026-02-11T23:15:00+08:00"
+      "source": "ポケカ飯",
+      "trend": "アルセウスVSTARが連続優勝",
+      "timestamp": "2026-02-12T21:05:26.554819"
     },
     {
-      "source": "寶可夢卡牌飯",
-      "trend": "無極汰那環境 Tier表更新：多龍巴魯托單獨登頂",
-      "timestamp": "2026-02-09T12:00:00+08:00"
+      "source": "ポケカブック",
+      "trend": "パルキアVSTAR使用率急上昇",
+      "timestamp": "2026-02-12T21:05:26.554831"
+    },
+    {
+      "source": "おすぎ",
+      "trend": "アルセウスVSTAR 28.5%、パルキアVSTAR 22.1%",
+      "timestamp": "2026-02-12T21:05:26.554835"
     }
   ],
   "raw_tweets": [
@@ -29,17 +58,63 @@
       "handle": "pokekameshi",
       "content": "城市聯賽：02/11(三) 福岡天神店 優勝：炸彈多龍巴魯托 準優勝：胡地",
       "content_jp": "シティリーグ：02/11(水) オレタン福岡天神店 優勝：ボムドラパルト 準優勝：フーディン",
-      "decks": ["多龍巴魯托", "胡地"],
-      "decks_jp": ["ドラパルト", "フーディン"],
+      "decks": [
+        "多龍巴魯托",
+        "胡地"
+      ],
+      "decks_jp": [
+        "ドラパルト",
+        "フーディン"
+      ],
       "time": "1小時前"
     },
     {
       "handle": "pokekameshi",
       "content": "城市聯賽：02/11(三) 東京 Card Secret 優勝：長毛巨魔(特性) 準優勝：烏鴉頭頭/多邊獸(賺錢型)",
       "content_jp": "シティリーグ：02/11(水) Card Secret東京 優勝：オーロンゲ(シクボ) 準優勝：ドンカラス/ポリゴン(インカム)",
-      "decks": ["長毛巨魔", "烏鴉頭頭", "多邊獸"],
-      "decks_jp": ["オーロンゲ", "ドンカラス", "ポリゴン"],
+      "decks": [
+        "長毛巨魔",
+        "烏鴉頭頭",
+        "多邊獸"
+      ],
+      "decks_jp": [
+        "オーロンゲ",
+        "ドンカラス",
+        "ポリゴン"
+      ],
       "time": "1小時前"
+    }
+  ],
+  "decklists": [
+    {
+      "deck": "アルセウス",
+      "count": 3,
+      "last_seen": "2026-02-12"
+    },
+    {
+      "deck": "パルキア",
+      "count": 3,
+      "last_seen": "2026-02-12"
+    },
+    {
+      "deck": "ミュウ",
+      "count": 3,
+      "last_seen": "2026-02-12"
+    },
+    {
+      "deck": "リザードン",
+      "count": 2,
+      "last_seen": "2026-02-12"
+    },
+    {
+      "deck": "ギラティナ",
+      "count": 2,
+      "last_seen": "2026-02-12"
+    },
+    {
+      "deck": "ディアルガ",
+      "count": 1,
+      "last_seen": "2026-02-12"
     }
   ]
 }
