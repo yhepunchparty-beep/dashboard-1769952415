@@ -3,215 +3,119 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ninja Kanban - 協作看板</title>
+  <title>Ninja Kanban</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; padding: 20px; }
-    h1 { margin-bottom: 20px; color: #333; }
-    .board { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 20px; }
-    .column { background: white; border-radius: 8px; min-width: 280px; max-width: 280px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .column h2 { font-size: 14px; margin-bottom: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
-    .column-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .card-count { background: #e0e0e0; padding: 2px 8px; border-radius: 12px; font-size: 12px; color: #666; }
-    .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px; margin-bottom: 8px; cursor: pointer; transition: box-shadow 0.2s; }
-    .card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f0f0f0; padding: 10px; }
+    h1 { text-align: center; margin: 10px 0; font-size: 20px; }
+    .board { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; -webkit-overflow-scrolling: touch; }
+    .column { background: white; border-radius: 12px; min-width: 200px; width: 200px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .column h2 { font-size: 13px; color: #555; margin-bottom: 8px; text-align: center; }
+    .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-bottom: 6px; font-size: 13px; }
     .card-title { font-weight: 600; margin-bottom: 4px; }
-    .card-intro { font-size: 13px; color: #666; margin-bottom: 8px; }
-    .card-meta { font-size: 11px; color: #999; display: flex; gap: 8px; }
-    .card-tag { background: #e3f2fd; color: #1976d2; padding: 2px 6px; border-radius: 4px; }
-    .add-card { width: 100%; padding: 8px; border: 2px dashed #ccc; border-radius: 6px; background: none; cursor: pointer; color: #999; text-align: center; }
-    .add-card:hover { border-color: #999; color: #666; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
-    .modal.active { display: flex; }
-    .modal-content { background: white; border-radius: 8px; padding: 24px; width: 400px; max-width: 90%; }
-    .modal h3 { margin-bottom: 16px; }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; margin-bottom: 4px; font-size: 13px; color: #666; }
-    .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
-    .form-group textarea { min-height: 80px; }
-    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
-    .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
-    .btn-primary { background: #1976d2; color: white; }
-    .btn-secondary { background: #e0e0e0; color: #333; }
-    .btn-danger { background: #f44336; color: white; }
-    .refresh-btn { position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; background: #1976d2; color: white; border: none; border-radius: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-    .refresh-btn:hover { background: #1565c0; }
-    .status { position: fixed; top: 20px; right: 20px; padding: 8px 16px; background: #4caf50; color: white; border-radius: 4px; font-size: 13px; opacity: 0; transition: opacity 0.3s; }
-    .status.show { opacity: 1; }
-    .empty-column { text-align: center; padding: 20px; color: #999; font-size: 13px; }
+    .card-intro { color: #666; font-size: 12px; }
+    .card-meta { margin-top: 6px; font-size: 10px; color: #999; }
+    .add-btn { width: 100%; padding: 10px; border: none; border-radius: 8px; background: #4CAF50; color: white; font-size: 14px; cursor: pointer; }
+    .add-btn:hover { background: #45a049; }
+    .form { display: none; background: white; padding: 15px; border-radius: 12px; margin: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+    .form.show { display: block; }
+    .form input, .form textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+    .form-buttons { display: flex; gap: 10px; }
+    .form-buttons button { flex: 1; padding: 10px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; }
+    .save { background: #2196F3; color: white; }
+    .cancel { background: #9e9e9e; color: white; }
+    .refresh { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2196F3; color: white; border: none; font-size: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; }
   </style>
 </head>
 <body>
   <h1>🥷 Ninja Kanban</h1>
-  <div class="board" id="board"></div>
   
-  <button class="refresh-btn" onclick="loadData()">🔄 重新整理</button>
-  <div class="status" id="status">已儲存</div>
-
-  <div class="modal" id="addModal">
-    <div class="modal-content">
-      <h3>新增卡片</h3>
-      <div class="form-group">
-        <label>產品名稱</label>
-        <input type="text" id="cardTitle" placeholder="例如：郵件送達率診斷助手">
-      </div>
-      <div class="form-group">
-        <label>簡介</label>
-        <textarea id="cardIntro" placeholder="一句話說明這個產品做什麼"></textarea>
-      </div>
-      <div class="form-group">
-        <label>價值評分 (1-5)</label>
-        <input type="number" id="cardValue" min="1" max="5" value="3">
-      </div>
-      <div class="form-group">
-        <label>難度評分 (1-5)</label>
-        <input type="number" id="cardEffort" min="1" max="5" value="3">
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="closeModal()">取消</button>
-        <button class="btn btn-primary" onclick="saveCard()">儲存</button>
-      </div>
+  <button class="add-btn" onclick="showForm()">➕ 新增卡片</button>
+  
+  <div class="form" id="form">
+    <input type="text" id="title" placeholder="產品名稱">
+    <textarea id="intro" placeholder="一句話簡介"></textarea>
+    <div class="form-buttons">
+      <button class="cancel" onclick="hideForm()">取消</button>
+      <button class="save" onclick="addCard()">儲存</button>
     </div>
   </div>
+  
+  <div class="board" id="board"></div>
+  
+  <button class="refresh" onclick="load()">🔄</button>
 
   <script>
     const COLUMNS = [
-      { id: 'proposed', title: '🎯 提案中' },
-      { id: 'ready', title: '⏳ 準備中' },
-      { id: 'active', title: '🚀 執行中' },
-      { id: 'review', title: '👀 待驗收' },
-      { id: 'done', title: '✅ 已完成' }
+      { id: 'proposed', title: '🎯 提案' },
+      { id: 'ready', title: '⏳ 準備' },
+      { id: 'active', title: '🚀 執行' },
+      { id: 'review', title: '👀 驗收' },
+      { id: 'done', title: '✅ 完成' }
     ];
     
-    let currentColumn = null;
-    let data = { columns: COLUMNS, cards: [] };
+    let data = { cards: [] };
+    let targetCol = 'proposed';
 
-    async function loadData() {
+    async function load() {
       try {
-        const res = await fetch('data/kanban.json?_=' + Date.now());
-        data = await res.json();
+        const r = await fetch('data/kanban.json?_=' + Date.now());
+        data = await r.json();
         render();
-        showStatus('已載入');
-      } catch (e) {
-        console.error('載入失敗:', e);
-        showStatus('載入失敗');
-      }
-    }
-
-    async function saveData() {
-      try {
-        // 顯示儲存狀態（實際上需要 server 端支援才能寫入）
-        showStatus('資料已更新');
-      } catch (e) {
-        showStatus('儲存失敗');
-      }
+      } catch(e) { alert('載入失敗'); }
     }
 
     function render() {
       const board = document.getElementById('board');
       board.innerHTML = '';
-      
       COLUMNS.forEach(col => {
-        const colDiv = document.createElement('div');
-        colDiv.className = 'column';
-        
         const cards = data.cards.filter(c => c.column === col.id);
-        
-        colDiv.innerHTML = `
-          <div class="column-header">
-            <h2>${col.title}</h2>
-            <span class="card-count">${cards.length}</span>
-          </div>
-          ${cards.map(card => `
-            <div class="card" onclick="editCard('${card.id}')">
-              <div class="card-title">${card.title || card.product}</div>
-              ${card.intro ? `<div class="card-intro">${card.intro}</div>` : ''}
-              <div class="card-meta">
-                ${card.monetization_value ? `<span class="card-tag">價值 ${card.monetization_value}</span>` : ''}
-                ${card.implementation_effort ? `<span class="card-tag">難度 ${card.implementation_effort}</span>` : ''}
-              </div>
-            </div>
-          `).join('')}
-          ${cards.length === 0 ? '<div class="empty-column">暫無卡片</div>' : ''}
-          <button class="add-card" onclick="openAddModal('${col.id}')">+ 新增卡片</button>
-        `;
-        board.appendChild(colDiv);
+        let html = `<div class="column"><h2>${col.title} (${cards.length})</h2>`;
+        cards.forEach(c => {
+          html += `<div class="card"><div class="card-title">${c.title || c.product}</div>`;
+          if (c.intro) html += `<div class="card-intro">${c.intro}</div>`;
+          html += `<div class="card-meta">💰${c.monetization_value||'-'} 🔧${c.implementation_effort||'-'}</div></div>`;
+        });
+        html += `</div>`;
+        board.innerHTML += html;
       });
     }
 
-    function openAddModal(columnId) {
-      currentColumn = columnId;
-      document.getElementById('cardTitle').value = '';
-      document.getElementById('cardIntro').value = '';
-      document.getElementById('cardValue').value = '3';
-      document.getElementById('cardEffort').value = '3';
-      document.getElementById('addModal').classList.add('active');
+    function showForm() {
+      targetCol = 'proposed';
+      document.getElementById('title').value = '';
+      document.getElementById('intro').value = '';
+      document.getElementById('form').classList.add('show');
     }
 
-    function closeModal() {
-      document.getElementById('addModal').classList.remove('active');
+    function hideForm() {
+      document.getElementById('form').classList.remove('show');
     }
 
-    function saveCard() {
-      const title = document.getElementById('cardTitle').value.trim();
-      const intro = document.getElementById('cardIntro').value.trim();
-      const value = parseInt(document.getElementById('cardValue').value);
-      const effort = parseInt(document.getElementById('cardEffort').value);
+    function addCard() {
+      const title = document.getElementById('title').value.trim();
+      if (!title) return alert('請輸入名稱');
       
-      if (!title) {
-        alert('請輸入產品名稱');
-        return;
-      }
-      
-      const newCard = {
+      data.cards.push({
         id: 'P-' + Date.now(),
         product: title,
         title: title,
-        intro: intro,
-        monetization_value: value,
-        implementation_effort: effort,
-        column: currentColumn,
-        created_at: new Date().toISOString()
-      };
+        intro: document.getElementById('intro').value.trim(),
+        column: targetCol,
+        monetization_value: 3,
+        implementation_effort: 3
+      });
       
-      data.cards.push(newCard);
-      closeModal();
+      hideForm();
       render();
-      saveData();
       
-      // 複製 JSON 到剪貼簿
       const json = JSON.stringify(data, null, 2);
       navigator.clipboard.writeText(json).then(() => {
-        showStatus('已複製 JSON，請貼給 Ninja A');
+        alert('已複製 JSON，請傳給 Ninja A');
       });
     }
 
-    function editCard(cardId) {
-      const card = data.cards.find(c => c.id === cardId);
-      if (!card) return;
-      
-      // 簡單版：只能刪除
-      if (confirm(`編輯：${card.title}\n\n現有資料：\n- 價值：${card.monetization_value || '-'}\n- 難度：${card.implementation_effort || '-'}\n\n按確定刪除此卡片`)) {
-        data.cards = data.cards.filter(c => c.id !== cardId);
-        render();
-        saveData();
-        
-        const json = JSON.stringify(data, null, 2);
-        navigator.clipboard.writeText(json).then(() => {
-          showStatus('已刪除，JSON 已複製');
-        });
-      }
-    }
-
-    function showStatus(msg) {
-      const status = document.getElementById('status');
-      status.textContent = msg;
-      status.classList.add('show');
-      setTimeout(() => status.classList.remove('show'), 2000);
-    }
-
-    // 初始化
-    loadData();
+    load();
   </script>
 </body>
 </html>
