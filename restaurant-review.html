@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>餐廳評論生成器</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 20px; color: #333; }
+    .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; }
+    input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+    textarea { min-height: 80px; }
+    button { width: 100%; padding: 14px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+    button:hover { background: #45a049; }
+    .result { margin-top: 20px; display: none; }
+    .result.show { display: block; }
+    .result-card { background: #e8f5e9; border: 1px solid #4CAF50; border-radius: 8px; padding: 15px; }
+    .result-card h3 { color: #2e7d32; margin-bottom: 10px; }
+    .result-text { background: white; padding: 12px; border-radius: 6px; margin-bottom: 10px; line-height: 1.6; }
+    .copy-btn { background: #2196F3; }
+    .copy-btn:hover { background: #1976d2; }
+    .tips { font-size: 12px; color: #666; margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🍽️ 餐廳評論生成器</h1>
+    <div class="card">
+      <div class="form-group">
+        <label>餐廳名稱</label>
+        <input type="text" id="restaurant" placeholder="例如：鼎泰豐">
+      </div>
+      <div class="form-group">
+        <label>用餐人數</label>
+        <select id="people">
+          <option value="1">1人</option>
+          <option value="2">2人</option>
+          <option value="3">3-4人</option>
+          <option value="5">5人以上</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>用餐時段</label>
+        <select id="meal">
+          <option value="早餐">早餐</option>
+          <option value="午餐">午餐</option>
+          <option value="下午茶">下午茶</option>
+          <option value="晚餐">晚餐</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>最喜歡的菜色（用逗號分開）</label>
+        <input type="text" id="dishes" placeholder="例如：紅油抄手、炸醬麵">
+        <div class="tips">越詳細越好，老闆會感謝你</div>
+      </div>
+      <div class="form-group">
+        <label>服務評價</label>
+        <select id="service">
+          <option value="普通">普通</option>
+          <option value="不錯">不錯</option>
+          <option value="非常好">非常好</option>
+          <option value="貼心周到">貼心周到</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>其他想說的（可選）</label>
+        <textarea id="extra" placeholder="例如：環境舒適、適合慶生"></textarea>
+      </div>
+      <button onclick="generate()">生成評論</button>
+    </div>
+    
+    <div class="result" id="result">
+      <div class="result-card">
+        <h3>✨ 生成的評論</h3>
+        <div class="result-text" id="reviewText"></div>
+        <button class="copy-btn" onclick="copy()">複製評論</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function generate() {
+      const restaurant = document.getElementById('restaurant').value.trim() || '這家餐廳';
+      const people = document.getElementById('people').value;
+      const meal = document.getElementById('meal').value;
+      const dishes = document.getElementById('dishes').value.trim();
+      const service = document.getElementById('service').value;
+      const extra = document.getElementById('extra').value.trim();
+      
+      let review = `今天${meal}來到${restaurant}，`;
+      
+      if (people === '1') review += '一個人用餐，';
+      else if (people === '2') review += '和朋友一起來的，';
+      else review += `${people}個人一起用餐，`;
+      
+      review += `整體經驗很棒！`;
+      
+      if (dishes) {
+        const dishList = dishes.split(',').map(d => d.trim()).filter(d => d);
+        if (dishList.length > 0) {
+          review += `\n\n最喜歡的菜色是${dishList.join('、')}，`;
+          if (dishList.length > 1) {
+            review += `每一道都很有特色，`;
+          } else {
+            review += `真的很好吃，`;
+          }
+        }
+      }
+      
+      review += `服務${service}，`; // 繼續
+      
+      if (service === '貼心周到' || service === '非常好') {
+        review += '讓人感覺很溫馨，';
+      }
+      
+      if (extra) {
+        review += `\n\n${extra}。`;
+      }
+      
+      review += `\n\n整體來說是非常推薦的用餐經驗，以後還會再來！`;
+      
+      // 加入 Google Maps 風格的結尾
+      const endings = [
+        '#美食推薦 #'+restaurant+' #'+meal,
+        '#'+restaurant+' #用餐分享',
+        '#美食地圖 #'+meal+'推薦'
+      ];
+      review += '\n\n' + endings[Math.floor(Math.random() * endings.length)];
+      
+      document.getElementById('reviewText').textContent = review;
+      document.getElementById('result').classList.add('show');
+    }
+    
+    function copy() {
+      const text = document.getElementById('reviewText').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('已複製！去 Google Maps 貼上吧');
+      });
+    }
+  </script>
+</body>
+</html>
