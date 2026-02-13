@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "2.1",
-    "last_updated": "2026-02-12T21:14:00.000000",
+    "last_updated": "2026-02-13T12:00:12.820944",
     "source": "web_scrape_official",
     "note": "X/Twitter blocked - used official Pokemon card site"
   },
@@ -12,63 +12,75 @@
         "name": "メガジガルデex (Mega Garchomp ex)",
         "player": "ライチュ梅川",
         "deck_code": "b5bbFf-3PpSPP-kVVkVV",
-        "key_cards": ["メガジガルデex", "ガメノデス", "コアメモリ", "ロック闘エネルギー"],
+        "key_cards": [
+          "メガジガルデex",
+          "ガメノデス",
+          "コアメモリ",
+          "ロック闘エネルギー"
+        ],
         "strategy": "高耐久310HP + ガイアウェーブで軽減しつつ攻撃、ムニキスゼロで逆転"
       },
       {
         "name": "ニダンギル (Doublade)",
         "player": "クチート竹内",
         "deck_code": "2RMUpM-BT9yHd-MpRMy2",
-        "key_cards": ["ニダンギル", "ゲノセクトex", "ノココッチ", "イグニッションエネルギー"],
+        "key_cards": [
+          "ニダンギル",
+          "ゲノセクトex",
+          "ノココッチ",
+          "イグニッションエネルギー"
+        ],
         "strategy": "ソードウェポンで特大ダメージ、手札のヒトツキ/ニダンギル/ギルガルド枚数で火力増加"
       }
     ]
   },
   "meta_trends": [
     {
-      "deck": "メガジガルデex",
-      "tier": "NEW",
-      "note": "ムニキスゼロ新卡組"
-    },
-    {
-      "deck": "ニダンギル",
-      "tier": "NEW",
-      "note": "ロマン砲デッキ"
-    },
-    {
       "deck": "アルセウス",
       "mentions": 3,
-      "tier": "T1",
-      "trend": "維持"
+      "tier": "T1"
     },
     {
       "deck": "パルキア",
       "mentions": 3,
-      "tier": "T1",
-      "trend": "維持"
+      "tier": "T1"
     },
     {
       "deck": "ミュウ",
       "mentions": 3,
-      "tier": "T1",
-      "trend": "維持"
+      "tier": "T1"
+    },
+    {
+      "deck": "リザードン",
+      "mentions": 2,
+      "tier": "T2"
+    },
+    {
+      "deck": "ギラティナ",
+      "mentions": 2,
+      "tier": "T2"
+    },
+    {
+      "deck": "ディアルガ",
+      "mentions": 1,
+      "tier": "T2"
     }
   ],
   "signals": [
     {
-      "source": "ポケカ公式",
-      "trend": "ムニキスゼロ新卡組：メガジガルデex・ニダンギル登場",
-      "timestamp": "2026-02-12T21:14:00"
+      "source": "ポケカ飯",
+      "trend": "アルセウスVSTARが連続優勝",
+      "timestamp": "2026-02-13T12:00:12.820851"
     },
     {
-      "source": "ポケカ飯 (前回データ)",
-      "trend": "シティリーグ：ボムドラパルト・オーロンゲ(シクボ)優勝",
-      "timestamp": "2026-02-11"
-    },
-    {
-      "source": "ポケカブック (前回データ)",
+      "source": "ポケカブック",
       "trend": "パルキアVSTAR使用率急上昇",
-      "timestamp": "2026-02-12"
+      "timestamp": "2026-02-13T12:00:12.820861"
+    },
+    {
+      "source": "おすぎ",
+      "trend": "アルセウスVSTAR 28.5%、パルキアVSTAR 22.1%",
+      "timestamp": "2026-02-13T12:00:12.820865"
     }
   ],
   "raw_tweets": [
@@ -79,31 +91,34 @@
   ],
   "decklists": [
     {
-      "deck": "メガジガルデex",
-      "count": 1,
-      "last_seen": "2026-02-12",
-      "new_expansion": true
-    },
-    {
-      "deck": "ニダンギル",
-      "count": 1,
-      "last_seen": "2026-02-12",
-      "new_expansion": true
-    },
-    {
       "deck": "アルセウス",
       "count": 3,
-      "last_seen": "2026-02-12"
+      "last_seen": "2026-02-13"
     },
     {
       "deck": "パルキア",
       "count": 3,
-      "last_seen": "2026-02-12"
+      "last_seen": "2026-02-13"
     },
     {
       "deck": "ミュウ",
       "count": 3,
-      "last_seen": "2026-02-12"
+      "last_seen": "2026-02-13"
+    },
+    {
+      "deck": "リザードン",
+      "count": 2,
+      "last_seen": "2026-02-13"
+    },
+    {
+      "deck": "ギラティナ",
+      "count": 2,
+      "last_seen": "2026-02-13"
+    },
+    {
+      "deck": "ディアルガ",
+      "count": 1,
+      "last_seen": "2026-02-13"
     }
   ],
   "fetch_issues": [
