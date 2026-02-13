@@ -1,0 +1,61 @@
+{
+  "columns": [
+    { "id": "proposed", "title": "🎯 提案中" },
+    { "id": "ready", "title": "⏳ 準備中" },
+    { "id": "active", "title": "🚀 執行中" },
+    { "id": "review", "title": "👀 待驗收" },
+    { "id": "done", "title": "✅ 已完成" }
+  ],
+  "cards": [
+    {
+      "id": "P-001",
+      "product": "郵件送達率診斷助手",
+      "title": "郵件送達率診斷助手",
+      "intro": "一鍵檢測企業郵件進垃圾郵件原因，提升開信率",
+      "monetization_value": 5,
+      "implementation_effort": 2,
+      "column": "proposed",
+      "why": "r/smallbusiness 熱帖：專家修復郵件送達問題"
+    },
+    {
+      "id": "P-002",
+      "product": "客服回覆自動化工具",
+      "title": "客服回覆自動化工具",
+      "intro": "保留人情味的同時自動處理八成重複客服詢問",
+      "monetization_value": 5,
+      "implementation_effort": 2,
+      "column": "proposed",
+      "why": "小商家自動化80%客服回覆且不失個人溫度"
+    },
+    {
+      "id": "P-003",
+      "product": "餐廳評論生成助手",
+      "title": "餐廳評論生成助手",
+      "intro": "協助顧客快速寫出真實詳細的五星好評",
+      "monetization_value": 5,
+      "implementation_effort": 2,
+      "column": "proposed",
+      "why": "顧客想給好評但不知道怎麼寫"
+    },
+    {
+      "id": "P-004",
+      "product": "表格資料自動分割器",
+      "title": "表格資料自動分割器",
+      "intro": "一鍵將單一儲存格內的變動長度資料自動分欄",
+      "monetization_value": 4,
+      "implementation_effort": 1,
+      "column": "proposed",
+      "why": "Excel用戶每天花大量時間手動分割儲存格"
+    },
+    {
+      "id": "P-005",
+      "product": "長輩手機防誤觸模式",
+      "title": "長輩手機防誤觸模式",
+      "intro": "為長輩設計的極簡手機介面，防止誤按廣告與詐騙連結",
+      "monetization_value": 4,
+      "implementation_effort": 2,
+      "column": "proposed",
+      "why": "長輩因害怕點錯而拒絕使用手機"
+    }
+  ]
+}
