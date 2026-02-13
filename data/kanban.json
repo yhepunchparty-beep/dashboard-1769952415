@@ -59,6 +59,36 @@
       "why": "長輩因害怕點錯而拒絕使用手機"
     },
     {
+      "id": "P-006",
+      "product": "Excel重複值獵手",
+      "title": "Excel重複值獵手",
+      "intro": "一鍵找出並標記Excel中的重複資料",
+      "monetization_value": 4,
+      "implementation_effort": 1,
+      "column": "ready",
+      "why": "Excel最高頻痛點，技術極簡變現最快（Reddit巡邏）"
+    },
+    {
+      "id": "P-007",
+      "product": "Notion日期小幫手",
+      "title": "Notion日期小幫手",
+      "intro": "自動計算Notion中的日期區間、到期提醒",
+      "monetization_value": 3,
+      "implementation_effort": 2,
+      "column": "proposed",
+      "why": "Notion用戶明確需求，擴充功能可變現（Reddit巡邏）"
+    },
+    {
+      "id": "P-008",
+      "product": "樞紐表交錯工具",
+      "title": "樞紐表交錯工具",
+      "intro": "視覺化呈現樞紐表複雜的交叉分析",
+      "monetization_value": 3,
+      "implementation_effort": 2,
+      "column": "proposed",
+      "why": "專業用戶願付費的視覺化痛點（Reddit巡邏）"
+    },
+    {
       "id": "T-001",
       "product": "Reddit 商機巡邏",
       "title": "Reddit 商機巡邏",
