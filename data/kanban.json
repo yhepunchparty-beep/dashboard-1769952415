@@ -56,6 +56,26 @@
       "implementation_effort": 2,
       "column": "proposed",
       "why": "長輩因害怕點錯而拒絕使用手機"
+    },
+    {
+      "id": "T-001",
+      "product": "Reddit 商機巡邏",
+      "title": "Reddit 商機巡邏",
+      "intro": "監控 r/smallbusiness, r/indiebiz, r/entrepreneur 找出痛點與商機",
+      "monetization_value": 5,
+      "implementation_effort": 3,
+      "column": "ready",
+      "source": "ninja自動發現"
+    },
+    {
+      "id": "T-002",
+      "product": "OpenClaw 技能開發",
+      "title": "OpenClaw 技能開發",
+      "intro": "根據觀察到的需求，開發新技能並發布到 ClawHub",
+      "monetization_value": 4,
+      "implementation_effort": 3,
+      "column": "ready",
+      "source": "ninja自動發現"
     }
   ]
 }
