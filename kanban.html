@@ -13,18 +13,11 @@
     .column-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #eee; }
     .column h2 { font-size: 14px; color: #555; }
     .card-count { background: #eee; padding: 2px 8px; border-radius: 10px; font-size: 12px; color: #666; }
-    .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+    .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px; margin-bottom: 8px; cursor: pointer; }
+    .card:active { background: #f5f5f5; }
     .card-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-    .card-intro { color: #666; font-size: 12px; margin-bottom: 6px; }
-    .card-meta { font-size: 11px; color: #999; margin-bottom: 8px; }
-    .card-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-    .card-btn { flex: 1; min-width: 70px; padding: 8px 4px; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; text-align: center; }
-    .btn-approve { background: #4CAF50; color: white; }
-    .btn-reject { background: #f44336; color: white; }
-    .btn-start { background: #2196F3; color: white; }
-    .btn-done { background: #FF9800; color: white; }
-    .btn-back { background: #9E9E9E; color: white; }
-    .card-btn:active { opacity: 0.7; }
+    .card-intro { color: #666; font-size: 12px; }
+    .card-meta { font-size: 11px; color: #999; margin-top: 6px; }
     .add-form { background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
     .add-form input, .add-form textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
     .add-form textarea { min-height: 60px; }
@@ -33,6 +26,23 @@
     .btn-save { background: #4CAF50; color: white; }
     .btn-cancel { background: #9E9E9E; color: white; }
     .refresh { position: fixed; bottom: 15px; right: 15px; width: 45px; height: 45px; border-radius: 50%; background: #2196F3; color: white; border: none; font-size: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; }
+    
+    /* Modal */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; }
+    .modal.show { display: flex; align-items: center; justify-content: center; }
+    .modal-content { background: white; border-radius: 16px; padding: 20px; width: 90%; max-width: 360px; }
+    .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+    .modal-intro { color: #666; font-size: 14px; margin-bottom: 15px; }
+    .modal-meta { font-size: 12px; color: #999; margin-bottom: 20px; }
+    .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .modal-btn { flex: 1; min-width: 120px; padding: 14px; border: none; border-radius: 10px; font-size: 15px; cursor: pointer; text-align: center; }
+    .btn-approve { background: #4CAF50; color: white; }
+    .btn-reject { background: #f44336; color: white; }
+    .btn-start { background: #2196F3; color: white; }
+    .btn-done { background: #FF9800; color: white; }
+    .btn-back { background: #9E9E9E; color: white; }
+    .btn-close { background: #eee; color: #333; margin-top: 10px; width: 100%; }
+    .modal-btn:active { opacity: 0.7; }
   </style>
 </head>
 <body>
@@ -53,16 +63,38 @@
   
   <button class="refresh" onclick="load()">🔄</button>
 
+  <!-- Card Detail Modal -->
+  <div class="modal" id="cardModal">
+    <div class="modal-content">
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-intro" id="modalIntro"></div>
+      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-actions" id="modalActions"></div>
+      <button class="modal-btn btn-close" onclick="closeModal()">關閉</button>
+    </div>
+  </div>
+
   <script>
     const COLUMNS = [
-      { id: 'proposed', title: '🎯 提案中', showActions: ['approve', 'reject'] },
-      { id: 'ready', title: '⏳ 準備中', showActions: ['start'] },
-      { id: 'active', title: '🚀 執行中', showActions: ['done'] },
-      { id: 'review', title: '👀 待驗收', showActions: ['back', 'approve'] },
-      { id: 'done', title: '✅ 已完成', showActions: [] }
+      { id: 'proposed', title: '🎯 提案中', actions: [
+        { key: 'approve', text: '✅ 核准', class: 'btn-approve' },
+        { key: 'reject', text: '❌ 否決提案', class: 'btn-reject' }
+      ]},
+      { id: 'ready', title: '⏳ 準備中', actions: [
+        { key: 'start', text: '▶️ 開始執行', class: 'btn-start' }
+      ]},
+      { id: 'active', title: '🚀 執行中', actions: [
+        { key: 'done', text: '✅ 完成', class: 'btn-done' }
+      ]},
+      { id: 'review', title: '👀 待驗收', actions: [
+        { key: 'back', text: '🔙 退回修改', class: 'btn-back' },
+        { key: 'approve', text: '✅ 核准', class: 'btn-approve' }
+      ]},
+      { id: 'done', title: '✅ 已完成', actions: [] }
     ];
     
     let data = { cards: [] };
+    let currentCard = null;
 
     async function load() {
       try {
@@ -79,42 +111,52 @@
         const cards = data.cards.filter(c => c.column === col.id);
         let html = `<div class="column"><div class="column-header"><h2>${col.title}</h2><span class="card-count">${cards.length}</span></div>`;
         cards.forEach(c => {
-          html += `<div class="card"><div class="card-title">${c.title || c.product}</div>`;
+          html += `<div class="card" onclick="openCard('${c.id}')"><div class="card-title">${c.title || c.product}</div>`;
           if (c.intro) html += `<div class="card-intro">${c.intro}</div>`;
-          html += `<div class="card-meta">💰${c.monetization_value||'-'} 🔧${c.implementation_effort||'-'}</div>`;
-          if (col.showActions.length > 0) {
-            html += `<div class="card-actions">`;
-            col.showActions.forEach(action => {
-              const btnText = action === 'approve' ? '✅ 核准' : 
-                             action === 'reject' ? '❌ 否決' : 
-                             action === 'start' ? '▶️ 開始' : 
-                             action === 'done' ? '✅ 完成' : 
-                             action === 'back' ? '🔙 退回' : '';
-              const btnClass = action === 'approve' ? 'btn-approve' : 
-                              action === 'reject' ? 'btn-reject' : 
-                              action === 'start' ? 'btn-start' : 
-                              action === 'done' ? 'btn-done' : 'btn-back';
-              html += `<button class="card-btn ${btnClass}" onclick="action('${c.id}', '${action}')">${btnText}</button>`;
-            });
-            html += `</div>`;
-          }
-          html += `</div>`;
+          html += `<div class="card-meta">💰${c.monetization_value||'-'} 🔧${c.implementation_effort||'-'}</div></div>`;
         });
         html += `</div>`;
         board.innerHTML += html;
       });
     }
 
-    function action(cardId, action) {
+    function openCard(cardId) {
+      currentCard = data.cards.find(c => c.id === cardId);
+      if (!currentCard) return;
+      
+      const col = COLUMNS.find(c => c.id === currentCard.column);
+      
+      document.getElementById('modalTitle').textContent = currentCard.title || currentCard.product;
+      document.getElementById('modalIntro').textContent = currentCard.intro || '';
+      document.getElementById('modalMeta').textContent = `💰 價值: ${currentCard.monetization_value||'-'}  |  🔧 難度: ${currentCard.implementation_effort||'-'}`;
+      
+      let actionsHtml = '';
+      if (col && col.actions.length > 0) {
+        col.actions.forEach(action => {
+          actionsHtml += `<button class="modal-btn ${action.class}" onclick="doAction('${currentCard.id}', '${action.key}')">${action.text}</button>`;
+        });
+      }
+      document.getElementById('modalActions').innerHTML = actionsHtml;
+      
+      document.getElementById('cardModal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('cardModal').classList.remove('show');
+      currentCard = null;
+    }
+
+    function doAction(cardId, action) {
       const card = data.cards.find(c => c.id === cardId);
       if (!card) return;
       
       if (action === 'approve') card.column = 'ready';
-      else if (action === 'reject') card.column = 'done'; // 簡化：否決移到完成
+      else if (action === 'reject') card.column = 'done';
       else if (action === 'start') card.column = 'active';
       else if (action === 'done') card.column = 'review';
-      else if (action === 'back') card.column = 'ready'; // 退回到準備中
+      else if (action === 'back') card.column = 'ready';
       
+      closeModal();
       render();
       copyJson();
     }
