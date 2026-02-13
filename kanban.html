@@ -2,44 +2,52 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Ninja Kanban</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f0f0f0; padding: 10px; }
-    h1 { text-align: center; margin: 10px 0; font-size: 20px; }
-    .board { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; -webkit-overflow-scrolling: touch; }
-    .column { background: white; border-radius: 12px; min-width: 200px; width: 200px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    .column h2 { font-size: 13px; color: #555; margin-bottom: 8px; text-align: center; }
-    .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-bottom: 6px; font-size: 13px; }
-    .card-title { font-weight: 600; margin-bottom: 4px; }
-    .card-intro { color: #666; font-size: 12px; }
-    .card-meta { margin-top: 6px; font-size: 10px; color: #999; }
-    .add-btn { width: 100%; padding: 10px; border: none; border-radius: 8px; background: #4CAF50; color: white; font-size: 14px; cursor: pointer; }
-    .add-btn:hover { background: #45a049; }
-    .form { display: none; background: white; padding: 15px; border-radius: 12px; margin: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-    .form.show { display: block; }
-    .form input, .form textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
-    .form-buttons { display: flex; gap: 10px; }
-    .form-buttons button { flex: 1; padding: 10px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; }
-    .save { background: #2196F3; color: white; }
-    .cancel { background: #9e9e9e; color: white; }
-    .refresh { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: #2196F3; color: white; border: none; font-size: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; padding: 10px; padding-bottom: 80px; }
+    h1 { text-align: center; margin: 10px 0; font-size: 18px; color: #333; }
+    .board { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; -webkit-overflow-scrolling: touch; }
+    .column { background: white; border-radius: 12px; min-width: 260px; width: 260px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); flex-shrink: 0; }
+    .column-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #eee; }
+    .column h2 { font-size: 14px; color: #555; }
+    .card-count { background: #eee; padding: 2px 8px; border-radius: 10px; font-size: 12px; color: #666; }
+    .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+    .card-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .card-intro { color: #666; font-size: 12px; margin-bottom: 6px; }
+    .card-meta { font-size: 11px; color: #999; margin-bottom: 8px; }
+    .card-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .card-btn { flex: 1; min-width: 70px; padding: 8px 4px; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; text-align: center; }
+    .btn-approve { background: #4CAF50; color: white; }
+    .btn-reject { background: #f44336; color: white; }
+    .btn-start { background: #2196F3; color: white; }
+    .btn-done { background: #FF9800; color: white; }
+    .btn-back { background: #9E9E9E; color: white; }
+    .card-btn:active { opacity: 0.7; }
+    .add-form { background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .add-form input, .add-form textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+    .add-form textarea { min-height: 60px; }
+    .form-btns { display: flex; gap: 10px; }
+    .form-btns button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; }
+    .btn-save { background: #4CAF50; color: white; }
+    .btn-cancel { background: #9E9E9E; color: white; }
+    .refresh { position: fixed; bottom: 15px; right: 15px; width: 45px; height: 45px; border-radius: 50%; background: #2196F3; color: white; border: none; font-size: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; }
   </style>
 </head>
 <body>
   <h1>🥷 Ninja Kanban</h1>
   
-  <button class="add-btn" onclick="showForm()">➕ 新增卡片</button>
-  
-  <div class="form" id="form">
-    <input type="text" id="title" placeholder="產品名稱">
+  <div class="add-form" id="addForm" style="display:none;">
+    <input type="text" id="title" placeholder="產品名稱（必填）">
     <textarea id="intro" placeholder="一句話簡介"></textarea>
-    <div class="form-buttons">
-      <button class="cancel" onclick="hideForm()">取消</button>
-      <button class="save" onclick="addCard()">儲存</button>
+    <div class="form-btns">
+      <button class="btn-cancel" onclick="hideForm()">取消</button>
+      <button class="btn-save" onclick="addCard()">儲存</button>
     </div>
   </div>
+  
+  <button onclick="showForm()" style="width:100%;padding:12px;background:#4CAF50;color:white;border:none;border-radius:8px;font-size:15px;margin-bottom:15px;cursor:pointer;">➕ 新增提案</button>
   
   <div class="board" id="board"></div>
   
@@ -47,15 +55,14 @@
 
   <script>
     const COLUMNS = [
-      { id: 'proposed', title: '🎯 提案' },
-      { id: 'ready', title: '⏳ 準備' },
-      { id: 'active', title: '🚀 執行' },
-      { id: 'review', title: '👀 驗收' },
-      { id: 'done', title: '✅ 完成' }
+      { id: 'proposed', title: '🎯 提案中', showActions: ['approve', 'reject'] },
+      { id: 'ready', title: '⏳ 準備中', showActions: ['start'] },
+      { id: 'active', title: '🚀 執行中', showActions: ['done'] },
+      { id: 'review', title: '👀 待驗收', showActions: ['back', 'approve'] },
+      { id: 'done', title: '✅ 已完成', showActions: [] }
     ];
     
     let data = { cards: [] };
-    let targetCol = 'proposed';
 
     async function load() {
       try {
@@ -70,26 +77,62 @@
       board.innerHTML = '';
       COLUMNS.forEach(col => {
         const cards = data.cards.filter(c => c.column === col.id);
-        let html = `<div class="column"><h2>${col.title} (${cards.length})</h2>`;
+        let html = `<div class="column"><div class="column-header"><h2>${col.title}</h2><span class="card-count">${cards.length}</span></div>`;
         cards.forEach(c => {
           html += `<div class="card"><div class="card-title">${c.title || c.product}</div>`;
           if (c.intro) html += `<div class="card-intro">${c.intro}</div>`;
-          html += `<div class="card-meta">💰${c.monetization_value||'-'} 🔧${c.implementation_effort||'-'}</div></div>`;
+          html += `<div class="card-meta">💰${c.monetization_value||'-'} 🔧${c.implementation_effort||'-'}</div>`;
+          if (col.showActions.length > 0) {
+            html += `<div class="card-actions">`;
+            col.showActions.forEach(action => {
+              const btnText = action === 'approve' ? '✅ 核准' : 
+                             action === 'reject' ? '❌ 否決' : 
+                             action === 'start' ? '▶️ 開始' : 
+                             action === 'done' ? '✅ 完成' : 
+                             action === 'back' ? '🔙 退回' : '';
+              const btnClass = action === 'approve' ? 'btn-approve' : 
+                              action === 'reject' ? 'btn-reject' : 
+                              action === 'start' ? 'btn-start' : 
+                              action === 'done' ? 'btn-done' : 'btn-back';
+              html += `<button class="card-btn ${btnClass}" onclick="action('${c.id}', '${action}')">${btnText}</button>`;
+            });
+            html += `</div>`;
+          }
+          html += `</div>`;
         });
         html += `</div>`;
         board.innerHTML += html;
       });
     }
 
+    function action(cardId, action) {
+      const card = data.cards.find(c => c.id === cardId);
+      if (!card) return;
+      
+      if (action === 'approve') card.column = 'ready';
+      else if (action === 'reject') card.column = 'done'; // 簡化：否決移到完成
+      else if (action === 'start') card.column = 'active';
+      else if (action === 'done') card.column = 'review';
+      else if (action === 'back') card.column = 'ready'; // 退回到準備中
+      
+      render();
+      copyJson();
+    }
+
+    function copyJson() {
+      const json = JSON.stringify(data, null, 2);
+      navigator.clipboard.writeText(json).then(() => {
+        alert('已更新！JSON 已複製，請傳給 Ninja A');
+      });
+    }
+
     function showForm() {
-      targetCol = 'proposed';
-      document.getElementById('title').value = '';
-      document.getElementById('intro').value = '';
-      document.getElementById('form').classList.add('show');
+      document.getElementById('addForm').style.display = 'block';
+      document.getElementById('title').focus();
     }
 
     function hideForm() {
-      document.getElementById('form').classList.remove('show');
+      document.getElementById('addForm').style.display = 'none';
     }
 
     function addCard() {
@@ -101,18 +144,16 @@
         product: title,
         title: title,
         intro: document.getElementById('intro').value.trim(),
-        column: targetCol,
+        column: 'proposed',
         monetization_value: 3,
         implementation_effort: 3
       });
       
+      document.getElementById('title').value = '';
+      document.getElementById('intro').value = '';
       hideForm();
       render();
-      
-      const json = JSON.stringify(data, null, 2);
-      navigator.clipboard.writeText(json).then(() => {
-        alert('已複製 JSON，請傳給 Ninja A');
-      });
+      copyJson();
     }
 
     load();
