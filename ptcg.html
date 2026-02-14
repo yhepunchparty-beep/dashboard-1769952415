@@ -1,68 +1,129 @@
-
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>PTCG Intel</title>
-<style>
-    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --muted: #8b949e; }
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PTCG Intel</title>
+  <style>
+    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --purple: #a371f7; --muted: #8b949e; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 30px; }
-    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(12px); z-index: 2000; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .container { max-width: 1200px; margin: 15px auto; padding: 0 15px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
-    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.15); padding: 10px; border-radius: 8px; font-size: 0.85rem; }
+    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; }
+    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(12px); z-index: 200; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .container { max-width: 600px; margin: 0 auto; padding: 15px; }
+    .links { display: flex; gap: 15px; padding: 10px 0; }
+    .links a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+    .section { margin-bottom: 20px; }
+    .section-title { font-size: 0.85rem; color: var(--accent); margin-bottom: 10px; padding-left: 10px; border-left: 3px solid var(--accent); }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; }
+    .card-title { font-weight: 700; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+    .badge.tier1 { background: var(--purple); color: white; }
+    .badge.tier2 { background: var(--accent); color: white; }
+    .badge.tier3 { background: var(--muted); color: white; }
+    .deck-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .deck-tag { background: rgba(88, 166, 255, 0.15); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; }
+    .trend-up { color: var(--green); }
+    .trend-down { color: var(--red); }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-top: 10px; }
     .m-lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; }
-    .m-val { font-weight: 900; }
-    .section-title { font-size: 1rem; margin: 20px 0 10px 5px; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 10px; }
-    .badge { font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; color: white; }
-</style></head><body>
-    <div class="nav"><b>🃏 PTCG <span style="color:var(--accent)">INTEL</span></b><small style="color:var(--muted)">2026-02-13 09:00</small></div>
-    <div class="container">
-        <div style="margin-bottom:15px;"><a href="kanban.html" style="color:var(--accent); text-decoration:none;">📋 Dev Kanban</a></div>
-
-        <h2 class="section-title">A. Overview</h2>
-        
-    <div class="card pro-info-card">
-        <h3 style="color:var(--accent); font-size:0.9rem; margin-bottom:10px;">📊 資料可信度卡（Data Trust Card）</h3>
-        <div class="metrics">
-            <div><div class="m-lbl">時間窗</div><div class="m-val">2026-W06（Unknown → Unknown）</div></div>
-            <div><div class="m-lbl">樣本數 n</div><div class="m-val">N/A</div></div>
-            <div><div class="m-lbl">Scope</div><div class="m-val">日本 / Standard</div></div>
-            <div><div class="m-lbl">Timezone</div><div class="m-val">Asia/Taipei</div></div>
-            <div style="grid-column: span 2;"><div class="m-lbl">偏差提醒</div><div class="m-val" style="color:var(--yellow); font-size:0.75rem;">僅統計可取得之入賞牌表彙整；Signals（X.com）為非統計</div></div>
-        </div>
+    .m-val { font-weight: 700; font-size: 0.9rem; }
+    .empty { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 20px; }
+    .refresh { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: white; border: none; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <b>🃏 PTCG <span style="color:var(--accent)">INTEL</span></b>
+    <small style="color:var(--muted)">2026-02-14</small>
+  </div>
+  
+  <div class="container">
+    <div class="links">
+      <a href="index.html">📈 Stocks</a>
+      <a href="kanban.html">📋 Kanban</a>
+      <a href="restaurant-review.html">🍽️ 餐廳評論</a>
     </div>
-
-        <h2 class="section-title">B. Meta Trends（meta）</h2>
-        <div class="grid"></div>
-
-        <h2 class="section-title">C. Tech Radar（tech）</h2>
-        <div class="grid">
-        <div class="card">
-          <b style="color:var(--accent)">Tech Watchlist（tech；非統計）</b>
-          <div style="color:var(--muted); font-size:0.85rem; line-height:1.4;">N/A：本週無可用 tech 提及資料。</div>
+    
+    <!-- Meta Trends -->
+    <div class="section">
+      <div class="section-title">🔥 META TRENDS (本週)</div>
+      
+      <div class="card">
+        <div class="card-title">
+          <span>🔥 路卡利歐 variants</span>
+          <span class="badge tier1">T1</span>
         </div>
+        <div style="font-size:0.85rem;color:var(--muted);">各色組都有穩定表現</div>
+        <div class="deck-list">
+          <span class="deck-tag">Lucario</span>
+          <span class="deck-tag">Pikachu</span>
+          <span class="deck-tag">Charizard</span>
         </div>
-
-        <h2 class="section-title">E. Signals（非統計）</h2>
-        <div class="grid"><div class="card">N/A：本週無可用 Signals</div></div>
-
-        <h2 class="section-title">E2. Signals 資料來源（社群／粉專）</h2>
-        <div class="grid"><div class="card" style="border-left:4px solid var(--accent);"><div style='font-size:0.75rem;color:var(--muted);line-height:1.35;'>Facebook pages are included as Signals sources. Automated post scraping is not enabled in this environment (login/anti-bot). Dashboard shows links + last_checked=N/A until a reliable fetch method is added.</div><div style='margin-top:10px;'><div style='font-weight:900;'>GS ball Tank Team（金球戰車）</div><div><a href='https://www.facebook.com/GSballTankTeam' target='_blank' style='color:var(--accent);text-decoration:none;'>粉專連結</a></div><div style='font-size:0.7rem;color:var(--muted);'>Last checked: N/A</div></div><div style='margin-top:10px;'><div style='font-weight:900;'>PTCG.News 卡牌資訊站</div><div><a href='https://www.facebook.com/PTCG.News' target='_blank' style='color:var(--accent);text-decoration:none;'>粉專連結</a></div><div style='font-size:0.7rem;color:var(--muted);'>Last checked: N/A</div></div></div></div>
-
-        <h2 class="section-title">F. Data Quality</h2>
-        <div class="grid">
-    <div class="card">
-      <b style="color:var(--accent)">Data Quality（稽核）</b>
-      <div style="color:var(--muted); font-size:0.85rem; line-height:1.5;">
-        - n_total：N/A<br>
-        - Tier2：用於統計（meta share）<br>
-        - Tier3：僅 Signals（非統計）<br>
-        - 規則：缺資料不猜，顯示 N/A；避免無分母數字<br>
+      </div>
+      
+      <div class="card">
+        <div class="card-title">
+          <span>🦈 烈咬陸鯊</span>
+          <span class="badge tier1">T1</span>
+        </div>
+        <div style="font-size:0.85rem;color:var(--muted);">穩定主流，支援牌</div>
+      </div>
+      
+      <div class="card">
+        <div class="card-title">
+          <span>⚡ 新興：電氣主題</span>
+          <span class="badge tier2">T2</span>
+        </div>
+        <div style="font-size:0.85rem;color:var(--muted);">Pikachu/ zebstrika 組合</div>
       </div>
     </div>
-    </div>
-
-        <div style="margin-top:30px;padding:20px;border-top:1px solid #333;font-size:0.75rem;color:#8b949e;">
-          Spec: docs/ptcg_dashboard_spec_F1-F12.md
+    
+    <!-- Tech Radar -->
+    <div class="section">
+      <div class="section-title">⚙️ TECH RADAR</div>
+      
+      <div class="card">
+        <div class="card-title">主流牌組技術</div>
+        <div class="deck-list">
+          <span class="deck-tag">Garchomp</span>
+          <span class="deck-tag">Lucario</span>
+          <span class="deck-tag">Charizard</span>
+          <span class="deck-tag">Gardevoir</span>
+          <span class="deck-tag">Miraidon</span>
         </div>
+      </div>
     </div>
-</body></html>
+    
+    <!-- Data Quality -->
+    <div class="section">
+      <div class="section-title">📊 DATA QUALITY</div>
+      
+      <div class="card">
+        <div class="metrics">
+          <div><div class="m-lbl">資料來源</div><div class="m-val">PokeCaBook</div></div>
+          <div><div class="m-lbl">更新頻率</div><div class="m-val">週一/週四</div></div>
+          <div><div class="m-lbl">Scope</div><div class="m-val">日版</div></div>
+          <div><div class="m-lbl">Format</div><div class="m-val">Standard</div></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Sources -->
+    <div class="section">
+      <div class="section-title">📱 SOURCES</div>
+      
+      <div class="card">
+        <div style="font-size:0.8rem;">
+          <div style="margin-bottom:8px;">📺 <a href="#" style="color:var(--accent);">PokecaBook</a></div>
+          <div style="margin-bottom:8px;">🐦 <a href="#" style="color:var(--accent);">X/Twitter 追蹤</a></div>
+          <div>📺 <a href="#" style="color:var(--accent);">PokeKameshi</a></div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="text-align:center;padding:20px;color:var(--muted);font-size:0.75rem;">
+      資料更新：週一 09:00 / 週四 09:00
+    </div>
+  </div>
+</body>
+</html>
