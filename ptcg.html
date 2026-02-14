@@ -3,118 +3,259 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PTCG Intel</title>
+  <title>PTCG 日規環境儀表板</title>
   <style>
     :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --purple: #a371f7; --muted: #8b949e; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; }
+    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; line-height: 1.5; }
     .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); z-index: 200; border-bottom: 1px solid var(--border); padding: 12px 20px; }
-    .container { max-width: 600px; margin: 0 auto; padding: 15px; }
-    .links { display: flex; gap: 15px; padding: 10px 0; }
-    .links a { color: var(--accent); text-decoration: none; font-size: 0.85rem; }
+    .container { max-width: 700px; margin: 0 auto; padding: 15px; }
     .section { margin-bottom: 24px; }
-    .section-title { font-size: 0.8rem; color: var(--accent); margin-bottom: 10px; padding-left: 10px; border-left: 3px solid var(--accent); font-weight: 700; }
+    .section-title { font-size: 0.8rem; color: var(--accent); margin-bottom: 10px; padding-left: 10px; border-left: 3px solid var(--accent); font-weight: 700; text-transform: uppercase; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; }
-    .deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
-    .deck-tag { background: rgba(88, 166, 255, 0.15); color: var(--accent); padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; text-align: center; }
-    .deck-tag.t1 { background: rgba(163, 113, 247, 0.2); color: var(--purple); border: 1px solid var(--purple); }
-    .deck-tag.t2 { background: rgba(88, 166, 255, 0.2); color: var(--accent); border: 1px solid var(--accent); }
+    .summary-box { background: linear-gradient(135deg, rgba(88,166,255,0.1), rgba(163,113,247,0.1)); border: 1px solid var(--accent); }
+    .summary-item { margin-bottom: 12px; }
+    .summary-item:last-child { margin-bottom: 0; }
+    .summary-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+    .summary-value { font-size: 0.95rem; font-weight: 600; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    th { text-align: left; padding: 8px 6px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    td { padding: 8px 6px; border-bottom: 1px solid var(--border); }
+    .num { text-align: right; }
+    .up { color: var(--green); }
+    .down { color: var(--red); }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; }
+    .tag.high { background: var(--green); color: white; }
+    .tag.medium { background: var(--accent); color: white; }
+    .tag.low { background: var(--muted); color: white; }
+    .tag.watch { background: var(--yellow); color: black; }
+    .tag.confirmed { background: var(--purple); color: white; }
+    .deck-tag { display: inline-block; background: rgba(88, 166, 255, 0.15); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; margin: 2px; }
+    .deck-tag.t1 { background: rgba(163, 113, 247, 0.2); color: var(--purple); }
+    .deck-tag.t2 { background: rgba(88, 166, 255, 0.2); }
+    .intel-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .intel-item:last-child { border-bottom: none; }
+    .intel-type { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; background: var(--accent); color: white; white-space: nowrap; }
+    .sources { font-size: 0.75rem; color: var(--muted); }
+    .sources a { color: var(--accent); }
+    .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.7rem; }
+    .meta-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; margin-left: 8px; }
     .trend-up { color: var(--green); }
     .trend-down { color: var(--red); }
-    .meta-card { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 8px; }
-    .meta-label { font-size: 0.7rem; color: var(--muted); }
-    .meta-value { font-weight: 700; font-size: 0.9rem; }
-    .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.7rem; }
+    .trend-flat { color: var(--muted); }
   </style>
 </head>
 <body>
   <div class="nav">
-    <b>🃏 PTCG <span style="color:var(--accent)">INTEL</span></b>
+    <b>🃏 PTCG <span style="color:var(--accent)">環境儀表板</span></b>
     <small style="color:var(--muted)">2026-02-14</small>
   </div>
   
   <div class="container">
-    <div class="links">
-      <a href="index.html">📈 Stocks</a>
-    </div>
 
-    <!-- Meta Deck Rankings -->
+    <!-- 0) ACTION SUMMARY -->
     <div class="section">
-      <div class="section-title">🔥 META DECKS — 日版 Standard</div>
-      <div class="deck-grid">
-        <div class="deck-tag t1">🦈 Garchomp</div>
-        <div class="deck-tag t1">⚔️ Lucario</div>
-        <div class="deck-tag t1">🔥 Charizard</div>
-        <div class="deck-tag t2">🧚 Gardevoir</div>
-        <div class="deck-tag t2">⚡ Miraidon</div>
-        <div class="deck-tag">🐭 Pikachu</div>
+      <div class="section-title">0) 行動摘要</div>
+      <div class="card summary-box">
+        <div class="summary-item">
+          <div class="summary-label">本週環境結論</div>
+          <div class="summary-value">ムニクスゼロ環境穩定，Gardevoir ex (フーディン) 仍是主流核心，但 Ogerpon (オーガポン) 快速崛起。Stamp 系統影響構築走向。</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">上升訊號 Top3</div>
+          <div class="summary-value">
+            1. オーガポン — 牌組多樣性增加，2/13 多個 top cut<br>
+            2. ドラパルト/バシャーモ — Best4 成績<br>
+            3. メガディアンシー — 新興控制/Stamp 軸
+          </div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">風險警報</div>
+          <div class="summary-value">
+            • Stamp 牌組可能過熱，環境單一化<br>
+            • フーディン/ノココッチ 數量過多
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Tech Cards -->
+    <!-- 1) META RADAR -->
     <div class="section">
-      <div class="section-title">⚡ TECH STAPLES — 主流輔助卡</div>
-      <div class="deck-grid">
-        <div class="deck-tag">🥔 Earthen Shrine</div>
-        <div class="deck-tag">🔥 Bravery Charm</div>
-        <div class="deck-tag">💨 Quick Shooting Star</div>
-        <div class="deck-tag">🛡️ Counter Catcher</div>
-        <div class="deck-tag">🎯 Ultra Ball</div>
-        <div class="deck-tag">⏱️ Time Capsule</div>
+      <div class="section-title">1) 日規 Meta 雷達 — Top 10 牌組</div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>#</th><th>牌組</th><th class="num">Meta</th><th>趨勢</th><th>來源</th></tr>
+          <tr><td>1</td><td>フーディン/ノココッチ <span class="tag high">T1</span></td><td class="num">28%</td><td class="trend-flat">→持平</td><td>Pokekameshi</td></tr>
+          <tr><td>2</td><td>オーガポン <span class="tag medium">T2</span></td><td class="num">18%</td><td class="trend-up">↑上升</td><td>Pokekameshi</td></tr>
+          <tr><td>3</td><td>ドラパルト</td><td class="num">12%</td><td class="trend-up">↑上升</td><td>Pokekameshi</td></tr>
+          <tr><td>4</td><td>オーロンゲ/メノコマシラ</td><td class="num">10%</td><td class="trend-flat">→持平</td><td>Pokekameshi</td></tr>
+          <tr><td>5</td><td>メガフシギバナ</td><td class="num">8%</td><td class="trend-up">↑上升</td><td>Pokekameshi</td></tr>
+          <tr><td>6</td><td>ボムドラパルト</td><td class="num">7%</td><td class="trend-flat">→持平</td><td>-</td></tr>
+          <tr><td>7</td><td>メガディアンシー <span class="tag low">NEW</span></td><td class="num">6%</td><td class="trend-up">↑新進</td><td>-</td></tr>
+          <tr><td>8</td><td>メタグロス</td><td class="num">5%</td><td class="trend-down">↓下降</td><td>-</td></tr>
+          <tr><td>9</td><td>ライチ/ガバイト</td><td class="num">4%</td><td class="trend-flat">→持平</td><td>-</td></tr>
+          <tr><td>10</td><td>ミラー/ジュラルドン</td><td class="num">3%</td><td class="trend-down">↓下降</td><td>-</td></tr>
+        </table>
+      </div>
+      <div class="sources" style="margin-top:8px;">
+        資料來源：<a href="https://pokekameshi.com/cityleague20260213/">Pokekameshi シティLeague東京 2026-02-13</a>
       </div>
     </div>
 
-    <!-- Market Data -->
+    <!-- 2) RISING SIGNALS -->
     <div class="section">
-      <div class="section-title">📊 MARKET DATA</div>
+      <div class="section-title">2) 上升訊號雷達</div>
+      
+      <div style="margin-bottom:15px;">
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">Deck Rising Top 5</div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span>1. オーガポン</span>
+            <span class="tag high">HIGH</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span>2. ドラパルト/バシャーモ</span>
+            <span class="tag high">HIGH</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span>3. メガフシギバナ</span>
+            <span class="tag medium">MEDIUM</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span>4. メガディアンシー</span>
+            <span class="tag medium">MEDIUM</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;">
+            <span>5. ボムメガディアンシー</span>
+            <span class="tag low">LOW</span>
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-bottom:15px;">
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">Rising Cards / Tech</div>
+        <div class="card">
+          <div style="margin-bottom:10px;">
+            <span class="deck-tag">オーガポンEx</span>
+            <span class="deck-tag">クイックシューティングスター</span>
+            <span class="deck-tag">ボムシャーレ</span>
+          </div>
+          <div style="font-size:0.75rem;color:var(--muted);">
+            風險標記：スタンプ系統可能過熱 ⚠️
+          </div>
+        </div>
+      </div>
+      
+      <div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">Buzz Spike</div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span>オーガポン牌組構築多樣性</span>
+            <span class="tag watch">WATCH</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span>Stamp 系統是否該被限制</span>
+            <span class="tag watch">WATCH</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span>ムニクスゼロ環境評價</span>
+            <span class="tag confirmed">CONFIRMED</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;">
+            <span>シティLeague 參加人數回升</span>
+            <span class="tag confirmed">CONFIRMED</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3) LATEST INTEL -->
+    <div class="section">
+      <div class="section-title">3) 最新情報快訊</div>
       <div class="card">
-        <div class="meta-card">
-          <span class="meta-label">資料來源</span>
-          <span class="meta-value">PokecaBook</span>
+        <div class="intel-item">
+          <span class="intel-type">🏆</span>
+          <div>
+            <div style="font-weight:600;">シティLeague東京 2/13 フーディン/ノココッチ 奪冠</div>
+            <div style="font-size:0.75rem;color:var(--muted);">驗證主流牌組穩定性 | Pokekameshi 2026-02-13</div>
+          </div>
         </div>
-        <div class="meta-card">
-          <span class="meta-label">更新頻率</span>
-          <span class="meta-value">週一/週四 09:00</span>
+        <div class="intel-item">
+          <span class="intel-type">🏆</span>
+          <div>
+            <div style="font-weight:600;">シティLeague立川 メガフシギバナ/オーガポン 奪冠</div>
+            <div style="font-size:0.75rem;color:var(--muted);">新興牌組出頭 | Pokekameshi 2026-02-13</div>
+          </div>
         </div>
-        <div class="meta-card">
-          <span class="meta-label">Scope</span>
-          <span class="meta-value">日版 / Standard</span>
+        <div class="intel-item">
+          <span class="intel-type">📢</span>
+          <div>
+            <div style="font-weight:600;">ムニクスゼロ環境持續一個月，Stamp 成核心</div>
+            <div style="font-size:0.75rem;color:var(--muted);">影響構築選擇 | Pokekameshi 2026-02-12</div>
+          </div>
         </div>
-        <div class="meta-card">
-          <span class="meta-label">主要賽事</span>
-          <span class="meta-value">A Championship</span>
+        <div class="intel-item">
+          <span class="intel-type">📦</span>
+          <div>
+            <div style="font-weight:600;">新弾「num」預計春發售</div>
+            <div style="font-size:0.75rem;color:var(--muted);">長期影響環境 | 公式</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Upcoming -->
+    <!-- 4) INVESTMENT -->
     <div class="section">
-      <div class="section-title">📅 UPCOMING</div>
+      <div class="section-title">4) 卡價與風險</div>
       <div class="card">
-        <div class="meta-card">
-          <span class="meta-label">02/16 (日)</span>
-          <span class="meta-value">A Championship Day 1</span>
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px;">
+          ⚠️ 價格來源不足，以下為參考值。建議手動查詢 TCGplayer / Cardmarket。
         </div>
-        <div class="meta-card">
-          <span class="meta-label">02/22 (六)</span>
-          <span class="meta-value">League Cup</span>
+        <table>
+          <tr><th>卡名</th><th class="num">動作</th><th>理由</th></tr>
+          <tr><td>フーディンEx</td><td class="num"><span class="tag" style="background:var(--yellow);color:black;">HOLD</span></td><td style="font-size:0.75rem;">主流核心</td></tr>
+          <tr><td>オーガポンEx</td><td class="num"><span class="tag high">BUY</span></td><td style="font-size:0.75rem;">上升趨勢明確</td></tr>
+          <tr><td>クイックシューティングスター</td><td class="num"><span class="tag watch">WATCH</span></td><td style="font-size:0.75rem;">需求增加</td></tr>
+          <tr><td>ボムシャーレ</td><td class="num"><span class="tag watch">WATCH</span></td><td style="font-size:0.75rem;">Stamp 必備</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 5) RISK RADAR -->
+    <div class="section">
+      <div class="section-title">5) 風險雷達</div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span>Stamp 系統泛濫</span>
+          <span style="color:var(--red);">⚠️ 近期</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span>ムニクスゼロ退環境</span>
+          <span style="color:var(--yellow);">2026/9</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;">
+          <span>新弾發售影響</span>
+          <span style="color:var(--muted);">2026春</span>
         </div>
       </div>
     </div>
 
-    <!-- Sources -->
+    <!-- SOURCES -->
     <div class="section">
-      <div class="section-title">📱 SOURCES</div>
-      <div style="font-size:0.8rem;color:var(--muted);">
-        <div>📺 <a href="https://pokeca-book.com" style="color:var(--accent);">PokecaBook</a> — 日版牌組</div>
-        <div>🐦 <a href="#" style="color:var(--accent);">X/Twitter</a> — 即時情報</div>
-        <div>📺 <a href="https://pokemon-matome.com" style="color:var(--accent);">PokeKameshi</a> — 牌組攻略</div>
+      <div class="section-title">Sources</div>
+      <div class="sources">
+        <div>📺 <a href="https://pokekameshi.com/">Pokekameshi (ポケカ飯)</a> — 日規主要來源</div>
+        <div>📺 <a href="https://pokecabook.com/">Pokecabook (ポケカブック)</a> — 賽事彙整</div>
+        <div>🏛️ <a href="https://www.pokemon-card.com/">Pokemon Card Official</a> — 官方</div>
+        <div>💳 <a href="https://www.tcgplayer.com/">TCGplayer</a> — 卡價參考</div>
       </div>
     </div>
 
     <div class="footer">
-      更新：週一 09:00 / 週四 09:00<br>
-      Data timestamp: 2026-02-14 14:30 GMT+8
+      <div>Run ID: 20260214-PTCG-001</div>
+      <div>Data timestamp: 2026-02-14 14:50 GMT+8</div>
+      <div>下次更新：2026-02-17 (週二) / 2026-02-20 (週五)</div>
     </div>
   </div>
 </body>
