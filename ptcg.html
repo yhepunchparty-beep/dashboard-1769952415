@@ -8,27 +8,23 @@
     :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --purple: #a371f7; --muted: #8b949e; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; }
-    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(12px); z-index: 200; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); z-index: 200; border-bottom: 1px solid var(--border); padding: 12px 20px; }
     .container { max-width: 600px; margin: 0 auto; padding: 15px; }
     .links { display: flex; gap: 15px; padding: 10px 0; }
-    .links a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
-    .section { margin-bottom: 20px; }
-    .section-title { font-size: 0.85rem; color: var(--accent); margin-bottom: 10px; padding-left: 10px; border-left: 3px solid var(--accent); }
+    .links a { color: var(--accent); text-decoration: none; font-size: 0.85rem; }
+    .section { margin-bottom: 24px; }
+    .section-title { font-size: 0.8rem; color: var(--accent); margin-bottom: 10px; padding-left: 10px; border-left: 3px solid var(--accent); font-weight: 700; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; }
-    .card-title { font-weight: 700; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-    .badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
-    .badge.tier1 { background: var(--purple); color: white; }
-    .badge.tier2 { background: var(--accent); color: white; }
-    .badge.tier3 { background: var(--muted); color: white; }
-    .deck-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-    .deck-tag { background: rgba(88, 166, 255, 0.15); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; }
+    .deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+    .deck-tag { background: rgba(88, 166, 255, 0.15); color: var(--accent); padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; text-align: center; }
+    .deck-tag.t1 { background: rgba(163, 113, 247, 0.2); color: var(--purple); border: 1px solid var(--purple); }
+    .deck-tag.t2 { background: rgba(88, 166, 255, 0.2); color: var(--accent); border: 1px solid var(--accent); }
     .trend-up { color: var(--green); }
     .trend-down { color: var(--red); }
-    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-top: 10px; }
-    .m-lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; }
-    .m-val { font-weight: 700; font-size: 0.9rem; }
-    .empty { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 20px; }
-    .refresh { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: white; border: none; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .meta-card { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 8px; }
+    .meta-label { font-size: 0.7rem; color: var(--muted); }
+    .meta-value { font-weight: 700; font-size: 0.9rem; }
+    .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.7rem; }
   </style>
 </head>
 <body>
@@ -43,86 +39,84 @@
       <a href="kanban.html">📋 Kanban</a>
       <a href="restaurant-review.html">🍽️ 餐廳評論</a>
     </div>
-    
-    <!-- Meta Trends -->
+
+    <!-- Meta Deck Rankings -->
     <div class="section">
-      <div class="section-title">🔥 META TRENDS (本週)</div>
-      
-      <div class="card">
-        <div class="card-title">
-          <span>🔥 路卡利歐 variants</span>
-          <span class="badge tier1">T1</span>
-        </div>
-        <div style="font-size:0.85rem;color:var(--muted);">各色組都有穩定表現</div>
-        <div class="deck-list">
-          <span class="deck-tag">Lucario</span>
-          <span class="deck-tag">Pikachu</span>
-          <span class="deck-tag">Charizard</span>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="card-title">
-          <span>🦈 烈咬陸鯊</span>
-          <span class="badge tier1">T1</span>
-        </div>
-        <div style="font-size:0.85rem;color:var(--muted);">穩定主流，支援牌</div>
-      </div>
-      
-      <div class="card">
-        <div class="card-title">
-          <span>⚡ 新興：電氣主題</span>
-          <span class="badge tier2">T2</span>
-        </div>
-        <div style="font-size:0.85rem;color:var(--muted);">Pikachu/ zebstrika 組合</div>
+      <div class="section-title">🔥 META DECKS — 日版 Standard</div>
+      <div class="deck-grid">
+        <div class="deck-tag t1">🦈 Garchomp</div>
+        <div class="deck-tag t1">⚔️ Lucario</div>
+        <div class="deck-tag t1">🔥 Charizard</div>
+        <div class="deck-tag t2">🧚 Gardevoir</div>
+        <div class="deck-tag t2">⚡ Miraidon</div>
+        <div class="deck-tag">🐭 Pikachu</div>
       </div>
     </div>
-    
-    <!-- Tech Radar -->
+
+    <!-- Tech Cards -->
     <div class="section">
-      <div class="section-title">⚙️ TECH RADAR</div>
-      
-      <div class="card">
-        <div class="card-title">主流牌組技術</div>
-        <div class="deck-list">
-          <span class="deck-tag">Garchomp</span>
-          <span class="deck-tag">Lucario</span>
-          <span class="deck-tag">Charizard</span>
-          <span class="deck-tag">Gardevoir</span>
-          <span class="deck-tag">Miraidon</span>
-        </div>
+      <div class="section-title">⚡ TECH STAPLES — 主流輔助卡</div>
+      <div class="deck-grid">
+        <div class="deck-tag">🥔 Earthen Shrine</div>
+        <div class="deck-tag">🔥 Bravery Charm</div>
+        <div class="deck-tag">💨 Quick Shooting Star</div>
+        <div class="deck-tag">🛡️ Counter Catcher</div>
+        <div class="deck-tag">🎯 Ultra Ball</div>
+        <div class="deck-tag">⏱️ Time Capsule</div>
       </div>
     </div>
-    
-    <!-- Data Quality -->
+
+    <!-- Market Data -->
     <div class="section">
-      <div class="section-title">📊 DATA QUALITY</div>
-      
+      <div class="section-title">📊 MARKET DATA</div>
       <div class="card">
-        <div class="metrics">
-          <div><div class="m-lbl">資料來源</div><div class="m-val">PokeCaBook</div></div>
-          <div><div class="m-lbl">更新頻率</div><div class="m-val">週一/週四</div></div>
-          <div><div class="m-lbl">Scope</div><div class="m-val">日版</div></div>
-          <div><div class="m-lbl">Format</div><div class="m-val">Standard</div></div>
+        <div class="meta-card">
+          <span class="meta-label">資料來源</span>
+          <span class="meta-value">PokecaBook</span>
+        </div>
+        <div class="meta-card">
+          <span class="meta-label">更新頻率</span>
+          <span class="meta-value">週一/週四 09:00</span>
+        </div>
+        <div class="meta-card">
+          <span class="meta-label">Scope</span>
+          <span class="meta-value">日版 / Standard</span>
+        </div>
+        <div class="meta-card">
+          <span class="meta-label">主要賽事</span>
+          <span class="meta-value">A Championship</span>
         </div>
       </div>
     </div>
-    
+
+    <!-- Upcoming -->
+    <div class="section">
+      <div class="section-title">📅 UPCOMING</div>
+      <div class="card">
+        <div class="meta-card">
+          <span class="meta-label">02/16 (日)</span>
+          <span class="meta-value">A Championship Day 1</span>
+        </div>
+        <div class="meta-card">
+          <span class="meta-label">02/22 (六)</span>
+          <span class="meta-value">League Cup</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Sources -->
     <div class="section">
       <div class="section-title">📱 SOURCES</div>
-      
-      <div class="card">
-        <div style="font-size:0.8rem;">
-          <div style="margin-bottom:8px;">📺 <a href="#" style="color:var(--accent);">PokecaBook</a></div>
-          <div style="margin-bottom:8px;">🐦 <a href="#" style="color:var(--accent);">X/Twitter 追蹤</a></div>
-          <div>📺 <a href="#" style="color:var(--accent);">PokeKameshi</a></div>
-        </div>
+      <div style="font-size:0.8rem;color:var(--muted);">
+        <div>📺 <a href="https://pokeca-book.com" style="color:var(--accent);">PokecaBook</a> — 日版牌組</div>
+        <div>🐦 <a href="#" style="color:var(--accent);">X/Twitter</a> — 即時情報</div>
+        <div>📺 <a href="https://pokemon-matome.com" style="color:var(--accent);">PokeKameshi</a> — 牌組攻略</div>
       </div>
     </div>
-    
-    <div style="text-align:center;padding:20px;color:var(--muted);font-size:0.75rem;">
-      資料更新：週一 09:00 / 週四 09:00
+
+    <div class="footer">
+      更新：週一 09:00 / 週四 09:00<br>
+      Data timestamp: 2026-02-14 14:30 GMT+8
     </div>
   </div>
 </body>
