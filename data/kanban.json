@@ -14,7 +14,7 @@
       "intro": "一鍵檢測企業郵件進垃圾郵件原因，提升開信率",
       "monetization_value": 5,
       "implementation_effort": 2,
-      "column": "proposed",
+      "column": "done",
       "why": "r/smallbusiness 熱帖：專家修復郵件送達問題"
     },
     {
@@ -34,7 +34,7 @@
       "intro": "協助顧客快速寫出真實詳細的五星好評",
       "monetization_value": 5,
       "implementation_effort": 2,
-      "column": "review",
+      "column": "ready",
       "url": "https://yhepunchparty-beep.github.io/dashboard-1769952415/restaurant-review.html",
       "why": "顧客想給好評但不知道怎麼寫"
     },
@@ -55,7 +55,7 @@
       "intro": "為長輩設計的極簡手機介面，防止誤按廣告與詐騙連結",
       "monetization_value": 4,
       "implementation_effort": 2,
-      "column": "proposed",
+      "column": "done",
       "why": "長輩因害怕點錯而拒絕使用手機"
     },
     {
@@ -75,7 +75,7 @@
       "intro": "自動計算Notion中的日期區間、到期提醒",
       "monetization_value": 3,
       "implementation_effort": 2,
-      "column": "proposed",
+      "column": "done",
       "why": "Notion用戶明確需求，擴充功能可變現"
     },
     {
@@ -85,7 +85,7 @@
       "intro": "視覺化呈現樞紐表複雜的交叉分析",
       "monetization_value": 3,
       "implementation_effort": 2,
-      "column": "proposed",
+      "column": "done",
       "why": "專業用戶願付費的視覺化痛點"
     },
     {
@@ -95,7 +95,7 @@
       "intro": "價格下降時自動通知用戶",
       "monetization_value": 4,
       "implementation_effort": 1,
-      "column": "ready",
+      "column": "active",
       "why": "用戶手動反覆檢查價格，工程極小需求明確"
     },
     {
@@ -125,7 +125,7 @@
       "intro": "根據不同場景提供寫作技巧建議",
       "monetization_value": 3,
       "implementation_effort": 3,
-      "column": "proposed",
+      "column": "done",
       "why": "寫作市場穩定，作者願意付費提升技巧"
     },
     {
@@ -145,7 +145,7 @@
       "intro": "根據觀察到的需求，開發新技能並發布到 ClawHub",
       "monetization_value": 4,
       "implementation_effort": 3,
-      "column": "ready",
+      "column": "active",
       "source": "ninja日常任務"
     }
   ]
