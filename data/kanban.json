@@ -66,7 +66,7 @@
       "monetization_value": 4,
       "implementation_effort": 1,
       "column": "ready",
-      "why": "Excel最高頻痛點，技術極簡變現最快（Reddit巡邏）"
+      "why": "Excel最高頻痛點，技術極簡變現最快"
     },
     {
       "id": "P-007",
@@ -76,7 +76,7 @@
       "monetization_value": 3,
       "implementation_effort": 2,
       "column": "proposed",
-      "why": "Notion用戶明確需求，擴充功能可變現（Reddit巡邏）"
+      "why": "Notion用戶明確需求，擴充功能可變現"
     },
     {
       "id": "P-008",
@@ -86,7 +86,37 @@
       "monetization_value": 3,
       "implementation_effort": 2,
       "column": "proposed",
-      "why": "專業用戶願付費的視覺化痛點（Reddit巡邏）"
+      "why": "專業用戶願付費的視覺化痛點"
+    },
+    {
+      "id": "P-009",
+      "product": "飯店價格監控提醒",
+      "title": "飯店價格監控提醒",
+      "intro": "價格下降時自動通知用戶",
+      "monetization_value": 4,
+      "implementation_effort": 1,
+      "column": "ready",
+      "why": "用戶手動反覆檢查價格，工程極小需求明確"
+    },
+    {
+      "id": "P-010",
+      "product": "合約到期追蹤工具",
+      "title": "合約到期追蹤工具",
+      "intro": "自動追蹤合約/訂閱到期並提前提醒",
+      "monetization_value": 4,
+      "implementation_effort": 1,
+      "column": "proposed",
+      "why": "小企業用試算表追蹤痛苦，付費意願明確"
+    },
+    {
+      "id": "P-011",
+      "product": "Excel跨表關聯模板",
+      "title": "Excel跨表關聯模板",
+      "intro": "一鍵修復跨表資料錯位問題",
+      "monetization_value": 4,
+      "implementation_effort": 1,
+      "column": "proposed",
+      "why": "排序資料時跨表錯位是常見痛點"
     },
     {
       "id": "T-001",
@@ -96,9 +126,7 @@
       "monetization_value": 5,
       "implementation_effort": 3,
       "column": "active",
-      "source": "ninja日常任務",
-      "signal_keywords": "How do I, I hate it when, Is there a tool for",
-      "monitored_subs": "SideProject, Entrepreneur, smallbusiness, Excel, LifeProTips, MechanicalKeyboards, HomeLab, Writing"
+      "source": "ninja日常任務"
     },
     {
       "id": "T-002",
