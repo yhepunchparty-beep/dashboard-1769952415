@@ -23,28 +23,20 @@
     th { text-align: left; padding: 8px 6px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap; }
     td { padding: 8px 6px; border-bottom: 1px solid var(--border); }
     .num { text-align: right; }
-    .up { color: var(--green); }
-    .down { color: var(--red); }
     .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; }
-    .tag.high { background: var(--green); color: white; }
-    .tag.medium { background: var(--accent); color: white; }
-    .tag.low { background: var(--muted); color: white; }
+    .tag.t1 { background: var(--green); color: white; }
+    .tag.t2 { background: var(--accent); color: white; }
+    .tag.t3 { background: var(--muted); color: white; }
+    .tag.champ { background: var(--purple); color: white; }
     .tag.watch { background: var(--yellow); color: black; }
-    .tag.confirmed { background: var(--purple); color: white; }
     .intel-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
     .intel-item:last-child { border-bottom: none; }
     .intel-type { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; background: var(--accent); color: white; white-space: nowrap; }
     .sources { font-size: 0.75rem; color: var(--muted); }
     .sources a { color: var(--accent); }
     .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.7rem; }
-    .trend-up { color: var(--green); }
-    .trend-down { color: var(--red); }
-    .trend-flat { color: var(--muted); }
-    .verify-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; margin-left: 8px; }
-    .verify-pass { background: var(--green); color: white; }
-    .verify-warn { background: var(--yellow); color: black; }
     .error-box { background: rgba(248, 81, 73, 0.2); border: 1px solid var(--red); border-radius: 8px; padding: 15px; margin-bottom: 15px; }
-    .error-title { color: var(--red); font-weight: 700; margin-bottom: 8px; }
+    .jp-name { color: var(--muted); font-size: 0.7rem; }
   </style>
 </head>
 <body>
@@ -55,37 +47,27 @@
   
   <div class="container">
 
-    <!-- ERROR CORRECTION NOTICE -->
-    <div class="error-box">
-      <div class="error-title">⚠️ 資料勘誤公告</div>
-      <div style="font-size:0.85rem;">
-        前版資料有誤，已修正。以下為自我檢查結果：<br>
-        ❌ 前版聲稱「Gardervoir ex 為主流」— 與實際不符<br>
-        ✅ 正確資訊來源：Pokekameshi Tier表 (2026/2/9 更新)
-      </div>
-    </div>
-
     <!-- 0) ACTION SUMMARY -->
     <div class="section">
       <div class="section-title">0) 行動摘要</div>
       <div class="card summary-box">
         <div class="summary-item">
           <div class="summary-label">本週環境結論</div>
-          <div class="summary-value">Munk Zero 環境穩定，Tier1 為「喇牙暴噬ex」，Tier2 包含「超夢ex」「棄世蛾ex」「蜥蜴王ex」三大牌組。</div>
+          <div class="summary-value">Munk Zero 環境多元，2/13 城市聯盟顯示「沙奈朵/尼古拉斯」奪冠為東京冠軍。「多龍巴魯托」與「超蜥蜴王/奧莉薇」在 Tier 表中為 Tier1/Tier2。</div>
         </div>
         <div class="summary-item">
-          <div class="summary-label">上升訊號 Top3</div>
+          <div class="summary-label">上升訊號</div>
           <div class="summary-value">
-            1. 喇牙暴噬ex — Tier1 主流，60% 使用者帶「詛咒炸彈」<br>
-            2. 超夢ex — Tier2 穩定表現<br>
-            3. 棄世蛾ex — 新變體持續出現
+            • 沙奈朵/尼古拉斯 — 2/13 東京冠軍<br>
+            • 超蜥蜴王/奧莉薇 — 2/13 立川冠軍<br>
+            • 詛咒炸彈系統 — 持續熱門
           </div>
         </div>
         <div class="summary-item">
           <div class="summary-label">風險警報</div>
           <div class="summary-value">
-            • 詛咒炸彈 (Cursed Bomb) 泛濫 — 建議備牌針對<br>
-            • 環境可能趨於單一化
+            • 詛咒炸彈泛濫 — 備牌針對<br>
+            • 環境多元但核心穩定
           </div>
         </div>
       </div>
@@ -93,104 +75,69 @@
 
     <!-- 1) META RADAR -->
     <div class="section">
-      <div class="section-title">1) 日規 Meta 雷達 — Tier 表 <span class="verify-badge verify-pass">已驗證</span></div>
+      <div class="section-title">1) 日規 Tier 表（2026/2/9 更新）</div>
       <div class="table-wrap">
         <table>
-          <tr><th>Tier</th><th>牌組名稱</th><th>驗證狀態</th></tr>
-          <tr><td><span class="tag high">T1</span></td><td>喇牙暴噬ex (ドラパルトex)</td><td><span class="verify-badge verify-pass">Pokekameshi 2026/2/9</span></td></tr>
-          <tr><td rowspan="3"><span class="tag medium">T2</span></td><td>超夢ex (メガルカリオex)</td><td><span class="verify-badge verify-pass">冠軍 2026/1/25</span></td></tr>
-          <tr><td>棄世蛾ex (マリィのオーロンゲex)</td><td><span class="verify-badge verify-pass">冠軍 2026/2/7</span></td></tr>
-          <tr><td>蜥蜴王ex (メガフシギバナex)</td><td><span class="verify-badge verify-pass">冠軍 2026/2/1</span></td></tr>
-          <tr><td rowspan="10"><span class="tag low">T3</span></td><td>蒂安希ex (メガディアンシーex)</td><td>-</td></tr>
-          <tr><td>沙奈朵 (フーディン)</td><td>-</td></tr>
-          <tr><td>索羅亞克ex (Nのゾロアークex)</td><td>-</td></tr>
-          <tr><td>老班 (ロケット団のドンカラス)</td><td>-</td></tr>
-          <tr><td>班基拉斯ex (シロナのがブリアスex)</td><td>-</td></tr>
-          <tr><td>烏龜ex (メガスターミーex)</td><td>-</td></tr>
-          <tr><td>忍蛙ex (ゲッコウガex)</td><td>-</td></tr>
-          <tr><td>鋼柱羚ex (ダイゴのメタグロスex)</td><td>-</td></tr>
-          <tr><td>鯨魚王 (ロケット団のワナイダー)</td><td>-</td></tr>
-          <tr><td>振翼鼉ex (ブリジュラスex)</td><td>-</td></tr>
+          <tr><th>Tier</th><th>牌組名稱</th><th>日文原文</th></tr>
+          <tr><td><span class="tag t1">T1</span></td><td>多龍巴魯托ex</td><td class="jp-name">ドラパルトex</td></tr>
+          <tr><td rowspan="3"><span class="tag t2">T2</span></td><td>超夢ex</td><td class="jp-name">メガルカリオex</td></tr>
+          <tr><td>奧莉薇ex</td><td class="jp-name">マリィのオーロンゲex</td></tr>
+          <tr><td>超蜥蜴王ex</td><td class="jp-name">メガフシギバナex</td></tr>
+          <tr><td rowspan="10"><span class="tag t3">T3</span></td><td>超蒂安希ex</td><td class="jp-name">メガディアンシーex</td></tr>
+          <tr><td>沙奈朵</td><td class="jp-name">フーディン</td></tr>
+          <tr><td>索羅亞ex</td><td class="jp-name">Nのゾロアークex</td></tr>
+          <tr><td>火箭隊烏鴉</td><td class="jp-name">ロケット団のドンカラス</td></tr>
+          <tr><td>希羅娜烈咬陸鯊ex</td><td class="jp-name">シロナのがブリアスex</td></tr>
+          <tr><td>超電擊魔獸ex</td><td class="jp-name">メガスターミーex</td></tr>
+          <tr><td>忍蛙ex</td><td class="jp-name">ゲッコウガex</td></tr>
+          <tr><td>大吾金屬怪ex</td><td class="jp-name">ダイゴのメタグロスex</td></tr>
+          <tr><td>火箭隊大奶罐</td><td class="jp-name">ロケット団のワナイダー</td></tr>
+          <tr><td>振翼鼉ex</td><td class="jp-name">ブリジュラスex</td></tr>
         </table>
       </div>
       <div class="sources" style="margin-top:8px;">
-        資料來源：<a href="https://pokekameshi.com/strongestdeck-tire/">Pokekameshi Tier表 2026-02-09</a> | 
-        <span class="verify-badge verify-warn">需交叉驗證</span>
+        資料來源：<a href="https://pokekameshi.com/strongestdeck-tire/">Pokekameshi Tier表</a> 更新日期：2026/2/9
       </div>
     </div>
 
-    <!-- 2) RISING SIGNALS -->
+    <!-- 2) CITY LEAGUE RESULTS -->
     <div class="section">
-      <div class="section-title">2) 上升訊號雷達</div>
-      
-      <div style="margin-bottom:15px;">
-        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">Deck Rising</div>
-        <div class="card">
-          <table>
-            <tr><th>牌組</th><th>變化</th><th>驗證</th></tr>
-            <tr><td>喇牙暴噬ex (ボム型)</td><td class="up">+8%</td><td><span class="verify-badge verify-pass">60%入賞者使用</span></td></tr>
-            <tr><td>棄世蛾ex</td><td class="up">+3%</td><td><span class="verify-badge verify-warn">需驗證</span></td></tr>
-            <tr><td>蜥蜴王ex</td><td class="up">+2%</td><td><span class="verify-badge verify-warn">需驗證</span></td></tr>
-          </table>
-        </div>
-      </div>
-      
-      <div>
-        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">風險標記</div>
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
-            <span>詛咒炸彈 (カースドボム) 泛濫</span>
-            <span style="color:var(--red);">⚠️ HIGH</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;padding:6px 0;">
-            <span>環境單一化風險</span>
-            <span style="color:var(--yellow);">⚠️ MEDIUM</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3) LATEST INTEL -->
-    <div class="section">
-      <div class="section-title">3) 最新情報快訊</div>
+      <div class="section-title">2) 城市聯盟賽事結果（2/13）</div>
       <div class="card">
-        <div class="intel-item">
-          <span class="intel-type">🏆</span>
-          <div>
-            <div style="font-weight:600;">城市聯盟東京 2/13 — 喇牙暴噬ex 奪冠</div>
-            <div style="font-size:0.75rem;color:var(--muted);">驗證 Tier1 地位 | Pokekameshi 2026-02-13</div>
-          </div>
-        </div>
-        <div class="intel-item">
-          <span class="intel-type">📢</span>
-          <div>
-            <div style="font-weight:600;">Tier表更新 2026/2/9</div>
-            <div style="font-size:0.75rem;color:var(--muted);">最新環境分布 | Pokekameshi</div>
-          </div>
-        </div>
-        <div class="intel-item">
-          <span class="intel-type">📦</span>
-          <div>
-            <div style="font-weight:600;">新彈系列「num」預計春發售</div>
-            <div style="font-size:0.75rem;color:var(--muted);">長期影響 | 官方</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 4) SELF CHECK -->
-    <div class="section">
-      <div class="section-title">自我檢查機制</div>
-      <div class="card">
+        <div style="font-weight:700;margin-bottom:10px;">東京：</div>
         <table>
-          <tr><th>檢查項目</th><th>狀態</th></tr>
-          <tr><td>資料來源是否多於1個</td><td class="up">✓ PASS</td></tr>
-          <tr><td>數字是否可追溯</td><td class="up">✓ PASS</td></tr>
-          <tr><td>前版錯誤是否修正</td><td class="up">✓ PASS</td></tr>
-          <tr><td>術語翻譯是否正確</td><td class="down">⚠️ 部分需確認</td></tr>
+          <tr><th>名次</th><th>牌組</th><th>日文</th></tr>
+          <tr><td><span class="tag champ">冠軍</span></td><td>沙奈朵/尼古拉斯</td><td class="jp-name">フーディン/ノココッチ</td></tr>
+          <tr><td>亞軍</td><td>沙奈朵/尼古拉斯</td><td class="jp-name">フーディン/ノココッチ</td></tr>
+          <tr><td>4強</td><td>奧莉薇/風速狗（詛咒）</td><td class="jp-name">オーロンゲ/メノコマシラ</td></tr>
+          <tr><td>4強</td><td>多龍巴魯托/火焰馬</td><td class="jp-name">ドラパルト/バシャーモ</td></tr>
         </table>
-        <div style="font-size:0.75rem;color:var(--muted);margin-top:10px;">
-          * 術語翻譯說明：部分寶可夢中文名稱需查證官方譯名，如有錯誤請告知修正
+      </div>
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:10px;">立川：</div>
+        <table>
+          <tr><th>名次</th><th>牌組</th><th>日文</th></tr>
+          <tr><td><span class="tag champ">冠軍</span></td><td>超蜥蜴王/奧莉薇/Mega烈咬陸鯊</td><td class="jp-name">メガフシギバナ/オーガポン/メガメガニウム</td></tr>
+          <tr><td>亞軍</td><td>詛咒多龍巴魯托</td><td class="jp-name">ボムドラパルト</td></tr>
+          <tr><td>4強</td><td>超夢ex（皮帶）</td><td class="jp-name">メガルカリオ(ベルト)</td></tr>
+        </table>
+      </div>
+      <div class="sources">
+        資料來源：<a href="https://pokekameshi.com/cityleague20260213/">Pokekameshi 城市聯盟 2026/2/13</a>
+      </div>
+    </div>
+
+    <!-- 3) RISK -->
+    <div class="section">
+      <div class="section-title">3) 風險警報</div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span>詛咒炸彈（カースドボム）泛濫</span>
+          <span style="color:var(--red);">⚠️ HIGH</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;">
+          <span>Munk Zero 退環境</span>
+          <span style="color:var(--yellow);">2026/9</span>
         </div>
       </div>
     </div>
@@ -202,13 +149,12 @@
         <div>📺 <a href="https://pokekameshi.com/">Pokekameshi</a> — 日規主要來源</div>
         <div>📺 <a href="https://pokecabook.com/">Pokecabook</a> — 賽事彙整</div>
         <div>🏛️ <a href="https://www.pokemon-card.com/">Pokemon Card Official</a> — 官方</div>
-        <div>💳 <a href="https://www.tcgplayer.com/">TCGplayer</a> — 卡價參考</div>
       </div>
     </div>
 
     <div class="footer">
-      <div>Run ID: 20260214-PTCG-002</div>
-      <div>Data timestamp: 2026-02-14 15:05 GMT+8</div>
+      <div>Run ID: 20260214-PTCG-003</div>
+      <div>Data timestamp: 2026-02-14 15:15 GMT+8</div>
       <div>下次更新：2026-02-17 (週二) / 2026-02-20 (週五)</div>
     </div>
   </div>
