@@ -1,200 +1,163 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Daily US Stock Research</title>
-  <style>
-    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --purple: #a371f7; --muted: #8b949e; }
+
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Ninja Stocks</title>
+<style>
+    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --muted: #8b949e; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; line-height: 1.4; }
-    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); z-index: 200; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .container { max-width: 700px; margin: 0 auto; padding: 15px; }
-    .section { margin-bottom: 24px; }
-    .section-title { font-size: 0.8rem; color: var(--accent); margin-bottom: 10px; padding-left: 10px; border-left: 3px solid var(--accent); font-weight: 700; text-transform: uppercase; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; }
-    .summary { background: linear-gradient(135deg, rgba(88,166,255,0.1), rgba(163,113,247,0.1)); border: 1px solid var(--accent); }
-    .summary-item { margin-bottom: 12px; }
-    .summary-item:last-child { margin-bottom: 0; }
-    .summary-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
-    .summary-value { font-size: 0.95rem; font-weight: 600; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    th { text-align: left; padding: 8px 6px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap; }
-    td { padding: 8px 6px; border-bottom: 1px solid var(--border); }
-    .num { text-align: right; font-family: monospace; }
-    .up { color: var(--green); }
-    .down { color: var(--red); }
-    .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; }
-    .badge.red { background: var(--red); color: white; }
-    .badge.green { background: var(--green); color: white; }
-    .badge.yellow { background: var(--yellow); color: black; }
-    .badge.purple { background: var(--purple); color: white; }
-    .signal-high { color: var(--green); font-weight: 900; }
-    .signal-mid { color: var(--yellow); font-weight: 700; }
-    .signal-low { color: var(--red); }
-    .top3 { display: flex; gap: 8px; flex-wrap: wrap; }
-    .top3-item { background: rgba(63,185,80,0.15); border: 1px solid var(--green); border-radius: 8px; padding: 10px; flex: 1; min-width: 120px; }
-    .top3-ticker { font-weight: 900; color: var(--green); font-size: 1.1rem; }
-    .top3-score { font-size: 0.8rem; color: var(--muted); }
-    .risk-item { background: rgba(248,81,73,0.15); border: 1px solid var(--red); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
-    .risk-ticker { font-weight: 700; color: var(--red); }
-    .sources { font-size: 0.7rem; color: var(--muted); }
-    .sources a { color: var(--accent); }
-    .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.7rem; }
-    .links { display: flex; gap: 15px; padding: 10px 0; }
-    .links a { color: var(--accent); text-decoration: none; font-size: 0.85rem; }
-  </style>
-</head>
-<body>
-  <div class="nav">
-    <b>📈 US STOCK <span style="color:var(--accent)">RESEARCH</span></b>
-    <small style="color:var(--muted)">2026-02-14</small>
-  </div>
-  
-  <div class="container">
-    <div class="links">
-      <a href="ptcg.html">🃏 PTCG</a>
+    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 30px; }
+    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(12px); z-index: 2000; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .container { max-width: 1200px; margin: 10px auto; padding: 0 15px; }
+    .sticky-ctrls { position: sticky; top: 48px; z-index: 1000; background: var(--bg); padding: 10px 0; border-bottom: 1px solid var(--border); margin-bottom: 15px; }
+    .ctrl-group { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+    .btn { padding: 10px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 0.8rem; font-weight: 700; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
+    .btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 12px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 6px; }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; background: rgba(0,0,0,0.15); padding: 10px; border-radius: 8px; font-size: 0.85rem; }
+    .m-lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; }
+    .sparkline { display: flex; align-items: flex-end; gap: 1px; height: 20px; margin: 4px 0; }
+    .spark-bar { background: var(--accent); flex: 1; }
+    @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+</style>
+<script>
+    function sortCards(criteria, btn) {
+        const grid = document.getElementById('stocks_grid');
+        const cards = Array.from(grid.querySelectorAll('.card'));
+        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        cards.sort((a, b) => {
+            if (criteria === 'event') return (parseFloat(a.dataset.event)||999) - (parseFloat(b.dataset.event)||999);
+            if (criteria === 'delta') return Math.abs(parseFloat(b.dataset.chg)||0) - Math.abs(parseFloat(a.dataset.chg)||0);
+            return 0;
+        });
+        cards.forEach((card, idx) => card.style.order = idx);
+    }
+    window.onload = () => {
+        const pass = localStorage.getItem('dash_pass') || prompt("🔐 Pass:");
+        if (pass === "8888") localStorage.setItem('dash_pass', "8888");
+        else { document.body.innerHTML = "<h1>Blocked</h1>"; window.stop(); }
+    };
+</script>
+</head><body>
+    <div class="nav"><b>🥷 NINJA <span style="color:var(--accent)">STOCKS</span></b><small style="color:var(--muted)">Portfolio: $57,711.00</small></div>
+    <div class="container">
+        <div style="margin-bottom:15px;"><a href="ptcg.html" style="color:var(--accent); text-decoration:none; margin-right:20px;">🃏 PTCG Dashboard</a><a href="kanban.html" style="color:var(--accent); text-decoration:none;">📋 Dev Kanban</a></div>
+        <div class="sticky-ctrls">
+            <div class="ctrl-group">
+                <span style="font-size:0.6rem;color:var(--muted);align-self:center;">SORT:</span>
+                <button class="btn sort-btn" onclick="sortCards('event', this)">📅 Earnings</button>
+                <button class="btn sort-btn" onclick="sortCards('delta', this)">🔥 Delta</button>
+            </div>
+        </div>
+        <div class="grid" id="stocks_grid">
+        <div class="card" data-event="999" data-chg="-2.21" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-weight:800;color:var(--accent);font-size:1.1rem;">NVDA</span>
+                <span class="badge" style="background:#3fb950;padding:2px 6px;border-radius:4px;font-size:0.7rem;">持有</span>
+            </div>
+            <div class="price-row"><span style="font-size:1.6rem;font-weight:900;">$182.81</span><span style="font-weight:700; color:var(--red)">-2.21%</span></div>
+            <div class="metrics"><div class="m-item" style="grid-column:span 2; border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px;"><div class="m-lbl">Position</div><div class="m-val" style="color:var(--green)">250 Shrs ($45,702.50)</div></div><div class="m-item"><div class="m-lbl">PE (TTM)</div><div class="m-val">45.2</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$253.88464</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">46.7</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:10px"></div></div>
+            <div style="font-size:0.6rem;color:var(--muted);text-align:right;">2026-02-15 09:00 | Basis: Adj Close</div>
+        </div>
+        <div class="card" data-event="999" data-chg="-0.47" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-weight:800;color:var(--accent);font-size:1.1rem;">TSM</span>
+                <span class="badge" style="background:#3fb950;padding:2px 6px;border-radius:4px;font-size:0.7rem;">持有</span>
+            </div>
+            <div class="price-row"><span style="font-size:1.6rem;font-weight:900;">$366.36</span><span style="font-weight:700; color:var(--red)">-0.47%</span></div>
+            <div class="metrics"><div class="m-item" style="grid-column:span 2; border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px;"><div class="m-lbl">Position</div><div class="m-val" style="color:var(--green)">10 Shrs ($3,663.60)</div></div><div class="m-item"><div class="m-lbl">PE (TTM)</div><div class="m-val">34.7</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$421.49057</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">66.2</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div></div>
+            <div style="font-size:0.6rem;color:var(--muted);text-align:right;">2026-02-15 09:00 | Basis: Adj Close</div>
+        </div>
+        <div class="card" data-event="999" data-chg="-1.08" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-weight:800;color:var(--accent);font-size:1.1rem;">GOOG</span>
+                <span class="badge" style="background:#333;padding:2px 6px;border-radius:4px;font-size:0.7rem;">觀察</span>
+            </div>
+            <div class="price-row"><span style="font-size:1.6rem;font-weight:900;">$306.02</span><span style="font-weight:700; color:var(--red)">-1.08%</span></div>
+            <div class="metrics"><div class="m-item"><div class="m-lbl">PE (TTM)</div><div class="m-val">28.3</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$359.2353</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">24.0</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:0px"></div></div>
+            <div style="font-size:0.6rem;color:var(--muted);text-align:right;">2026-02-15 09:00 | Basis: Adj Close</div>
+        </div>
+        <div class="card" data-event="999" data-chg="1.33" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-weight:800;color:var(--accent);font-size:1.1rem;">NFLX</span>
+                <span class="badge" style="background:#3fb950;padding:2px 6px;border-radius:4px;font-size:0.7rem;">持有</span>
+            </div>
+            <div class="price-row"><span style="font-size:1.6rem;font-weight:900;">$76.87</span><span style="font-weight:700; color:var(--green)">+1.33%</span></div>
+            <div class="metrics"><div class="m-item" style="grid-column:span 2; border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px;"><div class="m-lbl">Position</div><div class="m-val" style="color:var(--green)">100 Shrs ($7,687.00)</div></div><div class="m-item"><div class="m-lbl">PE (TTM)</div><div class="m-val">30.4</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$111.42846</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">24.8</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:1px"></div></div>
+            <div style="font-size:0.6rem;color:var(--muted);text-align:right;">2026-02-15 09:00 | Basis: Adj Close</div>
+        </div>
+        <div class="card" data-event="999" data-chg="0.21" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-weight:800;color:var(--accent);font-size:1.1rem;">QQQ</span>
+                <span class="badge" style="background:#333;padding:2px 6px;border-radius:4px;font-size:0.7rem;">觀察</span>
+            </div>
+            <div class="price-row"><span style="font-size:1.6rem;font-weight:900;">$601.92</span><span style="font-weight:700; color:var(--green)">+0.21%</span></div>
+            <div class="metrics"><div class="m-item"><div class="m-lbl">PE (TTM)</div><div class="m-val">32.0</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$N/A</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">36.6</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:2px"></div></div>
+            <div style="font-size:0.6rem;color:var(--muted);text-align:right;">2026-02-15 09:00 | Basis: Adj Close</div>
+        </div>
+        <div class="card" data-event="999" data-chg="-0.26" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-weight:800;color:var(--accent);font-size:1.1rem;">AVT</span>
+                <span class="badge" style="background:#3fb950;padding:2px 6px;border-radius:4px;font-size:0.7rem;">持有</span>
+            </div>
+            <div class="price-row"><span style="font-size:1.6rem;font-weight:900;">$65.79</span><span style="font-weight:700; color:var(--red)">-0.26%</span></div>
+            <div class="metrics"><div class="m-item" style="grid-column:span 2; border-bottom:1px solid #333; padding-bottom:5px; margin-bottom:5px;"><div class="m-lbl">Position</div><div class="m-val" style="color:var(--green)">10 Shrs ($657.90)</div></div><div class="m-item"><div class="m-lbl">PE (TTM)</div><div class="m-val">26.7</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$59.25</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">89.0</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:19px"></div></div>
+            <div style="font-size:0.6rem;color:var(--muted);text-align:right;">2026-02-15 09:00 | Basis: Adj Close</div>
+        </div>
+        <div class="card" data-event="999" data-chg="-0.13" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-weight:800;color:var(--accent);font-size:1.1rem;">MSFT</span>
+                <span class="badge" style="background:#333;padding:2px 6px;border-radius:4px;font-size:0.7rem;">觀察</span>
+            </div>
+            <div class="price-row"><span style="font-size:1.6rem;font-weight:900;">$401.32</span><span style="font-weight:700; color:var(--red)">-0.13%</span></div>
+            <div class="metrics"><div class="m-item"><div class="m-lbl">PE (TTM)</div><div class="m-val">25.1</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$595.99567</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">24.9</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:1px"></div></div>
+            <div style="font-size:0.6rem;color:var(--muted);text-align:right;">2026-02-15 09:00 | Basis: Adj Close</div>
+        </div>
+        <div class="card" data-event="999" data-chg="0.67" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-weight:800;color:var(--accent);font-size:1.1rem;">AMD</span>
+                <span class="badge" style="background:#333;padding:2px 6px;border-radius:4px;font-size:0.7rem;">觀察</span>
+            </div>
+            <div class="price-row"><span style="font-size:1.6rem;font-weight:900;">$207.32</span><span style="font-weight:700; color:var(--green)">+0.67%</span></div>
+            <div class="metrics"><div class="m-item"><div class="m-lbl">PE (TTM)</div><div class="m-val">79.4</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$287.19565</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">31.0</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:5px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div></div>
+            <div style="font-size:0.6rem;color:var(--muted);text-align:right;">2026-02-15 09:00 | Basis: Adj Close</div>
+        </div>
+        <div class="card" data-event="999" data-chg="4.4" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-weight:800;color:var(--accent);font-size:1.1rem;">CRWD</span>
+                <span class="badge" style="background:#333;padding:2px 6px;border-radius:4px;font-size:0.7rem;">觀察</span>
+            </div>
+            <div class="price-row"><span style="font-size:1.6rem;font-weight:900;">$429.64</span><span style="font-weight:700; color:var(--green)">+4.40%</span></div>
+            <div class="metrics"><div class="m-item"><div class="m-lbl">PE (Forward)</div><div class="m-val">88.8</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$549.0196</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">38.5</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:10px"></div></div>
+            <div style="font-size:0.6rem;color:var(--muted);text-align:right;">2026-02-15 09:00 | Basis: Adj Close</div>
+        </div>
+        <div class="card" data-event="999" data-chg="5.77" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-weight:800;color:var(--accent);font-size:1.1rem;">NET</span>
+                <span class="badge" style="background:#333;padding:2px 6px;border-radius:4px;font-size:0.7rem;">觀察</span>
+            </div>
+            <div class="price-row"><span style="font-size:1.6rem;font-weight:900;">$195.85</span><span style="font-weight:700; color:var(--green)">+5.77%</span></div>
+            <div class="metrics"><div class="m-item"><div class="m-lbl">PE (Forward)</div><div class="m-val">135.4</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$232.27194</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">52.9</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:8px"></div><div class="spark-bar" style="height:6px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:1px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:7px"></div><div class="spark-bar" style="height:12px"></div><div class="spark-bar" style="height:10px"></div><div class="spark-bar" style="height:15px"></div></div>
+            <div style="font-size:0.6rem;color:var(--muted);text-align:right;">2026-02-15 09:00 | Basis: Adj Close</div>
+        </div>
+        <div class="card" data-event="999" data-chg="-0.41" style="order: 0;">
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-weight:800;color:var(--accent);font-size:1.1rem;">AMZN</span>
+                <span class="badge" style="background:#333;padding:2px 6px;border-radius:4px;font-size:0.7rem;">觀察</span>
+            </div>
+            <div class="price-row"><span style="font-size:1.6rem;font-weight:900;">$198.79</span><span style="font-weight:700; color:var(--red)">-0.41%</span></div>
+            <div class="metrics"><div class="m-item"><div class="m-lbl">PE (TTM)</div><div class="m-val">27.7</div></div><div class="m-item"><div class="m-lbl">Target</div><div class="m-val">$282.1746</div></div><div class="m-item"><div class="m-lbl">RSI</div><div class="m-val">16.7</div></div><div class="m-item"><div class="m-lbl">Earnings</div><div class="m-val" style="color:var(--yellow)">D999</div></div></div>
+            <div class="sparkline"><div class="spark-bar" style="height:11px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:20px"></div><div class="spark-bar" style="height:19px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:15px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:13px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:17px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:18px"></div><div class="spark-bar" style="height:16px"></div><div class="spark-bar" style="height:14px"></div><div class="spark-bar" style="height:9px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:4px"></div><div class="spark-bar" style="height:3px"></div><div class="spark-bar" style="height:2px"></div><div class="spark-bar" style="height:0px"></div><div class="spark-bar" style="height:0px"></div></div>
+            <div style="font-size:0.6rem;color:var(--muted);text-align:right;">2026-02-15 09:00 | Basis: Adj Close</div>
+        </div></div>
     </div>
-
-    <!-- 0) ACTION SUMMARY -->
-    <div class="section">
-      <div class="section-title">0) 行動摘要</div>
-      <div class="card summary">
-        <div class="summary-item">
-          <div class="summary-label">1) 市場狀態</div>
-          <div class="summary-value">Risk-off：VIX 回升至 20.6，10Y yield 降至 4.06%，市場波動加劇</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">2) 情緒指標</div>
-          <div class="summary-value">Fear & Greed：CNN 載入失敗（標記未驗證），但 VIX 上升暗示偏恐懼</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">3) 資金偏好</div>
-          <div class="summary-value">防守態勢：XLE (+2.07% 5D) > XLI > XLV > 防禦類；但 IWF vs IWD 近持平</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">4) Top 3 研究標的</div>
-          <div class="summary-value">1) AMAT (信號 72) - 半導體設備補漲 + 財報超預期<br>2) TSM (65) - 5D +5% 強勢，先進製程需求旺<br>3) ASML (63) - 1M +88% 漲多，但長期趨勢仍多</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">5) 風險警報</div>
-          <div class="summary-value">• UNH (-42% 1M) - 財報後暴跌，需待站穩<br>• NVDA (-2.2% 今日) - AI 族群回檔壓力<br>• META/AMZN - 距高點遠，補跌風險</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 1) MARKET REGIME -->
-    <div class="section">
-      <div class="section-title">1) Market Regime — 風險溫度計</div>
-      <div class="table-wrap">
-        <table>
-          <tr><th>指標</th><th class="num">最新</th><th class="num">1D</th><th class="num">5D</th><th class="num">1M</th><th>解讀</th></tr>
-          <tr><td>SPY</td><td class="num">681.75</td><td class="num up">+0.07%</td><td class="num down">-1.28%</td><td class="num up">+13.1%</td><td>高位整理</td></tr>
-          <tr><td>QQQ</td><td class="num">601.92</td><td class="num up">+0.21%</td><td class="num down">-1.27%</td><td class="num up">+12.4%</td><td>科技高位整理</td></tr>
-          <tr><td>IWM</td><td class="num">262.96</td><td class="num up">+1.32%</td><td class="num down">-0.78%</td><td class="num up">+17.7%</td><td>小盤反彈最強</td></tr>
-          <tr><td>2Y UST</td><td class="num">3.59%</td><td class="num">-</td><td class="num down">-0.01%</td><td class="num down">-0.3%</td><td>利率持平</td></tr>
-          <tr><td>10Y UST</td><td class="num">4.06%</td><td class="num">-</td><td class="num down">-0.05%</td><td class="num down">-0.3%</td><td>殖利率回落</td></tr>
-          <tr><td>VIX</td><td class="num" style="color:var(--red)">20.60</td><td class="num">-</td><td class="num up">+17%</td><td class="num up">+45%</td><td>波動率飆升</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- 2) SECTOR LEADERSHIP -->
-    <div class="section">
-      <div class="section-title">2) Sector / Style Leadership</div>
-      <div class="table-wrap">
-        <table>
-          <tr><th>類別</th><th>ETF</th><th class="num">5D</th><th class="num">1M</th><th>重點</th></tr>
-          <tr><td>Growth vs Value</td><td>IWF vs IWD</td><td class="num down">-1.74%</td><td class="num down">-9.3%</td><td>Value 略優</td></tr>
-          <tr><td>Semis</td><td>SMH</td><td class="num up">+1.51%</td><td class="num up">+61.9%</td><td>AI/半導最強</td></tr>
-          <tr><td>Financials</td><td>XLF</td><td class="num down">-4.81%</td><td class="num up">+1.1%</td><td>短期回檔</td></tr>
-          <tr><td>Energy</td><td>XLE</td><td class="num up">+2.07%</td><td class="num up">+24.7%</td><td>防守+供給緊</td></tr>
-          <tr><td>Health</td><td>XLV</td><td class="num down">-0.03%</td><td class="num up">+10.8%</td><td>防禦持平</td></tr>
-          <tr><td>Industrials</td><td>XLI</td><td class="num up">+0.57%</td><td class="num up">+28.4%</td><td>經濟樂觀</td></tr>
-        </table>
-      </div>
-      <div style="margin-top:12px;font-size:0.8rem;">
-        <div><strong>領漲 Top 5：</strong>ASML (+111% 1M) > AMD > TSM > AVGO > XLI</div>
-        <div><strong>領跌 Top 5：</strong>UNH (-42%) > AMZN (-13%) > META (-13%) > AAPL (-8%) > IWF (-8%)</div>
-      </div>
-    </div>
-
-    <!-- 3) WATCHLIST RADAR -->
-    <div class="section">
-      <div class="section-title">3) Watchlist Radar — 訊號雷達</div>
-      <div class="table-wrap">
-        <table>
-          <tr><th>Ticker</th><th class="num">Price</th><th class="num">1D</th><th class="num">5D</th><th class="num">1M</th><th class="num">52W Dist</th><th class="num">Vol</th><th>Signal</th></tr>
-          <tr><td><strong>AMAT</strong></td><td class="num">354.91</td><td class="num up">+8.1%</td><td class="num up">+10.1%</td><td class="num up">+112%</td><td class="num down">-5.7%</td><td class="num">1.78</td><td class="signal-high">72</td></tr>
-          <tr><td><strong>TSM</strong></td><td class="num">366.36</td><td class="num down">-0.5%</td><td class="num up">+5.0%</td><td class="num up">+82%</td><td class="num down">-3.6%</td><td class="num">0.72</td><td class="signal-high">65</td></tr>
-          <tr><td><strong>ASML</strong></td><td class="num">1406.61</td><td class="num">0%</td><td class="num down">-0.3%</td><td class="num up">+89%</td><td class="num down">-5.7%</td><td class="num">0.58</td><td class="signal-high">63</td></tr>
-          <tr><td><strong>AMD</strong></td><td class="num">207.32</td><td class="num up">+0.7%</td><td class="num down">-0.5%</td><td class="num up">+83%</td><td class="num down">-22%</td><td class="num">0.61</td><td class="signal-mid">58</td></tr>
-          <tr><td><strong>SMH</strong></td><td class="num">407.72</td><td class="num up">+0.4%</td><td class="num up">+1.5%</td><td class="num up">+62%</td><td class="num down">-3.1%</td><td class="num">0.80</td><td class="signal-mid">55</td></tr>
-          <tr><td><strong>COST</strong></td><td class="num">1018.48</td><td class="num up">+2.0%</td><td class="num up">+1.7%</td><td class="num down">-4.5%</td><td class="num down">-5.0%</td><td class="num">1.05</td><td class="signal-mid">52</td></tr>
-          <tr><td><strong>JPM</strong></td><td class="num">302.55</td><td class="num">0%</td><td class="num down">-6.2%</td><td class="num up">+12%</td><td class="num down">-10%</td><td class="num">0.80</td><td class="signal-mid">48</td></tr>
-          <tr><td><strong>MSFT</strong></td><td class="num">401.32</td><td class="num down">-0.1%</td><td class="num">0%</td><td class="num down">-1.0%</td><td class="num down">-28%</td><td class="num">0.74</td><td class="signal-mid">45</td></tr>
-          <tr><td><strong>NVDA</strong></td><td class="num">182.81</td><td class="num down">-2.2%</td><td class="num down">-1.4%</td><td class="num up">+32%</td><td class="num down">-14%</td><td class="num">0.92</td><td class="signal-mid">42</td></tr>
-          <tr><td><strong>GOOGL</strong></td><td class="num">305.72</td><td class="num down">-1.1%</td><td class="num down">-5.3%</td><td class="num up">+66%</td><td class="num down">-12%</td><td class="num">0.96</td><td class="signal-low">38</td></tr>
-          <tr><td><strong>AAPL</strong></td><td class="num">255.78</td><td class="num down">-2.3%</td><td class="num down">-8.0%</td><td class="num up">+5%</td><td class="num down">-11%</td><td class="num">0.94</td><td class="signal-low">35</td></tr>
-          <tr><td><strong>AMZN</strong></td><td class="num">198.79</td><td class="num down">-0.4%</td><td class="num down">-5.5%</td><td class="num down">-13%</td><td class="num down">-23%</td><td class="num">1.09</td><td class="signal-low">32</td></tr>
-          <tr><td><strong>META</strong></td><td class="num">639.77</td><td class="num down">-1.6%</td><td class="num down">-3.3%</td><td class="num down">-13%</td><td class="num down">-20%</td><td class="num">0.65</td><td class="signal-low">30</td></tr>
-          <tr><td><strong>UNH</strong></td><td class="num">293.19</td><td class="num up">+3.1%</td><td class="num up">+6.0%</td><td class="num down">-43%</td><td class="num down">-51%</td><td class="num">0.77</td><td class="signal-low">18</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- TOP 3 & RISKS -->
-    <div class="section">
-      <div class="section-title">Top 3 研究標的 + 風險警報</div>
-      <div class="top3">
-        <div class="top3-item">
-          <div class="top3-ticker">AMAT</div>
-          <div>信號 72</div>
-          <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">半導體設備補漲<br>+8% 今日，財報超預期</div>
-        </div>
-        <div class="top3-item">
-          <div class="top3-ticker">TSM</div>
-          <div>信號 65</div>
-          <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">5D +5% 強勢<br>先進製程需求旺</div>
-        </div>
-        <div class="top3-item">
-          <div class="top3-ticker">ASML</div>
-          <div>信號 63</div>
-          <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">1M +89% 漲多<br>長期趨勢仍多</div>
-        </div>
-      </div>
-      <div style="margin-top:15px;">
-        <div class="risk-item">
-          <div class="risk-ticker">⚠️ UNH -51% 距高點</div>
-          <div style="font-size:0.8rem;">財報後暴跌 50%，需待站穩再進場</div>
-        </div>
-        <div class="risk-item">
-          <div class="risk-ticker">⚠️ NVDA -2.2% 今日</div>
-          <div style="font-size:0.8rem;">AI 族群回檔壓力，獲利了結</div>
-        </div>
-        <div class="risk-item">
-          <div class="risk-ticker">⚠️ META/AMZN</div>
-          <div style="font-size:0.8rem;">距高點遠 (-20%)，補跌風險</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SOURCES -->
-    <div class="section">
-      <div class="section-title">Sources</div>
-      <div class="sources">
-        <div>• Prices/Charts: <a href="https://finance.yahoo.com">Yahoo Finance</a></div>
-        <div>• VIX/Yields: Yahoo Finance (^VIX, ^TNX, ^IRX)</div>
-        <div>• Fear & Greed: <a href="https://edition.cnn.com/markets/fear-and-greed">CNN</a> — 載入失敗，標記未驗證</div>
-        <div>• Earnings: 未取得（yfinance 權限問題），需手動查詢</div>
-      </div>
-    </div>
-
-    <div class="footer">
-      <div>Run ID: 20260214-A1B2</div>
-      <div>Data timestamp: 2026-02-14 06:30 ET / 2026-02-14 14:30 GMT+8</div>
-    </div>
-  </div>
-</body>
-</html>
+</body></html>

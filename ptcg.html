@@ -1,203 +1,68 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PTCG 日規環境儀表板</title>
-  <style>
-    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --purple: #a371f7; --muted: #8b949e; }
+
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>PTCG Intel</title>
+<style>
+    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --muted: #8b949e; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; line-height: 1.5; }
-    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); z-index: 200; border-bottom: 1px solid var(--border); padding: 12px 20px; }
-    .container { max-width: 700px; margin: 0 auto; padding: 15px; }
-    .section { margin-bottom: 24px; }
-    .section-title { font-size: 0.8rem; color: var(--accent); margin-bottom: 10px; padding-left: 10px; border-left: 3px solid var(--accent); font-weight: 700; text-transform: uppercase; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; }
-    .summary-box { background: linear-gradient(135deg, rgba(88,166,255,0.1), rgba(163,113,247,0.1)); border: 1px solid var(--accent); }
-    .summary-item { margin-bottom: 12px; }
-    .summary-item:last-child { margin-bottom: 0; }
-    .summary-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
-    .summary-value { font-size: 0.95rem; font-weight: 600; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    th { text-align: left; padding: 8px 6px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap; }
-    td { padding: 8px 6px; border-bottom: 1px solid var(--border); }
-    .num { text-align: right; }
-    .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; }
-    .tag.high { background: var(--green); color: white; }
-    .tag.medium { background: var(--accent); color: white; }
-    .tag.low { background: var(--muted); color: white; }
-    .tag.watch { background: var(--yellow); color: black; }
-    .sources { font-size: 0.75rem; color: var(--muted); }
-    .sources a { color: var(--accent); }
-    .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.7rem; }
-    .verify-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; margin-left: 8px; }
-    .verify-pass { background: var(--green); color: white; }
-    .jp { color: var(--muted); font-size: 0.7rem; }
-    .dic { font-size: 0.7rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 15px; }
-    .dic-title { color: var(--accent); font-weight: 700; margin-bottom: 8px; }
-    .dic-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid var(--border); }
-    .dic-row:last-child { border-bottom: none; }
-  </style>
-</head>
-<body>
-  <div class="nav">
-    <b>🃏 PTCG <span style="color:var(--accent)">環境儀表板</span></b>
-    <small style="color:var(--muted)">2026-02-14</small>
-  </div>
-  
-  <div class="container">
+    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 30px; }
+    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(12px); z-index: 2000; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .container { max-width: 1200px; margin: 15px auto; padding: 0 15px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.15); padding: 10px; border-radius: 8px; font-size: 0.85rem; }
+    .m-lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; }
+    .m-val { font-weight: 900; }
+    .section-title { font-size: 1rem; margin: 20px 0 10px 5px; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 10px; }
+    .badge { font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; color: white; }
+</style></head><body>
+    <div class="nav"><b>🃏 PTCG <span style="color:var(--accent)">INTEL</span></b><small style="color:var(--muted)">2026-02-15 09:00</small></div>
+    <div class="container">
+        <div style="margin-bottom:15px;"><a href="kanban.html" style="color:var(--accent); text-decoration:none;">📋 Dev Kanban</a></div>
 
-    <!-- 譯名字典 -->
-    <div class="dic">
-      <div class="dic-title">📖 譯名字典（持續更新）</div>
-      <div class="dic-row"><span>多龍巴魯托ex</span><span class="jp">ドラパルトex</span></div>
-      <div class="dic-row"><span>超級路卡利歐ex</span><span class="jp">メガルカリオex</span></div>
-      <div class="dic-row"><span>瑪俐的長毛巨魔ex</span><span class="jp">マリィのオーロンゲex</span></div>
-      <div class="dic-row"><span>超級妙蛙花ex</span><span class="jp">メガフシギバナex</span></div>
-      <div class="dic-row"><span>超級蒂安希ex</span><span class="jp">メガディアンシーex</span></div>
-      <div class="dic-row"><span>胡地</span><span class="jp">フーディン</span></div>
-      <div class="dic-row"><span>N的索羅亞克ex</span><span class="jp">Nのゾロアークex</span></div>
-      <div class="dic-row"><span>火箭隊的烏鴉頭頭</span><span class="jp">ロケット団のドンカラス</span></div>
-      <div class="dic-row"><span>竹蘭的烈咬陸鯊ex</span><span class="jp">シロナのガブリアスex</span></div>
-      <div class="dic-row"><span>超級寶石海星ex</span><span class="jp">メガスターミーex</span></div>
-      <div class="dic-row"><span>甲賀忍蛙ex</span><span class="jp">ゲッコウガex</span></div>
-      <div class="dic-row"><span>大吾的巨金怪ex</span><span class="jp">ダイゴのメタグロスex</span></div>
-      <div class="dic-row"><span>巨鍛匠ex</span><span class="jp">ブリジュラスex</span></div>
-      <div class="dic-row"><span>祭典節奏</span><span class="jp">おまつりおんど</span></div>
-      <div class="dic-row"><span>土龍節節</span><span class="jp">ノココッチ</span></div>
-      <div class="dic-row"><span>雪妖女</span><span class="jp">ユキメノコ</span></div>
-      <div class="dic-row"><span>堵拦熊（願增猿+雪妖女）</span><span class="jp">メノコマシラ</span></div>
+        <h2 class="section-title">A. Overview</h2>
+        
+    <div class="card pro-info-card">
+        <h3 style="color:var(--accent); font-size:0.9rem; margin-bottom:10px;">📊 資料可信度卡（Data Trust Card）</h3>
+        <div class="metrics">
+            <div><div class="m-lbl">時間窗</div><div class="m-val">2026-W06（Unknown → Unknown）</div></div>
+            <div><div class="m-lbl">樣本數 n</div><div class="m-val">N/A</div></div>
+            <div><div class="m-lbl">Scope</div><div class="m-val">日本 / Standard</div></div>
+            <div><div class="m-lbl">Timezone</div><div class="m-val">Asia/Taipei</div></div>
+            <div style="grid-column: span 2;"><div class="m-lbl">偏差提醒</div><div class="m-val" style="color:var(--yellow); font-size:0.75rem;">僅統計可取得之入賞牌表彙整；Signals（X.com）為非統計</div></div>
+        </div>
     </div>
 
-    <!-- 0) ACTION SUMMARY -->
-    <div class="section">
-      <div class="section-title">0) 行動摘要</div>
-      <div class="card summary-box">
-        <div class="summary-item">
-          <div class="summary-label">本週環境結論</div>
-          <div class="summary-value">Munk Zero 環境多元，Tier1 為多龍巴魯托ex，但胡地在 2/13 東京賽奪冠顯示尚未定於一尊。</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">上升訊號 Top3</div>
-          <div class="summary-value">
-            1. 多龍巴魯托ex — Tier1 主流，Bomb 形態席捲賽場<br>
-            2. 瑪俐的長毛巨魔ex — 印章系統核心，Multiple Top8<br>
-            3. 超級妙蛙花ex — 2/13 立川店奪冠
-          </div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">風險警報</div>
-          <div class="summary-value">
-            • 印章 (Stamp) 系統泛濫 — 60%+ 牌組使用<br>
-            • 環境多變，須持續追蹤
-          </div>
-        </div>
-      </div>
-    </div>
+        <h2 class="section-title">B. Meta Trends（meta）</h2>
+        <div class="grid"></div>
 
-    <!-- 1) META RADAR -->
-    <div class="section">
-      <div class="section-title">1) 日規 Tier 表 <span class="verify-badge verify-pass">Pokekameshi 2026/2/9</span></div>
-      <div class="table-wrap">
-        <table>
-          <tr><th>Tier</th><th>牌組名稱</th><th>日文</th></tr>
-          <tr><td><span class="tag high">T1</span></td><td>多龍巴魯托ex</td><td class="jp">ドラパルトex</td></tr>
-          <tr><td rowspan="3"><span class="tag medium">T2</span></td><td>超級路卡利歐ex</td><td class="jp">メガルカリオex</td></tr>
-          <tr><td>瑪俐的長毛巨魔ex</td><td class="jp">マリィのオーロンゲex</td></tr>
-          <tr><td>超級妙蛙花ex</td><td class="jp">メガフシギバナex</td></tr>
-          <tr><td rowspan="10"><span class="tag low">T3</span></td><td>超級蒂安希ex</td><td class="jp">メガディアンシーex</td></tr>
-          <tr><td>胡地</td><td class="jp">フーディン</td></tr>
-          <tr><td>N的索羅亞克ex</td><td class="jp">Nのゾロアークex</td></tr>
-          <tr><td>火箭隊的烏鴉頭頭</td><td class="jp">ロケット団のドンカラス</td></tr>
-          <tr><td>竹蘭的烈咬陸鯊ex</td><td class="jp">シロナのガブリアスex</td></tr>
-          <tr><td>超級寶石海星ex</td><td class="jp">メガスターミーex</td></tr>
-          <tr><td>甲賀忍蛙ex</td><td class="jp">ゲッコウガex</td></tr>
-          <tr><td>大吾的巨金怪ex</td><td class="jp">ダイゴのメタグロスex</td></tr>
-          <tr><td>巨鍛匠ex</td><td class="jp">ブリジュラスex</td></tr>
-          <tr><td>祭典節奏</td><td class="jp">おまつりおんど</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <!-- 2) CITY LEAGUE RESULTS -->
-    <div class="section">
-      <div class="section-title">2) 2/13 城市聯盟賽果</div>
-      
-      <div style="margin-bottom:15px;">
-        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">東京 Dragon Star 池袋店</div>
+        <h2 class="section-title">C. Tech Radar（tech）</h2>
+        <div class="grid">
         <div class="card">
-          <table>
-            <tr><th>名次</th><th>牌組</th></tr>
-            <tr><td>🏆 冠軍</td><td>胡地 / 土龍節節</td></tr>
-            <tr><td>🥈 亞軍</td><td>胡地 / 土龍節節</td></tr>
-            <tr><td>Best4</td><td>瑪俐的長毛巨魔ex / 願增猿+雪妖女 (印章)</td></tr>
-            <tr><td>Best4</td><td>多龍巴魯托ex / 火焰雞</td></tr>
-            <tr><td>Best8</td><td>瑪俐的長毛巨魔ex / 願增猿+雪妖女 (印章) x3</td></tr>
-            <tr><td>Best8</td><td>炸彈超級蒂安希ex</td></tr>
-            <tr><td>Best8</td><td>胡地 / 土龍節節</td></tr>
-          </table>
+          <b style="color:var(--accent)">Tech Watchlist（tech；非統計）</b>
+          <div style="color:var(--muted); font-size:0.85rem; line-height:1.4;">N/A：本週無可用 tech 提及資料。</div>
         </div>
-      </div>
-      
-      <div>
-        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">東京 立川 Card Shop 龍星</div>
-        <div class="card">
-          <table>
-            <tr><th>名次</th><th>牌組</th></tr>
-            <tr><td>🏆 冠軍</td><td>超級妙蛙花ex / 瑪俐的長毛巨魔ex / 超級妙蛙花ex</td></tr>
-            <tr><td>🥈 亞軍</td><td>炸彈多龍巴魯托ex (印章)</td></tr>
-            <tr><td>Best4</td><td>超級路卡利歐ex (腰帶)</td></tr>
-            <tr><td>Best4</td><td>胡地 / 土龍節節 / 胖嘟嘟</td></tr>
-            <tr><td>Best8</td><td>超級妙蛙花ex / 瑪俐的長毛巨魔ex x3</td></tr>
-            <tr><td>Best8</td><td>瑪俐的長毛巨魔ex / 願增猿+雪妖女 (印章)</td></tr>
-          </table>
         </div>
+
+        <h2 class="section-title">E. Signals（非統計）</h2>
+        <div class="grid"><div class="card">N/A：本週無可用 Signals</div></div>
+
+        <h2 class="section-title">E2. Signals 資料來源（社群／粉專）</h2>
+        <div class="grid"><div class="card" style="border-left:4px solid var(--accent);"><div style='font-size:0.75rem;color:var(--muted);line-height:1.35;'>Facebook pages are included as Signals sources. Automated post scraping is not enabled in this environment (login/anti-bot). Dashboard shows links + last_checked=N/A until a reliable fetch method is added.</div><div style='margin-top:10px;'><div style='font-weight:900;'>GS ball Tank Team（金球戰車）</div><div><a href='https://www.facebook.com/GSballTankTeam' target='_blank' style='color:var(--accent);text-decoration:none;'>粉專連結</a></div><div style='font-size:0.7rem;color:var(--muted);'>Last checked: N/A</div></div><div style='margin-top:10px;'><div style='font-weight:900;'>PTCG.News 卡牌資訊站</div><div><a href='https://www.facebook.com/PTCG.News' target='_blank' style='color:var(--accent);text-decoration:none;'>粉專連結</a></div><div style='font-size:0.7rem;color:var(--muted);'>Last checked: N/A</div></div></div></div>
+
+        <h2 class="section-title">F. Data Quality</h2>
+        <div class="grid">
+    <div class="card">
+      <b style="color:var(--accent)">Data Quality（稽核）</b>
+      <div style="color:var(--muted); font-size:0.85rem; line-height:1.5;">
+        - n_total：N/A<br>
+        - Tier2：用於統計（meta share）<br>
+        - Tier3：僅 Signals（非統計）<br>
+        - 規則：缺資料不猜，顯示 N/A；避免無分母數字<br>
       </div>
     </div>
-
-    <!-- 3) RISING SIGNALS -->
-    <div class="section">
-      <div class="section-title">3) 上升訊號雷達</div>
-      <div class="card">
-        <table>
-          <tr><th>訊號</th><th>狀態</th></tr>
-          <tr><td>多龍巴魯托ex (炸彈型)</td><td><span class="tag high">HIGH</span> 60%入賞者使用</td></tr>
-          <tr><td>印章系統</td><td><span class="tag high">HIGH</span> 持續擴散</td></tr>
-          <tr><td>超級妙蛙花ex/瑪俐的長毛巨魔ex組合</td><td><span class="tag medium">MEDIUM</span> 立川奪冠</td></tr>
-          <tr><td>超級路卡利歐ex</td><td><span class="tag medium">MEDIUM</span> 穩定表現</td></tr>
-        </table>
-      </div>
     </div>
 
-    <!-- 4) SELF CHECK -->
-    <div class="section">
-      <div class="section-title">自我檢查機制</div>
-      <div class="card">
-        <table>
-          <tr><th>檢查項目</th><th>狀態</th></tr>
-          <tr><td>資料來源是否多於1個</td><td style="color:var(--green);">✓ PASS (Tier表 + 2賽場)</td></tr>
-          <tr><td>數字是否可追溯</td><td style="color:var(--green);">✓ PASS (冠軍/亞軍/4強/8強)</td></tr>
-          <tr><td>譯名是否正確</td><td style="color:var(--green);">✓ PASS (依用户提供字典)</td></tr>
-        </table>
-      </div>
+        <div style="margin-top:30px;padding:20px;border-top:1px solid #333;font-size:0.75rem;color:#8b949e;">
+          Spec: docs/ptcg_dashboard_spec_F1-F12.md
+        </div>
     </div>
-
-    <!-- SOURCES -->
-    <div class="section">
-      <div class="section-title">Sources</div>
-      <div class="sources">
-        <div>📺 <a href="https://pokekameshi.com/strongestdeck-tire/">Pokekameshi Tier表</a> — 2026/2/9 更新</div>
-        <div>📺 <a href="https://pokekameshi.com/cityleague20260213/">Pokekameshi 城市聯盟 2/13</a> — 東京賽果</div>
-        <div>📖 用戶提供譯名字典 — 2026/2/14</div>
-      </div>
-    </div>
-
-    <div class="footer">
-      <div>Run ID: 20260214-PTCG-006</div>
-      <div>Data timestamp: 2026-02-14 15:30 GMT+8</div>
-      <div>下次更新：2026-02-17 (週二) / 2026-02-20 (週五)</div>
-    </div>
-  </div>
-</body>
-</html>
+</body></html>
