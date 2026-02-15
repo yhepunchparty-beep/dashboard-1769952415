@@ -2,102 +2,137 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>美股投資儀表板 - 2026-02-05</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Daily US Stock Research</title>
   <style>
-    :root {
-      --bg: #0d1117;
-      --card: #161b22;
-      --border: #30363d;
-      --text: #c9d1d9;
-      --text-muted: #8b949e;
-      --accent: #58a6ff;
-      --positive: #3fb950;
-      --negative: #f85149;
-    }
+    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --muted: #8b949e; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      padding: 20px;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    h1 { font-size: 1.8rem; margin-bottom: 8px; }
-    h2 { font-size: 1.3rem; margin: 24px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-    .meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9rem; }
-    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
-    th { background: rgba(88, 166, 255, 0.1); font-weight: 600; }
-    .positive { color: var(--positive); }
-    .negative { color: var(--negative); }
-    .ticker { font-weight: 700; font-size: 1rem; }
-    .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.85rem; text-align: center; }
+    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 60px; line-height: 1.5; }
+    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); z-index: 200; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .container { max-width: 900px; margin: 0 auto; padding: 15px; }
+    .section { margin-bottom: 24px; }
+    .section-title { font-size: 0.8rem; color: var(--accent); margin-bottom: 12px; padding-left: 10px; border-left: 3px solid var(--accent); font-weight: 700; text-transform: uppercase; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+    th { text-align: left; padding: 8px 6px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    td { padding: 8px 6px; border-bottom: 1px solid var(--border); }
+    .pos { color: var(--green); }
+    .neg { color: var(--red); }
+    .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; }
+    .tag.high { background: var(--green); color: white; }
+    .tag.medium { background: var(--accent); color: white; }
+    .tag.low { background: var(--muted); color: white; }
+    .summary-box { background: linear-gradient(135deg, rgba(88,166,255,0.1), rgba(63,185,80,0.1)); border: 1px solid var(--accent); padding: 15px; border-radius: 12px; }
+    .summary-item { margin-bottom: 10px; }
+    .summary-item:last-child { margin-bottom: 0; }
+    .summary-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+    .summary-value { font-size: 0.9rem; font-weight: 600; }
+    .signal-high { color: var(--green); font-weight: 700; }
+    .signal-med { color: var(--accent); font-weight: 700; }
+    .signal-low { color: var(--muted); }
+    .sources { font-size: 0.7rem; color: var(--muted); margin-top: 20px; }
+    .sources a { color: var(--accent); }
+    .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.7rem; }
+    .update-badge { background: var(--green); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; }
   </style>
 </head>
 <body>
-  <h1>📈 美股投資儀表板</h1>
-  <p class="meta">更新：2026-02-05（週四）｜Portfolio：NVDA / TSM / GOOG / QQQ / NFLX</p>
-
-  <h2>📊 本週表現</h2>
-  <table>
-    <tr>
-      <th>Ticker</th>
-      <th>現價</th>
-      <th>週漲跌</th>
-      <th>月漲跌</th>
-    </tr>
-    <tr>
-      <td class="ticker">NVDA</td>
-      <td>$174.19</td>
-      <td class="negative">-9.52%</td>
-      <td class="negative">-7.40%</td>
-    </tr>
-    <tr>
-      <td class="ticker">TSM</td>
-      <td>$325.74</td>
-      <td class="negative">-4.07%</td>
-      <td class="positive">+1.08%</td>
-    </tr>
-    <tr>
-      <td class="ticker">GOOG</td>
-      <td>$333.34</td>
-      <td class="negative">-1.57%</td>
-      <td class="positive">+5.05%</td>
-    </tr>
-    <tr>
-      <td class="ticker">NFLX</td>
-      <td>$80.16</td>
-      <td class="negative">-3.61%</td>
-      <td class="negative">-12.36%</td>
-    </tr>
-    <tr>
-      <td class="ticker">QQQ</td>
-      <td>$605.75</td>
-      <td class="negative">-3.76%</td>
-      <td class="negative">-1.98%</td>
-    </tr>
-  </table>
-
-  <div class="card">
-    <p><strong>🎯 目標：</strong>賺回 $900（+1.8% 組合報酬）</p>
-    <p><strong>📌 提醒：</strong>長期持有為主，事件/趨勢可做小波段</p>
+  <div class="nav">
+    <b>📈 US Stock <span style="color:var(--accent)">RESEARCH</span></b>
+    <span class="update-badge">2026-02-15</span>
   </div>
+  
+  <div class="container">
 
-  <div class="card">
-    <p><strong>🧭 投資重點</strong></p>
-    <ul>
-      <li>專注核心持股（NVDA／TSM／GOOG／NFLX／QQQ），避免分散過度</li>
-      <li>事件驅動的短波段只在明確催化（財報／新品／宏觀轉折）時介入</li>
-      <li>最大可接受回撤 40%：倉位與槓桿需守住風險邊界</li>
-    </ul>
-  </div>
+    <!-- 0) 行動摘要 -->
+    <div class="section">
+      <div class="section-title">0) 行動摘要</div>
+      <div class="card summary-box">
+        <div class="summary-item">
+          <div class="summary-label">市場狀態</div>
+          <div class="summary-value">Risk-off：美股重挫，QQQ -2.85%，SPY -1.25%</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">資金偏好</div>
+          <div class="summary-value">防御板塊勝出：XLE +13.09% (能源)、XLI +6.03% (工業)、半導體 SMH +4.99%</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">今天最值得研究</div>
+          <div class="summary-value">1. TSM (+12%) - 半導體強勢撐腰<br>2. AMAT (+17.56%) - 設備股突圍<br>3. XLE (+13%) - 能源旺季</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">主要風險</div>
+          <div class="summary-value">• QQQ 跌破 200日均線<br>• 科技股資金流出<br>• VIX 恐懼指數飆高</div>
+        </div>
+      </div>
+    </div>
 
-  <div class="footer">
-    自動更新 by Ninja A 🥷
+    <!-- 1) Market Regime -->
+    <div class="section">
+      <div class="section-title">1) Market Regime — 風險溫度計</div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>指標</th><th>最新價</th><th>1M %</th><th>解讀</th></tr>
+          <tr><td>SPY</td><td>681.75</td><td class="neg">-1.25%</td><td>美股普跌</td></tr>
+          <tr><td>QQQ</td><td>601.92</td><td class="neg">-2.85%</td><td>科技股領跌</td></tr>
+          <tr><td>IWM</td><td>262.96</td><td class="neg">-0.09%</td><td>小盤持平</td></tr>
+          <tr><td>IWF (Growth)</td><td>447.17</td><td class="neg">-4.89%</td><td>成長股重挫</td></tr>
+          <tr><td>IWD (Value)</td><td>223.71</td><td class="pos">+2.47%</td><td>價值股相對抗跌</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 2) Sector / Style Leadership -->
+    <div class="section">
+      <div class="section-title">2) Sector / Style Leadership — 資金偏好</div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>類別</th><th>ETF</th><th>5D</th><th>1M</th><th>重點</th></tr>
+          <tr><td>Semis</td><td>SMH</td><td class="pos">+4.99%</td><td class="pos">+4.99%</td><td>AI 需求撐腰</td></tr>
+          <tr><td>Energy</td><td>XLE</td><td class="pos">+13.09%</td><td class="pos">+13.09%</td><td>原油漲價</td></tr>
+          <tr><td>Industrials</td><td>XLI</td><td class="pos">+6.03%</td><td class="pos">+6.03%</td><td>景氣樂觀</td></tr>
+          <tr><td>Financials</td><td>XLF</td><td class="neg">-4.62%</td><td class="neg">-4.62%</td><td>銀行股回檔</td></tr>
+          <tr><td>Health</td><td>XLV</td><td class="neg">-0.12%</td><td class="neg">-0.12%</td><td>防禦持平</td></tr>
+        </table>
+      </div>
+      <div class="card" style="margin-top:10px;">
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:8px;">領漲/領跌</div>
+        <div><span class="pos">▲ TSM +12%</span> | <span class="pos">▲ AMAT +17.56%</span> | <span class="pos">▲ XLE +13%</span></div>
+        <div><span class="neg">▼ MSFT -12.64%</span> | <span class="neg">▼ UNH -12.47%</span> | <span class="neg">▼ AMZN -16%</span></div>
+      </div>
+    </div>
+
+    <!-- 3) Watchlist Radar -->
+    <div class="section">
+      <div class="section-title">3) Watchlist Radar — 個股訊號雷達</div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Ticker</th><th>Price</th><th>1M %</th><th>訊號</th><th>重點</th></tr>
+          <tr><td>NVDA</td><td>$182.81</td><td class="neg">-0.18%</td><td class="signal-med">65</td><td>等待反彈</td></tr>
+          <tr><td>TSM</td><td>$366.36</td><td class="pos">+12.0%</td><td class="signal-high">88</td><td>半導體領漲</td></tr>
+          <tr><td>GOOGL</td><td>$305.72</td><td class="neg">-8.97%</td><td class="signal-low">42</td><td>AI 投資放緩</td></tr>
+          <tr><td>AMZN</td><td>$198.79</td><td class="neg">-16.0%</td><td class="signal-low">35</td><td>電商逆風</td></tr>
+          <tr><td>META</td><td>$639.77</td><td class="pos">+3.94%</td><td class="signal-high">75</td><td>相對抗跌</td></tr>
+          <tr><td>MSFT</td><td>$401.32</td><td class="neg">-12.64%</td><td class="signal-low">38</td><td>雲端放緩</td></tr>
+          <tr><td>AMD</td><td>$207.32</td><td class="neg">-7.28%</td><td class="signal-med">55</td><td>對手追擊</td></tr>
+          <tr><td>AMAT</td><td>$354.91</td><td class="pos">+17.56%</td><td class="signal-high">92</td><td>設備股靚</td></tr>
+          <tr><td>COST</td><td>$1018.48</td><td class="pos">+7.24%</td><td class="signal-high">82</td><td>防禦首選</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sources -->
+    <div class="sources">
+      <strong>Sources:</strong><br>
+      📊 <a href="https://finance.yahoo.com/">Yahoo Finance</a> — 價格數據<br>
+      📊 <a href="https://www.fred.stlouisfed.org/">FRED</a> — 宏觀數據<br>
+    </div>
+
+    <div class="footer">
+      <div>Run ID: 20260215-STOCKS-001</div>
+      <div>Data timestamp: 2026-02-15 16:30 GMT+8</div>
+    </div>
   </div>
 </body>
 </html>
