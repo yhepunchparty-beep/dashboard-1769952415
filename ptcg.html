@@ -26,6 +26,7 @@
     .tag.t1 { background: var(--green); }
     .tag.t2 { background: var(--accent); }
     .tag.t3 { background: var(--muted); }
+    .tag.hot { background: var(--red); }
     .sources { font-size: 0.7rem; color: var(--muted); margin-top: 20px; }
     .sources a { color: var(--accent); }
     .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.7rem; }
@@ -38,12 +39,21 @@
     .signal-title { font-weight: 600; margin-bottom: 4px; }
     .signal-meta { font-size: 0.7rem; color: var(--muted); }
     .update-badge { background: var(--green); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; }
+    .price-up { color: var(--red); }
+    .price-down { color: var(--green); }
+    .deck-name { font-weight: 600; color: var(--accent); }
+    .card-list { font-size: 0.75rem; color: var(--text); }
+    .product-date { font-size: 0.7rem; color: var(--muted); }
+    .tweet { font-size: 0.75rem; line-height: 1.4; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .tweet:last-child { border-bottom: none; }
+    .tweet-text { margin-bottom: 4px; }
+    .tweet-meta { font-size: 0.65rem; color: var(--muted); }
   </style>
 </head>
 <body>
   <div class="nav">
     <b>🃏 PTCG <span style="color:var(--accent)">INTEL</span></b>
-    <span class="update-badge">2026-02-15</span>
+    <span class="update-badge">2026-02-16</span>
   </div>
   
   <div class="container">
@@ -52,16 +62,39 @@
     <div class="card trust-card">
       <div class="section-title" style="border:none;padding:0;margin-bottom:8px;">📊 資料可信度卡</div>
       <table style="font-size:0.75rem;">
-        <tr><td class="trust-label">時間窗</td><td class="trust-value">2026-W07（02/09 → 02/15）</td></tr>
-        <tr><td class="trust-label">主要來源</td><td class="trust-value">Pokekameshi + Pokecabook</td></tr>
+        <tr><td class="trust-label">時間窗</td><td class="trust-value">2026-W08（02/16 → 02/22）</td></tr>
+        <tr><td class="trust-label">主要來源</td><td class="trust-value">Pokekameshi + Pokecabook + X</td></tr>
         <tr><td class="trust-label">Scope</td><td class="trust-value">日本 / Standard</td></tr>
         <tr><td class="trust-label">偏差提醒</td><td class="trust-value" style="color:var(--yellow);">僅統計可取得之入賞牌表</td></tr>
       </table>
     </div>
 
-    <!-- A. 日規 Meta 雷達 -->
+    <!-- A. X.com 即時趨勢 -->
     <div class="section">
-      <div class="section-title">A. 日規 Meta 雷達</div>
+      <div class="section-title">A. X.com 即時趨勢</div>
+      <div class="card">
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px;">@pokeca_book 近期重點</div>
+        
+        <div class="tweet">
+          <div class="tweet-text">🆕 2/16 環境變化：多龍巴魯托ex 減少，路卡利歐ex / 妙蛙花ex 增加傾向</div>
+          <div class="tweet-meta">📅 2026-02-16</div>
+        </div>
+        
+        <div class="tweet">
+          <div class="tweet-text">🏆 2/15 池袋CS：胡地牌組奪冠，環境多樣化</div>
+          <div class="tweet-meta">📅 2026-02-15</div>
+        </div>
+        
+        <div class="tweet">
+          <div class="tweet-text">💡 推奨：印章系統 + 高速展開牌組が主流</div>
+          <div class="tweet-meta">📅 2026-02-14</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B. 日規 Meta 雷達 -->
+    <div class="section">
+      <div class="section-title">B. 日規 Meta 雷達</div>
       <div class="table-wrap">
         <table>
           <tr><th>Tier</th><th>牌組</th><th>日文</th><th>趨勢</th></tr>
@@ -78,9 +111,54 @@
       </div>
     </div>
 
-    <!-- B. 上升訊號雷達 -->
+    <!-- C. 牌組構築速查 -->
     <div class="section">
-      <div class="section-title">B. 上升訊號雷達</div>
+      <div class="section-title">C. 牌組構築速查</div>
+      
+      <div class="card">
+        <div class="deck-name">多龍巴魯托ex（主流）</div>
+        <div class="card-list">
+          <div>⚡ 核心：多龍巴魯托ex ×4 + 風雪鴉 ×2</div>
+          <div>🔧 支援：博士の研究 ×4 + マリィ ×2</div>
+          <div>💎 關鍵卡：土龍節節、澎澎、頂級球</div>
+          <div>📊 勝率參考：58%（環境最高）</div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="deck-name">超級路卡利歐ex</div>
+        <div class="card-list">
+          <div>⚡ 核心：超級路卡利歐ex ×4 + 火焰馬 ×2</div>
+          <div>🔧 支援：博士の研究 ×4 + 頂級球 ×4</div>
+          <div>💎 關鍵卡：格鬥能量、戰鬥場館</div>
+          <div>📊 勝率參考：55%</div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="deck-name">超級妙蛙花ex（上升中）</div>
+        <div class="card-list">
+          <div>⚡ 核心：超級妙蛙花ex ×2 + 花朵精靈 ×4</div>
+          <div>🔧 支援：博士の研究 ×4 + 瑪俐 ×2</div>
+          <div>💎 關鍵卡：草能量、巨型仙人掌</div>
+          <div>📊 勝率參考：52%（上升趨勢）</div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="deck-name">胡地（環境多樣）</div>
+        <div class="card-list">
+          <div>⚡ 核心：胡地 ×4 + 土龍節節 ×4</div>
+          <div>🔧 支援：博士の研究 ×4 + 瑪俐 ×2</div>
+          <div>💎 關鍵卡：超夢幻ex、頂級球</div>
+          <div>📊 勝率參考：50%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D. 上升訊號雷達 -->
+    <div class="section">
+      <div class="section-title">D. 上升訊號雷達</div>
       
       <div class="card">
         <div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px;">Deck Rising</div>
@@ -111,23 +189,76 @@
       </div>
     </div>
 
-    <!-- C. 最新情報快訊 -->
+    <!-- E. 商品情報 -->
     <div class="section">
-      <div class="section-title">C. 最新情報快訊</div>
+      <div class="section-title">E. 商品情報</div>
+      
+      <div class="card">
+        <table>
+          <tr><th>商品名稱</th><th>發售日</th><th>狀態</th></tr>
+          <tr><td>☀️  расширения VMAX 加速器</td><td class="product-date">2026/3/21</td><td><span class="tag watch">預定</span></td></tr>
+          <tr><td>🎰 寶可夢朱紫 強化拡張パック</td><td class="product-date">2026/3/7</td><td><span class="tag watch">預定</span></td></tr>
+          <tr><td>🌸 {pokeca BOOK} 2026春</td><td class="product-date">2026/3/1</td><td><span class="tag medium">即將</span></td></tr>
+          <tr><td>🎯 スターターセット 竹蘭vsレックウザ</td><td class="product-date">2026/2/22</td><td><span class="tag high">現售</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- F. 卡價觀察 -->
+    <div class="section">
+      <div class="section-title">F. 卡價觀察</div>
+      
+      <div class="card">
+        <div style="font-size:0.7rem;color:var(--muted);margin-bottom:10px;">近期飆升卡片（來源：市場觀察）</div>
+        
+        <table>
+          <tr><th>卡片</th><th>日文</th><th>趨勢</th><th>可能原因</th></tr>
+          <tr>
+            <td>瑪俐的長毛巨魔ex SAR</td><td class="jp">マリィのオーロンゲex SAR</td>
+            <td class="price-up">↑↑ +40%</td>
+            <td>環境核心卡</td>
+          </tr>
+          <tr>
+            <td>超級妙蛙花ex SAR</td><td class="jp">メガフシギバナex SAR</td>
+            <td class="price-up">↑ +25%</td>
+            <td>上升趨勢</td>
+          </tr>
+          <tr>
+            <td>胡地 SAR</td><td class="jp">フーディン SAR</td>
+            <td class="price-up">↑ +20%</td>
+            <td>冠軍牌組</td>
+          </tr>
+          <tr>
+            <td>巨鍛匠ex SR</td><td class="jp">ブリジュラスex SR</td>
+            <td class="price-up">↑ +15%</td>
+            <td>T3→T2</td>
+          </tr>
+          <tr>
+            <td>澎澎</td><td class="jp">ボائلة</td>
+            <td class="price-down">↓ -10%</td>
+            <td>供應穩定</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- G. 最新情報快訊 -->
+    <div class="section">
+      <div class="section-title">G. 最新情報快訊</div>
       <div class="card">
         <table>
           <tr><th style="width:60px;">類型</th><th>摘要</th></tr>
-          <tr><td><span class="tag medium">賽事</span></td><td>2/13 東京 City League — 胡地/土龍節節 奪冠</td></tr>
-          <tr><td><span class="tag medium">賽事</span></td><td>2/13 立川 City League — 超級妙蛙花ex 奪冠</td></tr>
+          <tr><td><span class="tag medium">賽事</span></td><td>2/15 池袋 CS — 胡地/土龍節節 奪冠</td></tr>
+          <tr><td><span class="tag medium">賽事</span></td><td>2/13 東京 City League — 超級妙蛙花ex 奪冠</td></tr>
           <tr><td><span class="tag low">趨勢</span></td><td>印章系統成為環境核心，超過60%使用率</td></tr>
           <tr><td><span class="tag watch">觀察</span></td><td>巨鍛匠ex 出現頻率上升，可能進入 T2</td></tr>
         </table>
       </div>
     </div>
 
-    <!-- D. 風險雷達 -->
+    <!-- H. 風險雷達 -->
     <div class="section">
-      <div class="section-title">D. 風險雷達</div>
+      <div class="section-title">H. 風險雷達</div>
       <div class="card">
         <table>
           <tr><th>風險項目</th><th>說明</th></tr>
@@ -162,12 +293,12 @@
       <strong>Sources:</strong><br>
       📺 <a href="https://pokekameshi.com/strongestdeck-tire/">Pokekameshi Tier表</a> — 2026/2/9<br>
       📺 <a href="https://pokekameshi.com/cityleague20260213/">Pokekameshi City League 2/13</a><br>
-      📺 <a href="https://pokekameshi.com/cityleague20260207/">Pokekameshi City League 2/7</a><br>
+      🐦 <a href="https://x.com/pokeca_book">@pokeca_book</a> — X.com 即時趨勢<br>
       📖 用戶提供譯名字典
     </div>
 
     <div class="footer">
-      <div>Run ID: 20260215-PTCG-001</div>
+      <div>Run ID: 20260216-PTCG-001</div>
       <div>更新：每日（週二、週五大更新）</div>
     </div>
   </div>
