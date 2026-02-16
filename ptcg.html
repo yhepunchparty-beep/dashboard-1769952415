@@ -1,68 +1,175 @@
-
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>PTCG Intel</title>
-<style>
-    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --muted: #8b949e; }
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PTCG 日規環境儀表板</title>
+  <style>
+    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --purple: #a371f7; --muted: #8b949e; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 30px; }
-    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(12px); z-index: 2000; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .container { max-width: 1200px; margin: 15px auto; padding: 0 15px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
-    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.15); padding: 10px; border-radius: 8px; font-size: 0.85rem; }
-    .m-lbl { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; }
-    .m-val { font-weight: 900; }
-    .section-title { font-size: 1rem; margin: 20px 0 10px 5px; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 10px; }
-    .badge { font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; color: white; }
-</style></head><body>
-    <div class="nav"><b>🃏 PTCG <span style="color:var(--accent)">INTEL</span></b><small style="color:var(--muted)">2026-02-16 09:00</small></div>
-    <div class="container">
-        <div style="margin-bottom:15px;"><a href="kanban.html" style="color:var(--accent); text-decoration:none;">📋 Dev Kanban</a></div>
+    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 60px; line-height: 1.5; }
+    .nav { position: sticky; top: 0; background: rgba(13, 17, 23, 0.95); z-index: 200; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .container { max-width: 800px; margin: 0 auto; padding: 15px; }
+    .section { margin-bottom: 24px; }
+    .section-title { font-size: 0.8rem; color: var(--accent); margin-bottom: 12px; padding-left: 10px; border-left: 3px solid var(--accent); font-weight: 700; text-transform: uppercase; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    th { text-align: left; padding: 8px 6px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    td { padding: 8px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; }
+    .tag.high { background: var(--green); color: white; }
+    .tag.medium { background: var(--accent); color: white; }
+    .tag.low { background: var(--muted); color: white; }
+    .tag.watch { background: var(--yellow); color: black; }
+    .tag.t1 { background: var(--green); }
+    .tag.t2 { background: var(--accent); }
+    .tag.t3 { background: var(--muted); }
+    .sources { font-size: 0.7rem; color: var(--muted); margin-top: 20px; }
+    .sources a { color: var(--accent); }
+    .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.7rem; }
+    .jp { color: var(--muted); font-size: 0.7rem; }
+    .trust-card { background: linear-gradient(135deg, rgba(88,166,255,0.1), rgba(163,113,247,0.1)); border: 1px solid var(--accent); }
+    .trust-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
+    .trust-value { font-size: 0.85rem; font-weight: 600; }
+    .signal-item { padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .signal-item:last-child { border-bottom: none; }
+    .signal-title { font-weight: 600; margin-bottom: 4px; }
+    .signal-meta { font-size: 0.7rem; color: var(--muted); }
+    .update-badge { background: var(--green); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <b>🃏 PTCG <span style="color:var(--accent)">INTEL</span></b>
+    <span class="update-badge">2026-02-15</span>
+  </div>
+  
+  <div class="container">
 
-        <h2 class="section-title">A. Overview</h2>
-        
-    <div class="card pro-info-card">
-        <h3 style="color:var(--accent); font-size:0.9rem; margin-bottom:10px;">📊 資料可信度卡（Data Trust Card）</h3>
-        <div class="metrics">
-            <div><div class="m-lbl">時間窗</div><div class="m-val">2026-W07（Unknown → Unknown）</div></div>
-            <div><div class="m-lbl">樣本數 n</div><div class="m-val">N/A</div></div>
-            <div><div class="m-lbl">Scope</div><div class="m-val">日本 / Standard</div></div>
-            <div><div class="m-lbl">Timezone</div><div class="m-val">Asia/Taipei</div></div>
-            <div style="grid-column: span 2;"><div class="m-lbl">偏差提醒</div><div class="m-val" style="color:var(--yellow); font-size:0.75rem;">僅統計可取得之入賞牌表彙整；Signals（X.com）為非統計</div></div>
-        </div>
+    <!-- 資料可信度卡 -->
+    <div class="card trust-card">
+      <div class="section-title" style="border:none;padding:0;margin-bottom:8px;">📊 資料可信度卡</div>
+      <table style="font-size:0.75rem;">
+        <tr><td class="trust-label">時間窗</td><td class="trust-value">2026-W07（02/09 → 02/15）</td></tr>
+        <tr><td class="trust-label">主要來源</td><td class="trust-value">Pokekameshi + Pokecabook</td></tr>
+        <tr><td class="trust-label">Scope</td><td class="trust-value">日本 / Standard</td></tr>
+        <tr><td class="trust-label">偏差提醒</td><td class="trust-value" style="color:var(--yellow);">僅統計可取得之入賞牌表</td></tr>
+      </table>
     </div>
 
-        <h2 class="section-title">B. Meta Trends（meta）</h2>
-        <div class="grid"></div>
-
-        <h2 class="section-title">C. Tech Radar（tech）</h2>
-        <div class="grid">
-        <div class="card">
-          <b style="color:var(--accent)">Tech Watchlist（tech；非統計）</b>
-          <div style="color:var(--muted); font-size:0.85rem; line-height:1.4;">N/A：本週無可用 tech 提及資料。</div>
-        </div>
-        </div>
-
-        <h2 class="section-title">E. Signals（非統計）</h2>
-        <div class="grid"><div class="card">N/A：本週無可用 Signals</div></div>
-
-        <h2 class="section-title">E2. Signals 資料來源（社群／粉專）</h2>
-        <div class="grid"><div class="card" style="border-left:4px solid var(--accent);"><div style='font-size:0.75rem;color:var(--muted);line-height:1.35;'>Facebook pages are included as Signals sources. Automated post scraping is not enabled in this environment (login/anti-bot). Dashboard shows links + last_checked=N/A until a reliable fetch method is added.</div><div style='margin-top:10px;'><div style='font-weight:900;'>GS ball Tank Team（金球戰車）</div><div><a href='https://www.facebook.com/GSballTankTeam' target='_blank' style='color:var(--accent);text-decoration:none;'>粉專連結</a></div><div style='font-size:0.7rem;color:var(--muted);'>Last checked: N/A</div></div><div style='margin-top:10px;'><div style='font-weight:900;'>PTCG.News 卡牌資訊站</div><div><a href='https://www.facebook.com/PTCG.News' target='_blank' style='color:var(--accent);text-decoration:none;'>粉專連結</a></div><div style='font-size:0.7rem;color:var(--muted);'>Last checked: N/A</div></div></div></div>
-
-        <h2 class="section-title">F. Data Quality</h2>
-        <div class="grid">
-    <div class="card">
-      <b style="color:var(--accent)">Data Quality（稽核）</b>
-      <div style="color:var(--muted); font-size:0.85rem; line-height:1.5;">
-        - n_total：N/A<br>
-        - Tier2：用於統計（meta share）<br>
-        - Tier3：僅 Signals（非統計）<br>
-        - 規則：缺資料不猜，顯示 N/A；避免無分母數字<br>
+    <!-- A. 日規 Meta 雷達 -->
+    <div class="section">
+      <div class="section-title">A. 日規 Meta 雷達</div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Tier</th><th>牌組</th><th>日文</th><th>趨勢</th></tr>
+          <tr><td><span class="tag t1">T1</span></td><td>多龍巴魯托ex</td><td class="jp">ドラパルトex</td><td style="color:var(--green);">▬ 穩定</td></tr>
+          <tr><td rowspan="3"><span class="tag t2">T2</span></td><td>超級路卡利歐ex</td><td class="jp">メガルカリオex</td><td style="color:var(--green);">▬ 穩定</td></tr>
+          <tr><td>瑪俐的長毛巨魔ex</td><td class="jp">マリィのオーロンゲex</td><td style="color:var(--green);">▬ 穩定</td></tr>
+          <tr><td>超級妙蛙花ex</td><td class="jp">メガフシギバナex</td><td style="color:var(--yellow);">↑ 上升</td></tr>
+          <tr><td rowspan="5"><span class="tag t3">T3</span></td><td>胡地</td><td class="jp">フーディン</td><td style="color:var(--yellow);">↑ 上升</td></tr>
+          <tr><td>N的索羅亞克ex</td><td class="jp">Nのゾロアークex</td><td>▬</td></tr>
+          <tr><td>超級蒂安希ex</td><td class="jp">メガディアンシーex</td><td style="color:var(--red);">↓ 下降</td></tr>
+          <tr><td>竹蘭的烈咬陸鯊ex</td><td class="jp">シロナのガブリアスex</td><td>▬</td></tr>
+          <tr><td>巨鍛匠ex</td><td class="jp">ブリジュラスex</td><td style="color:var(--yellow);">↑ 上升</td></tr>
+        </table>
       </div>
     </div>
+
+    <!-- B. 上升訊號雷達 -->
+    <div class="section">
+      <div class="section-title">B. 上升訊號雷達</div>
+      
+      <div class="card">
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px;">Deck Rising</div>
+        <div class="signal-item">
+          <div class="signal-title">🆙 超級妙蛙花ex / 瑪俐的長毛巨魔ex</div>
+          <div class="signal-meta">📍 2/13 立川 City League 冠軍</div>
+        </div>
+        <div class="signal-item">
+          <div class="signal-title">🆙 胡地 / 土龍節節</div>
+          <div class="signal-meta">📍 2/13 池袋 City League 冠軍</div>
+        </div>
+        <div class="signal-item">
+          <div class="signal-title">🆙 巨鍛匠ex</div>
+          <div class="signal-meta">📍 近期出現在多個 Tier 2 牌表</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px;">Tech / Cards Rising</div>
+        <div class="signal-item">
+          <div class="signal-title">💎 印章系統 (アンフェアスタンプ)</div>
+          <div class="signal-meta">60%+ 入賞牌組使用</div>
+        </div>
+        <div class="signal-item">
+          <div class="signal-title">💎 土龍節節 (ノココッチ)</div>
+          <div class="signal-meta">與胡地組合出現頻率增加</div>
+        </div>
+      </div>
     </div>
 
-        <div style="margin-top:30px;padding:20px;border-top:1px solid #333;font-size:0.75rem;color:#8b949e;">
-          Spec: docs/ptcg_dashboard_spec_F1-F12.md
-        </div>
+    <!-- C. 最新情報快訊 -->
+    <div class="section">
+      <div class="section-title">C. 最新情報快訊</div>
+      <div class="card">
+        <table>
+          <tr><th style="width:60px;">類型</th><th>摘要</th></tr>
+          <tr><td><span class="tag medium">賽事</span></td><td>2/13 東京 City League — 胡地/土龍節節 奪冠</td></tr>
+          <tr><td><span class="tag medium">賽事</span></td><td>2/13 立川 City League — 超級妙蛙花ex 奪冠</td></tr>
+          <tr><td><span class="tag low">趨勢</span></td><td>印章系統成為環境核心，超過60%使用率</td></tr>
+          <tr><td><span class="tag watch">觀察</span></td><td>巨鍛匠ex 出現頻率上升，可能進入 T2</td></tr>
+        </table>
+      </div>
     </div>
-</body></html>
+
+    <!-- D. 風險雷達 -->
+    <div class="section">
+      <div class="section-title">D. 風險雷達</div>
+      <div class="card">
+        <table>
+          <tr><th>風險項目</th><th>說明</th></tr>
+          <tr><td>⚠️ 印章泛濫</td><td>60%+ 牌組使用，可能被限制</td></tr>
+          <tr><td>⚠️ 環境多變</td><td>冠軍 deck 多樣，未定於一尊</td></tr>
+          <tr><td>📎 再版風險</td><td>無重大禁限消息</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 譯名字典 -->
+    <div class="section">
+      <div class="section-title">📖 譯名字典</div>
+      <div class="card" style="font-size:0.75rem;">
+        <table>
+          <tr><td>多龍巴魯托ex</td><td class="jp">ドラパルトex</td><td class="jp">Dragapult ex</td></tr>
+          <tr><td>超級路卡利歐ex</td><td class="jp">メガルカリオex</td><td class="jp">Lucario ex</td></tr>
+          <tr><td>瑪俐的長毛巨魔ex</td><td class="jp">マリィのオーロンゲex</td><td class="jp">Marnie's Grimmsnarl ex</td></tr>
+          <tr><td>超級妙蛙花ex</td><td class="jp">メガフシギバナex</td><td class="jp">Venusaur ex</td></tr>
+          <tr><td>胡地</td><td class="jp">フーディン</td><td class="jp">Alakazam</td></tr>
+          <tr><td>土龍節節</td><td class="jp">ノココッチ</td><td class="jp">Nokoko</td></tr>
+          <tr><td>願增猿+雪妖女</td><td class="jp">メノコマシラ</td><td class="jp">Munkidori + Froslass</td></tr>
+          <tr><td>超級蒂安希ex</td><td class="jp">メガディアンシーex</td><td class="jp">Diancie ex</td></tr>
+          <tr><td>巨鍛匠ex</td><td class="jp">ブリジュラスex</td><td class="jp">Archaludon ex</td></tr>
+          <tr><td>竹蘭的烈咬陸鯊ex</td><td class="jp">シロナのガブリアスex</td><td class="jp">Cynthia's Garchomp ex</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sources -->
+    <div class="sources">
+      <strong>Sources:</strong><br>
+      📺 <a href="https://pokekameshi.com/strongestdeck-tire/">Pokekameshi Tier表</a> — 2026/2/9<br>
+      📺 <a href="https://pokekameshi.com/cityleague20260213/">Pokekameshi City League 2/13</a><br>
+      📺 <a href="https://pokekameshi.com/cityleague20260207/">Pokekameshi City League 2/7</a><br>
+      📖 用戶提供譯名字典
+    </div>
+
+    <div class="footer">
+      <div>Run ID: 20260215-PTCG-001</div>
+      <div>更新：每日（週二、週五大更新）</div>
+    </div>
+  </div>
+</body>
+</html>
