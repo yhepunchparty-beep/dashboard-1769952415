@@ -1,6 +1,6 @@
 {
   "week_label": "2026-W08",
-  "updated": "2026-02-23 11:39:44.451089+08:00",
+  "updated": "2026-02-23 13:54:38.551213+08:00",
   "fetched_data": {
     "sources": [
       "PokecaBook",
@@ -50,19 +50,19 @@
     },
     "tech_cards": [
       {
-        "card": "道具粉碎器",
-        "mentions": 3
-      },
-      {
         "card": "英雄披風",
         "mentions": 3
       },
       {
-        "card": "不公平印章",
-        "mentions": 2
+        "card": "道具粉碎器",
+        "mentions": 3
       },
       {
         "card": "謝米",
+        "mentions": 2
+      },
+      {
+        "card": "不公平印章",
         "mentions": 2
       },
       {
@@ -74,11 +74,11 @@
         "mentions": 1
       },
       {
-        "card": "可達鴨",
+        "card": "傳承能量",
         "mentions": 1
       },
       {
-        "card": "傳承能量",
+        "card": "可達鴨",
         "mentions": 1
       }
     ]
