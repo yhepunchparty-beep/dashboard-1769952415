@@ -14,7 +14,7 @@
     .section-title { font-size: 1rem; margin: 20px 0 10px 5px; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 10px; }
     .badge { font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; color: white; }
 </style></head><body>
-    <div class="nav"><b>🃏 PTCG <span style="color:var(--accent)">INTEL</span></b><small style="color:var(--muted)">2026-02-23 13:54</small></div>
+    <div class="nav"><b>🃏 PTCG <span style="color:var(--accent)">INTEL</span></b><small style="color:var(--muted)">2026-02-23 13:56</small></div>
     <div class="container">
         <div style="margin-bottom:15px;"><a href="kanban.html" style="color:var(--accent); text-decoration:none;">📋 Dev Kanban</a></div>
 
@@ -65,21 +65,4 @@
           Spec: docs/ptcg_dashboard_spec_F1-F12.md
         </div>
     </div>
-
-  <script>
-    // Load data from JSON
-    async function loadPTCGData() {
-      try {
-        const resp = await fetch('data/ptcg_intel.json');
-        const data = await resp.json();
-        if (data.updated) {
-          const date = new Date(data.updated).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
-          document.querySelector('.nav small').textContent = date;
-        }
-      } catch(e) {
-        console.error('Failed to load PTCG data:', e);
-      }
-    }
-    loadPTCGData();
-  </script>
 </body></html>
