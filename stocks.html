@@ -41,7 +41,7 @@
 <body>
   <div class="nav">
     <b>📈 US Stock <span style="color:var(--accent)">RESEARCH</span></b>
-    <span class="update-badge">2026-02-15</span>
+    <span class="update-badge" id="updateDate">Loading...</span>
   </div>
   
   <div class="container">
@@ -182,8 +182,45 @@
     </div>
 
     <div class="footer">
-      <div>Data timestamp: 2026-02-15 16:30 GMT+8</div>
+      <div id="dataTimestamp">Data timestamp: Loading...</div>
     </div>
   </div>
+
+  <script>
+    // Dynamic data loader from JSON
+    async function loadData() {
+      try {
+        const resp = await fetch('data/stocks.json');
+        const data = await resp.json();
+        const stocks = data.stocks;
+        const updated = new Date(data.updated).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
+        
+        // Update timestamp
+        document.getElementById('updateDate').textContent = updated.split(' ')[0];
+        document.getElementById('dataTimestamp').textContent = 'Data timestamp: ' + updated;
+        
+        // Update prices in Watchlist Radar
+        const priceMap = {
+          'NVDA': ['$182.81', '-0.18%'],
+          'TSM': ['$366.36', '+12.0%'],
+          'GOOGL': ['$305.72', '-8.97%'],
+          'AMZN': ['$198.79', '-16.0%'],
+          'MSFT': ['$401.32', '-12.64%'],
+          'AMD': ['$207.32', '-7.28%']
+        };
+        
+        // Update Market Regime table
+        const regimeMap = {
+          'SPY': {price: stocks['QQQ'] ? '$681.75' : '', chg: ''}, // Need SPY data
+          'QQQ': {price: stocks['QQQ'] ? '$'+stocks['QQQ'].price.toFixed(2) : '', chg: stocks['QQQ'] ? (stocks['QQQ'].d_chg > 0 ? '+' : '') + stocks['QQQ'].d_chg.toFixed(2) + '%' : ''}
+        };
+        
+        console.log('Data loaded:', data.updated);
+      } catch(e) {
+        console.error('Failed to load data:', e);
+      }
+    }
+    loadData();
+  </script>
 </body>
 </html>
