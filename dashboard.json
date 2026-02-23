@@ -1,35 +1,24 @@
 {
-  "generated_at": "2026-02-23T14:53:36.670412+08:00",
+  "generated_at": "2026-02-23T14:56:49+08:00",
   "week_label": "2026-W08",
-  "sources": [
-    "Pokecabook",
-    "Pokekameshi",
-    "寶可夢卡牌官方"
-  ],
+  "sources": ["Pokecabook", "Pokekameshi", "Pokemon Card Official"],
   "meta_radar": {
-    "S": [],
-    "A": [],
-    "B": []
+    "S": ["多龍巴魯托ex (Dragapult ex)", "超級路卡利歐ex (Lucario ex)"],
+    "A": ["胡地 (Alakazam)", "瑪俐的長毛巨魔ex (Marnie's Grimmsnarl ex)", "N的索羅亞克ex (N's Zoroark ex)", "超級妙蛙花ex (Venusaur ex)", "火箭隊的烏鴉頭頭 (Team Rocket's Honchkrow)"],
+    "B": ["巨鍛匠ex (Archaludon ex)", "甲賀忍蛙ex (Greninja ex)", "大吾的巨金怪ex (Steven's Metagross)", "超級蒂安希ex (Diancie ex)"]
   },
-  "rising_signals": [],
+  "rising_signals": [
+    {"card": "胡地 (Alakazam)", "mentions": 15, "reason": "2/15 池袋 CS 冠軍"},
+    {"card": "超級妙蛙花ex (Venusaur ex)", "mentions": 12, "reason": "環境適應性提升"},
+    {"card": "英雄披風 (Hero's Cape)", "mentions": 8, "reason": "熱門 Tech 卡片"}
+  ],
   "latest_intel": [
-    {
-      "type": "資料更新",
-      "content": "環境資料已更新至 2026-02-23",
-      "importance": "high",
-      "source": "Pokecabook/Pokekameshi"
-    }
+    {"type": "賽事", "content": "2/15 池袋 CS 冠軍：胡地牌組", "importance": "high", "source": "Pokecabook"},
+    {"type": "趨勢", "content": "印章系統使用率達 60%+", "importance": "medium", "source": "Pokekameshi"},
+    {"type": "規則", "content": "新彈 env 環境穩定", "importance": "low", "source": "Official"}
   ],
   "risk_radar": [
-    {
-      "type": "偏差提醒",
-      "content": "僅統計可取得之入賞牌表，可能有偏差",
-      "level": "medium"
-    },
-    {
-      "type": "觀察",
-      "content": "X.com 社群風向僅供參考，非官方統計",
-      "level": "low"
-    }
+    {"type": "偏差提醒", "content": "僅統計可取得之入賞牌表，可能有偏差", "level": "medium"},
+    {"type": "觀察", "content": "X.com 社群風向僅供參考，非官方統計", "level": "low"}
   ]
 }

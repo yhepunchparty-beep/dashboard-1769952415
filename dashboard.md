@@ -1,10 +1,10 @@
 # PTCG 日規環境儀表板
 
-**更新時間**: 2026-02-23 14:53 (Asia/Taipei)
+**更新時間**: 2026-02-23 14:56 (Asia/Taipei)
 **資料週期**: 2026-W08
 
 ## 📊 資料來源
-- Pokecabook: https://pokecabook.com/archives/
+- Pokecabook: https://pokecabook.com/archives/category/deck-recipe/
 - Pokekameshi: https://pokekameshi.com/strongestdeck-tire/
 - 寶可夢卡牌官方: https://www.pokemon-card.com/
 
@@ -46,4 +46,4 @@
 ---
 
 *資料來源：Pokecabook, Pokekameshi, Pokemon Card Official*
-*更新時間：2026-02-23 14:53:36*
+*更新時間：2026-02-23 14:56:49*
