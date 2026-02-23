@@ -65,4 +65,21 @@
           Spec: docs/ptcg_dashboard_spec_F1-F12.md
         </div>
     </div>
+
+  <script>
+    // Load data from JSON
+    async function loadPTCGData() {
+      try {
+        const resp = await fetch('data/ptcg_intel.json');
+        const data = await resp.json();
+        if (data.updated) {
+          const date = new Date(data.updated).toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
+          document.querySelector('.nav small').textContent = date;
+        }
+      } catch(e) {
+        console.error('Failed to load PTCG data:', e);
+      }
+    }
+    loadPTCGData();
+  </script>
 </body></html>
