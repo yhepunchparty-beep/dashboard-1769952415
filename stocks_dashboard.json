@@ -1,0 +1,245 @@
+{
+  "generated_at": "2026-02-23T14:18:08.081038+08:00",
+  "sources": [
+    "Yahoo Finance"
+  ],
+  "market_regime": {
+    "summary": "本日市場數據統計完成。 GOOG 上漲 +3.74%；NET下跌 -8.05%。TSM,AVT RSI 超買。AMZN RSI 超賣",
+    "data": {
+      "NVDA": {
+        "symbol": "NVDA",
+        "price": 189.82,
+        "daily_chg": 1.02,
+        "rsi": 48.8,
+        "shares": 250,
+        "position_value": 47455.0,
+        "pe": 46.98515,
+        "target_price": 253.88464,
+        "name": "NVIDIA Corporation"
+      },
+      "TSM": {
+        "symbol": "TSM",
+        "price": 370.54,
+        "daily_chg": 2.82,
+        "rsi": 70.3,
+        "shares": 10,
+        "position_value": 3705.4,
+        "pe": 35.22243,
+        "target_price": 421.49057,
+        "name": "Taiwan Semiconductor Manufactur"
+      },
+      "GOOG": {
+        "symbol": "GOOG",
+        "price": 314.9,
+        "daily_chg": 3.74,
+        "rsi": 31.5,
+        "shares": 0,
+        "position_value": 0,
+        "pe": 29.157406,
+        "target_price": 359.2353,
+        "name": "Alphabet Inc."
+      },
+      "NFLX": {
+        "symbol": "NFLX",
+        "price": 78.67,
+        "daily_chg": 2.17,
+        "rsi": 36.9,
+        "shares": 100,
+        "position_value": 7867.0,
+        "pe": 31.094862,
+        "target_price": 111.42846,
+        "name": "Netflix, Inc."
+      },
+      "QQQ": {
+        "symbol": "QQQ",
+        "price": 608.81,
+        "daily_chg": 0.88,
+        "rsi": 42.0,
+        "shares": 0,
+        "position_value": 0,
+        "pe": 32.73149,
+        "target_price": null,
+        "name": "Invesco QQQ Trust, Series 1"
+      },
+      "AVT": {
+        "symbol": "AVT",
+        "price": 67.32,
+        "daily_chg": 1.95,
+        "rsi": 75.2,
+        "shares": 0,
+        "position_value": 0,
+        "pe": 27.365852,
+        "target_price": 59.25,
+        "name": "Avnet, Inc."
+      },
+      "MSFT": {
+        "symbol": "MSFT",
+        "price": 397.23,
+        "daily_chg": -0.31,
+        "rsi": 30.7,
+        "shares": 0,
+        "position_value": 0,
+        "pe": 24.873512,
+        "target_price": 595.99567,
+        "name": "Microsoft Corporation"
+      },
+      "AMD": {
+        "symbol": "AMD",
+        "price": 200.15,
+        "daily_chg": -1.58,
+        "rsi": 33.7,
+        "shares": 0,
+        "position_value": 0,
+        "pe": 76.98077,
+        "target_price": 287.52173,
+        "name": "Advanced Micro Devices, Inc."
+      },
+      "CRWD": {
+        "symbol": "CRWD",
+        "price": 388.6,
+        "daily_chg": -7.95,
+        "rsi": 35.5,
+        "shares": 0,
+        "position_value": 0,
+        "pe": null,
+        "target_price": 545.6153,
+        "name": "CrowdStrike Holdings, Inc."
+      },
+      "NET": {
+        "symbol": "NET",
+        "price": 177.14,
+        "daily_chg": -8.05,
+        "rsi": 49.9,
+        "shares": 0,
+        "position_value": 0,
+        "pe": null,
+        "target_price": 231.30418,
+        "name": "Cloudflare, Inc."
+      },
+      "AMZN": {
+        "symbol": "AMZN",
+        "price": 210.11,
+        "daily_chg": 2.56,
+        "rsi": 25.3,
+        "shares": 0,
+        "position_value": 0,
+        "pe": 29.344973,
+        "target_price": 280.5238,
+        "name": "Amazon.com, Inc."
+      }
+    }
+  },
+  "watchlist": [
+    {
+      "symbol": "NVDA",
+      "status": "持有",
+      "price": 189.82,
+      "daily_chg": 1.02,
+      "rsi": 48.8,
+      "target_price": 253.88464,
+      "pe": 46.98515
+    },
+    {
+      "symbol": "TSM",
+      "status": "持有",
+      "price": 370.54,
+      "daily_chg": 2.82,
+      "rsi": 70.3,
+      "target_price": 421.49057,
+      "pe": 35.22243
+    },
+    {
+      "symbol": "GOOG",
+      "status": "觀察",
+      "price": 314.9,
+      "daily_chg": 3.74,
+      "rsi": 31.5,
+      "target_price": 359.2353,
+      "pe": 29.157406
+    },
+    {
+      "symbol": "NFLX",
+      "status": "持有",
+      "price": 78.67,
+      "daily_chg": 2.17,
+      "rsi": 36.9,
+      "target_price": 111.42846,
+      "pe": 31.094862
+    },
+    {
+      "symbol": "QQQ",
+      "status": "觀察",
+      "price": 608.81,
+      "daily_chg": 0.88,
+      "rsi": 42.0,
+      "target_price": null,
+      "pe": 32.73149
+    },
+    {
+      "symbol": "AVT",
+      "status": "觀察",
+      "price": 67.32,
+      "daily_chg": 1.95,
+      "rsi": 75.2,
+      "target_price": 59.25,
+      "pe": 27.365852
+    },
+    {
+      "symbol": "MSFT",
+      "status": "觀察",
+      "price": 397.23,
+      "daily_chg": -0.31,
+      "rsi": 30.7,
+      "target_price": 595.99567,
+      "pe": 24.873512
+    },
+    {
+      "symbol": "AMD",
+      "status": "觀察",
+      "price": 200.15,
+      "daily_chg": -1.58,
+      "rsi": 33.7,
+      "target_price": 287.52173,
+      "pe": 76.98077
+    },
+    {
+      "symbol": "CRWD",
+      "status": "觀察",
+      "price": 388.6,
+      "daily_chg": -7.95,
+      "rsi": 35.5,
+      "target_price": 545.6153,
+      "pe": null
+    },
+    {
+      "symbol": "NET",
+      "status": "觀察",
+      "price": 177.14,
+      "daily_chg": -8.05,
+      "rsi": 49.9,
+      "target_price": 231.30418,
+      "pe": null
+    },
+    {
+      "symbol": "AMZN",
+      "status": "觀察",
+      "price": 210.11,
+      "daily_chg": 2.56,
+      "rsi": 25.3,
+      "target_price": 280.5238,
+      "pe": 29.344973
+    }
+  ],
+  "catalyst_calendar": [
+    {
+      "date": "本週",
+      "event": "多家科技股財報",
+      "impact": "高"
+    },
+    {
+      "date": "2026-03月初",
+      "event": "Fed 利率決策",
+      "impact": "高"
+    }
+  ]
+}

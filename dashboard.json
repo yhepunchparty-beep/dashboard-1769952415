@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-02-23T14:17:36.201613+08:00",
+  "week_label": "2026-W08",
+  "sources": [
+    "Pokecabook",
+    "Pokekameshi",
+    "寶可夢卡牌官方"
+  ],
+  "meta_radar": {
+    "S": [],
+    "A": [],
+    "B": []
+  },
+  "rising_signals": [],
+  "latest_intel": [
+    {
+      "type": "資料更新",
+      "content": "環境資料已更新至 2026-02-23",
+      "importance": "high",
+      "source": "Pokecabook/Pokekameshi"
+    }
+  ],
+  "risk_radar": [
+    {
+      "type": "偏差提醒",
+      "content": "僅統計可取得之入賞牌表，可能有偏差",
+      "level": "medium"
+    },
+    {
+      "type": "觀察",
+      "content": "X.com 社群風向僅供參考，非官方統計",
+      "level": "low"
+    }
+  ]
+}
