@@ -5,123 +5,39 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PTCG 日規環境儀表板</title>
 <style>
-:root {
-  --bg: #0d1117;
-  --card: #161b22;
-  --border: #30363d;
-  --text: #c9d1d9;
-  --accent: #58a6ff;
-  --green: #3fb950;
-  --red: #f85149;
-  --yellow: #d29922;
-  --muted: #8b949e;
-}
+:root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --muted: #8b949e; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  padding-bottom: 40px;
-}
-.nav {
-  position: sticky;
-  top: 0;
-  background: rgba(13,17,23,0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  padding: 16px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.nav h1 { font-size: 1.2rem; font-weight: 700; }
+body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 40px; }
+.nav { position: sticky; top: 0; background: rgba(13,17,23,0.95); padding: 16px 24px; border-bottom: 1px solid var(--border); }
+.nav h1 { font-size: 1.2rem; }
 .nav h1 span { color: var(--accent); }
-.nav .time { color: var(--muted); font-size: 0.85rem; }
+.nav .time { color: var(--muted); font-size: 0.85rem; float: right; margin-top: -24px; }
 .container { max-width: 900px; margin: 0 auto; padding: 16px; }
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
-}
-.section-title {
-  font-size: 0.85rem;
-  color: var(--accent);
-  text-transform: uppercase;
-  font-weight: 700;
-  margin-bottom: 14px;
-  padding-left: 10px;
-  border-left: 3px solid var(--accent);
-}
-.tier-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 12px;
-}
-.tier-box {
-  background: rgba(0,0,0,0.2);
-  border-radius: 10px;
-  padding: 14px;
-}
-.tier-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.section-title { font-size: 0.85rem; color: var(--accent); text-transform: uppercase; font-weight: 700; margin-bottom: 14px; padding-left: 10px; border-left: 3px solid var(--accent); }
+.tier-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.tier-box { background: rgba(0,0,0,0.2); border-radius: 10px; padding: 14px; }
+.tier-label { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
 .tier-s .tier-label { color: var(--red); }
 .tier-a .tier-label { color: var(--accent); }
 .tier-b .tier-label { color: var(--muted); }
-.deck-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.deck-tag {
-  display: inline-block;
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  background: rgba(255,255,255,0.08);
-}
+.deck-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.deck-tag { display: inline-block; padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; background: rgba(255,255,255,0.08); }
 .tier-s .deck-tag { background: rgba(248,81,73,0.2); color: var(--red); }
 .tier-a .deck-tag { background: rgba(88,166,255,0.2); color: var(--accent); }
 .tier-b .deck-tag { background: rgba(139,148,158,0.2); color: var(--muted); }
-.tech-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.tech-tag {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  background: rgba(63,185,80,0.15);
-  color: var(--green);
-}
-.risk-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.85rem;
-}
+.tech-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.tech-tag { display: inline-block; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; background: rgba(63,185,80,0.15); color: var(--green); }
+.risk-item { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
 .risk-item:last-child { border-bottom: none; }
-.risk-icon { font-size: 1rem; }
 .sources { font-size: 0.75rem; color: var(--muted); margin-top: 20px; }
-.sources a { color: var(--accent); text-decoration: none; }
 .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.75rem; }
 </style>
 </head>
 <body>
 <div class="nav">
   <h1>🃏 PTCG <span>日規環境</span></h1>
-  <span class="time" id="updateTime">Loading...</span>
+  <span class="time">2026-02-23</span>
 </div>
 
 <div class="container">
@@ -131,20 +47,20 @@ body {
     <div class="tier-grid">
       <div class="tier-box tier-s">
         <div class="tier-label">S Tier</div>
-        <div class="deck-list" id="sTier">
-          <span class="deck-tag">載入中...</span>
+        <div class="deck-list">
+          <span class="deck-tag">多龍巴魯托ex (Dragapult ex)</span><span class="deck-tag">超級路卡利歐ex (Lucario ex)</span>
         </div>
       </div>
       <div class="tier-box tier-a">
         <div class="tier-label">A Tier</div>
-        <div class="deck-list" id="aTier">
-          <span class="deck-tag">載入中...</span>
+        <div class="deck-list">
+          <span class="deck-tag">胡地 (Alakazam)</span><span class="deck-tag">瑪俐的長毛巨魔ex (Marnie's Grimmsnarl ex)</span><span class="deck-tag">N的索羅亞克ex (N's Zoroark ex)</span><span class="deck-tag">超級妙蛙花ex (Venusaur ex)</span><span class="deck-tag">火箭隊的烏鴉頭頭</span>
         </div>
       </div>
       <div class="tier-box tier-b">
         <div class="tier-label">B Tier</div>
-        <div class="deck-list" id="bTier">
-          <span class="deck-tag">載入中...</span>
+        <div class="deck-list">
+          <span class="deck-tag">巨鍛匠ex</span><span class="deck-tag">甲賀忍蛙ex</span><span class="deck-tag">大吾的巨金怪ex</span><span class="deck-tag">超級蒂安希ex</span>
         </div>
       </div>
     </div>
@@ -152,75 +68,32 @@ body {
 
   <!-- 上升訊號 -->
   <div class="card">
-    <div class="section-title">🆙 上升訊號 - Tech Cards</div>
-    <div class="tech-grid" id="techCards">
-      <span class="tech-tag">載入中...</span>
+    <div class="section-title">🆙 上升訊號</div>
+    <div class="tech-grid">
+      <span class="tech-tag">胡地</span><span class="tech-tag">超級妙蛙花ex</span><span class="tech-tag">英雄披風</span>
     </div>
   </div>
 
   <!-- 最新情報 -->
   <div class="card">
     <div class="section-title">📰 最新情報</div>
-    <div id="latestIntel">
-      <div style="color: var(--muted);">載入中...</div>
-    </div>
+    <div>• 2/15 池袋 CS 冠軍：胡地牌組 <span style="color:var(--muted);font-size:0.75rem;">(Pokecabook)</span></div><div>• 印章系統使用率達 60%+ <span style="color:var(--muted);font-size:0.75rem;">(Pokekameshi)</span></div>
   </div>
 
   <!-- 風險雷達 -->
   <div class="card">
     <div class="section-title">⚠️ 風險雷達</div>
-    <div class="risk-item">
-      <span class="risk-icon">⚠️</span>
-      <span>偏差提醒：僅統計可取得之入賞牌表，可能有偏差</span>
-    </div>
-    <div class="risk-item">
-      <span class="risk-icon">📎</span>
-      <span>X.com 社群風向僅供參考，非官方統計</span>
-    </div>
+    <div class="risk-item"><span>⚠️</span><span>偏差提醒：僅統計可取得之入賞牌表，可能有偏差</span></div>
+    <div class="risk-item"><span>📎</span><span>X.com 社群風向僅供參考，非官方統計</span></div>
   </div>
 
   <div class="sources">
-    <div>資料來源：</div>
-    <div>• <a href="https://pokekameshi.com/" target="_blank">Pokekameshi</a></div>
-    <div>• <a href="https://pokecabook.com/" target="_blank">Pokecabook</a></div>
-    <div>• <a href="https://www.pokemon-card.com/" target="_blank">寶可夢卡牌官方</a></div>
+    資料來源：Pokecabook, Pokekameshi, Pokemon Card Official
   </div>
 </div>
 
 <div class="footer">
-  自動更新 • 資料可能有些許偏差
+  自動更新 • 週一/週四更新
 </div>
-
-<script>
-async function loadDashboard() {
-  try {
-    const resp = await fetch('dashboard.json');
-    const data = await resp.json();
-    
-    // Update time
-    const now = new Date(data.generated_at);
-    document.getElementById('updateTime').textContent = now.toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
-    
-    // Tiers
-    const tiers = data.meta_radar || {};
-    document.getElementById('sTier').innerHTML = (tiers.S || []).map(d => `<span class="deck-tag">${d}</span>`).join('') || '<span class="deck-tag">無資料</span>';
-    document.getElementById('aTier').innerHTML = (tiers.A || []).map(d => `<span class="deck-tag">${d}</span>`).join('') || '<span class="deck-tag">無資料</span>';
-    document.getElementById('bTier').innerHTML = (tiers.B || []).map(d => `<span class="deck-tag">${d}</span>`).join('') || '<span class="deck-tag">無資料</span>';
-    
-    // Tech Cards
-    const tech = data.rising_signals || [];
-    document.getElementById('techCards').innerHTML = tech.map(t => `<span class="tech-tag">${t.card || t}</span>`).join('') || '<span class="tech-tag">無資料</span>';
-    
-    // Latest Intel
-    const intel = data.latest_intel || [];
-    document.getElementById('latestIntel').innerHTML = intel.length ? intel.map(i => `<div>• ${i.content}</div>`).join('') : '<div style="color:var(--muted)">無最新情報</div>';
-    
-  } catch(e) {
-    console.error(e);
-    document.getElementById('updateTime').textContent = 'Error';
-  }
-}
-loadDashboard();
-</script>
 </body>
 </html>
