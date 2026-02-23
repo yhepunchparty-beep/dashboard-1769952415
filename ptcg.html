@@ -3,40 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PTCG Intel</title>
+<title>PTCG 日規環境儀表板</title>
 <style>
 :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --red: #f85149; --yellow: #d29922; --muted: #8b949e; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 30px; }
-.nav { position: sticky; top: 0; background: rgba(13,17,23,0.95); padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
-.container { max-width: 900px; margin: 15px auto; padding: 0 15px; }
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 12px; }
-.section-title { font-size: 1rem; margin: 20px 0 10px; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 10px; }
-.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-right: 6px; }
-.badge.s { background: var(--red); color: white; }
-.badge.a { background: var(--accent); color: white; }
-.badge.b { background: var(--muted); color: white; }
-.badge.c { background: #444; color: white; }
-.tier-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 15px; }
+.nav { background: var(--card); padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+.nav h1 { font-size: 1.2rem; }
+.nav span { color: var(--muted); font-size: 0.85rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+.section-title { font-size: 0.9rem; color: var(--accent); margin-bottom: 12px; padding-left: 10px; border-left: 3px solid var(--accent); }
+.tier { display: flex; flex-wrap: wrap; gap: 8px; }
+.tier-item { padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; }
+.tier-s { background: var(--red); color: white; }
+.tier-a { background: var(--accent); color: white; }
+.tier-b { background: var(--muted); color: white; }
+.rising { color: var(--green); }
+.falling { color: var(--red); }
+.source { font-size: 0.75rem; color: var(--muted); margin-top: 10px; }
 </style>
 </head>
 <body>
 <div class="nav">
-<b>🃏 PTCG <span style="color:var(--accent)">INTEL</span></b>
-<small style="color:var(--muted)">2026-02-23 14:01</small>
-</div>
-<div class="container">
-<h2 class="section-title">📊 資料來源</h2>
-<div class="card">
-<div><b>Sources:</b> PokecaBook, PokeKameshi</div>
-<div style="margin-top:8px;font-size:0.8rem;color:var(--muted);">https://pokecabook.com/archives/26148, https://pokekameshi.com/strongestdeck-tire/</div>
+<h1>🃏 PTCG 日規環境儀表板</h1>
+<span>2026-02-23 14:09</span>
 </div>
 
-<h2 class="section-title">🏆 Tier List</h2>
-<div class="card"><b style="color:var(--red);">S Tier</b><div class="tier-row" style="margin-top:10px;"><span class="badge s">多龍巴魯托ex</span></div></div><div class="card"><b style="color:var(--accent);">A Tier</b><div class="tier-row" style="margin-top:10px;"><span class="badge a">超級路卡利歐ex</span><span class="badge a">胡地</span><span class="badge a">瑪俐的長毛巨魔ex</span><span class="badge a">N的索羅亞克ex</span></div></div><div class="card"><b style="color:var(--muted);">B Tier</b><div class="tier-row" style="margin-top:10px;"><span class="badge b">胡地</span><span class="badge b">瑪俐的長毛巨魔ex</span><span class="badge b">N的索羅亞克ex</span><span class="badge b">超級妙蛙花ex</span><span class="badge b">竹蘭的烈咬陸鯊ex</span><span class="badge b">タケルライコex</span><span class="badge b">イイネイヌ</span><span class="badge b">メガディアンシーex</span><span class="badge b">火箭隊的烏鴉頭頭</span><span class="badge b">超級寶石海星ex</span><span class="badge b">ゲッコウガex</span><span class="badge b">大吾的巨金怪ex</span><span class="badge b">火箭隊的超夢ex</span><span class="badge b">鋁鋼橋龍ex</span><span class="badge b">祭典音頭</span></div></div><h2 class="section-title">🔧 Tech Cards</h2><div class="card"><div class="tier-row"><span class="badge a">英雄披風 (3)</span><span class="badge a">道具粉碎器 (3)</span><span class="badge a">不公平印章 (2)</span><span class="badge a">謝米 (2)</span><span class="badge a">可達鴨 (1)</span><span class="badge a">求生石膏 (1)</span><span class="badge a">傳承能量 (1)</span><span class="badge a">對戰競技場 (1)</span></div></div>
-<div style="margin-top:30px;padding:20px;border-top:1px solid #333;font-size:0.75rem;color:#8b949e;">
-更新時間: 2026-02-23 14:01:01
+<!-- Meta 雷達 -->
+<div class="card">
+<div class="section-title">📊 Meta 雷達</div>
+<div style="margin-bottom:15px;">
+<b>S Tier</b>
+<div class="tier" style="margin-top:8px;">
+<span class="tier-item tier-s">多龍巴魯托ex</span>
 </div>
+</div>
+<div style="margin-bottom:15px;">
+<b>A Tier</b>
+<div class="tier" style="margin-top:8px;">
+<span class="tier-item tier-a">超級路卡利歐ex</span><span class="tier-item tier-a">胡地</span><span class="tier-item tier-a">瑪俐的長毛巨魔ex</span><span class="tier-item tier-a">N的索羅亞克ex</span>
+</div>
+<div>
+<b>B Tier</b>
+<div class="tier" style="margin-top:8px;">
+<span class="tier-item tier-b">胡地</span><span class="tier-item tier-b">瑪俐的長毛巨魔ex</span><span class="tier-item tier-b">N的索羅亞克ex</span><span class="tier-item tier-b">超級妙蛙花ex</span><span class="tier-item tier-b">竹蘭的烈咬陸鯊ex</span><span class="tier-item tier-b">タケルライコex</span><span class="tier-item tier-b">イイネイヌ</span><span class="tier-item tier-b">メガディアンシーex</span><span class="tier-item tier-b">火箭隊的烏鴉頭頭</span><span class="tier-item tier-b">超級寶石海星ex</span><span class="tier-item tier-b">ゲッコウガex</span><span class="tier-item tier-b">大吾的巨金怪ex</span><span class="tier-item tier-b">火箭隊的超夢ex</span><span class="tier-item tier-b">鋁鋼橋龍ex</span><span class="tier-item tier-b">祭典音頭</span><span class="tier-item tier-b">拡張パック【ニンジャスピナー】収録カードリスト＆解説</span>
+</div>
+</div>
+<div class="source">資料來源：PokecaBook, PokeKameshi</div>
+</div>
+
+<!-- 上升訊號 -->
+<div class="card">
+<div class="section-title">🆙 上升訊號</div>
+<div class="tier">
+<span class="tier-item tier-a">道具粉碎器</span><span class="tier-item tier-a">英雄披風</span><span class="tier-item tier-a">不公平印章</span><span class="tier-item tier-a">謝米</span><span class="tier-item tier-a">對戰競技場</span><span class="tier-item tier-a">可達鴨</span><span class="tier-item tier-a">傳承能量</span><span class="tier-item tier-a">求生石膏</span>
+</div>
+</div>
+
+<!-- 最新情報 -->
+<div class="card">
+<div class="section-title">📰 最新情報</div>
+<div style="font-size:0.85rem;line-height:1.6;">
+• 資料更新時間：2026-02-23 14:09<br>
+• 來源：PokecaBook, PokeKameshi
+</div>
+</div>
+
+<!-- 風險雷達 -->
+<div class="card">
+<div class="section-title">⚠️ 風險雷達</div>
+<div style="font-size:0.85rem;line-height:1.6;">
+• 僅統計可取得之入賞牌表，可能有偏差<br>
+• X.com 社群風向僅供參考，非官方統計
+</div>
+</div>
+
+<div style="text-align:center;color:var(--muted);font-size:0.75rem;margin-top:20px;">
+資料來源：PokecaBook, PokeKameshi, Pokemon Card Official
 </div>
 </body>
 </html>
