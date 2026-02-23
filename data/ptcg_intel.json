@@ -1,8 +1,86 @@
 {
   "week_label": "2026-W08",
-  "meta_window": null,
-  "archetypes": [],
-  "signals": [],
-  "tournaments": [],
-  "n": 0
+  "updated": "2026-02-23 11:39:44.451089+08:00",
+  "fetched_data": {
+    "sources": [
+      "PokecaBook",
+      "PokeKameshi"
+    ],
+    "urls": [
+      "https://pokecabook.com/archives/26148",
+      "https://pokekameshi.com/strongestdeck-tire/"
+    ],
+    "tiers": {
+      "S": [
+        "多龍巴魯托ex"
+      ],
+      "A": [
+        "超級路卡利歐ex",
+        "胡地",
+        "瑪俐的長毛巨魔ex",
+        "N的索羅亞克ex"
+      ],
+      "B": [
+        "胡地",
+        "瑪俐的長毛巨魔ex",
+        "N的索羅亞克ex",
+        "超級妙蛙花ex",
+        "竹蘭的烈咬陸鯊ex",
+        "タケルライコex",
+        "イイネイヌ",
+        "メガディアンシーex",
+        "火箭隊的烏鴉頭頭",
+        "超級寶石海星ex",
+        "ゲッコウガex",
+        "大吾的巨金怪ex",
+        "火箭隊的超夢ex",
+        "鋁鋼橋龍ex",
+        "祭典音頭",
+        "拡張パック【ニンジャスピナー】収録カードリスト＆解説"
+      ],
+      "C": [
+        "火箭隊的烏鴉頭頭",
+        "超級寶石海星ex",
+        "祭典音頭",
+        "火箭隊的超夢ex",
+        "鋁鋼橋龍ex",
+        "大吾的巨金怪ex",
+        "ゲッコウガex"
+      ]
+    },
+    "tech_cards": [
+      {
+        "card": "道具粉碎器",
+        "mentions": 3
+      },
+      {
+        "card": "英雄披風",
+        "mentions": 3
+      },
+      {
+        "card": "不公平印章",
+        "mentions": 2
+      },
+      {
+        "card": "謝米",
+        "mentions": 2
+      },
+      {
+        "card": "對戰競技場",
+        "mentions": 1
+      },
+      {
+        "card": "求生石膏",
+        "mentions": 1
+      },
+      {
+        "card": "可達鴨",
+        "mentions": 1
+      },
+      {
+        "card": "傳承能量",
+        "mentions": 1
+      }
+    ]
+  }
 }
