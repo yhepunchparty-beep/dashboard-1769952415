@@ -56,16 +56,31 @@
 | AMZN | $210.11 | +2.56% | +5.69% | -12.15% | 18.8% | N/A | 1.0 | 0 | |
 
 
+## 4) Catalyst Calendar — 兩週內事件
+
+| 日期 (ET / GMT+8) | 事件 | 影響對象 | 為何重要 |
+|---|---|---|---|
+| 本週 | 多家科技股財報 | NVDA, AMD, META | AI 景氣風向球 |
+
 ---
 
-## Sources
+## 5) Sources
 
-- Prices: Yahoo Finance
-- 更新時間: 2026-02-23 14:19:23
+- Prices/Charts: Yahoo Finance (https://finance.yahoo.com/)
+- Earnings Calendar: Nasdaq (https://www.nasdaq.com/market-activity/earnings-calendar)
+- Macro: FRED (https://fred.stlouisfed.org/)
+- Fear & Greed: CNN Business (https://www.cnn.com/business/markets/fear-and-greed)
+- News/Filings: Reuters, Bloomberg, SEC (https://www.sec.gov/)
 
 ---
 
-## Run Info
+## 6) Run Info
 
 - Run ID: 20260223-STOCKS-001
-- Data timestamp: 2026-02-23 14:19 (GMT+8)
+- Data timestamp: 2026-02-23 14:20 (GMT+8)
+
+---
+
+【自我檢查】
+- 數據來源：Yahoo Finance
+- 若有關鍵資料缺漏，請在摘要區標註
