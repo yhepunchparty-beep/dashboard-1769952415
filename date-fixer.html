@@ -40,11 +40,11 @@
       <div class="controls">
         <label>輸出格式：</label>
         <select id="format">
-          <option value="YYYY-MM-DD">2026-01-15</option>
-          <option value="YYYY/MM/DD">2026/01/15</option>
-          <option value="DD/MM/YYYY">15/01/2026</option>
-          <option value="MM/DD/YYYY">01/15/2026</option>
-          <option value="YYYYMMDD">20260115</option>
+          <option value="yyyy/mm/dd">yyyy/mm/dd (2026/01/15)</option>
+          <option value="yyyy-mm-dd">yyyy-mm-dd (2026-01-15)</option>
+          <option value="dd/mm/yyyy">dd/mm/yyyy (15/01/2026)</option>
+          <option value="mm/dd/yyyy">mm/dd/yyyy (01/15/2026)</option>
+          <option value="yyyymmdd">yyyymmdd (20260115)</option>
         </select>
         <button onclick="convert()">轉換</button>
         <button class="secondary" onclick="copyOutput()">複製結果</button>
@@ -110,7 +110,10 @@
     function formatDate(date, fmt) {
       const pad = n => String(n).padStart(2, '0');
       const y = date.y, m = pad(date.m), d = pad(date.d);
-      return fmt.replace('YYYY', y).replace('MM', m).replace('DD', d);
+      return fmt
+        .replace('yyyy', y)
+        .replace('mm', m)
+        .replace('dd', d);
     }
     
     function convert() {
