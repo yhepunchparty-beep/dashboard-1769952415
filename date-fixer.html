@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日期格式一鍵修復</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, system-ui, sans-serif; background: #f5f5f5; padding: 20px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 20px; color: #333; }
+    .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    textarea { width: 100%; height: 150px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; resize: vertical; }
+    .controls { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; align-items: center; }
+    select, button { padding: 10px 16px; border-radius: 8px; border: 1px solid #ddd; font-size: 14px; cursor: pointer; }
+    button { background: #007AFF; color: white; border: none; }
+    button:hover { background: #0056b3; }
+    button.secondary { background: #34C759; }
+    button.secondary:hover { background: #228B22; }
+    .output { margin-top: 20px; }
+    .output h3 { margin-bottom: 12px; color: #333; }
+    .output-area { width: 100%; height: 150px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; font-size: 14px; white-space: pre; overflow: auto; }
+    .stats { margin-top: 12px; padding: 12px; background: #e8f4fd; border-radius: 8px; font-size: 13px; color: #666; }
+    .error { color: #ff3b30; }
+    .success { color: #34C759; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📅 日期格式一鍵修復</h1>
+    <div class="card">
+      <p style="margin-bottom: 12px; color: #666;">貼上雜亂的日期文字（Excel、CSV、文字檔皆可），自動轉換為標準格式：</p>
+      <textarea id="input" placeholder="例如：
+2026/01/15
+01-15-2026
+2026.01.15
+15 Jan 2026
+2026年1月15日"></textarea>
+      
+      <div class="controls">
+        <label>輸出格式：</label>
+        <select id="format">
+          <option value="YYYY-MM-DD">2026-01-15</option>
+          <option value="YYYY/MM/DD">2026/01/15</option>
+          <option value="DD/MM/YYYY">15/01/2026</option>
+          <option value="MM/DD/YYYY">01/15/2026</option>
+          <option value="YYYYMMDD">20260115</option>
+        </select>
+        <button onclick="convert()">轉換</button>
+        <button class="secondary" onclick="copyOutput()">複製結果</button>
+        <button onclick="clearAll()">清除</button>
+      </div>
+      
+      <div class="output">
+        <h3>結果：</h3>
+        <div class="output-area" id="output"></div>
+      </div>
+      
+      <div class="stats" id="stats"></div>
+    </div>
+  </div>
+
+  <script>
+    // 日期解析 patterns
+    const patterns = [
+      // 2026-01-15, 2026/01/15, 2026.01.15
+      { regex: /^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/, order: [0,1,2] },
+      // 01-15-2026, 01/15/2026, 01.15.2026
+      { regex: /^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/, order: [2,0,1] },
+      // 15-01-2026, 15/01/2026
+      { regex: /^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/, order: [2,1,0], when: 'ddmm' },
+      // 15 Jan 2026, 15-Jan-2026
+      { regex: /^(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{4})$/i, order: [2,1,0], type: 'month' },
+      // Jan 15 2026
+      { regex: /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{1,2})\s+(\d{4})$/i, order: [2,0,1], type: 'month' },
+      // 2026年1月15日
+      { regex: /^(\d{4})年(\d{1,2})月(\d{1,2})日?$/, order: [0,1,2] },
+      // 1月15日2026年
+      { regex: /^(\d{1,2})月(\d{1,2})日?(\d{4})年?$/, order: [2,0,1] },
+    ];
+    
+    const monthMap = {
+      jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6,
+      jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12
+    };
+    
+    function parseDate(str) {
+      str = str.trim();
+      for (let p of patterns) {
+        let m = str.match(p.regex);
+        if (m) {
+          let y, mon, d;
+          if (p.type === 'month') {
+            y = parseInt(m[p.order[0] + 1]);
+            mon = monthMap[m[p.order[1] + 1].toLowerCase().substring(0,3)];
+            d = parseInt(m[p.order[2] + 1]);
+          } else {
+            y = parseInt(m[p.order[0] + 1]);
+            mon = parseInt(m[p.order[1] + 1]);
+            d = parseInt(m[p.order[2] + 1]);
+          }
+          if (mon >= 1 && mon <= 12 && d >= 1 && d <= 31 && y >= 1900 && y <= 2100) {
+            return { y, m: mon, d };
+          }
+        }
+      }
+      return null;
+    }
+    
+    function formatDate(date, fmt) {
+      const pad = n => String(n).padStart(2, '0');
+      const y = date.y, m = pad(date.m), d = pad(date.d);
+      return fmt.replace('YYYY', y).replace('MM', m).replace('DD', d);
+    }
+    
+    function convert() {
+      const input = document.getElementById('input').value;
+      const fmt = document.getElementById('format').value;
+      const lines = input.split('\n');
+      const output = [];
+      let success = 0, failed = 0;
+      
+      for (let line of lines) {
+        line = line.trim();
+        if (!line) continue;
+        const date = parseDate(line);
+        if (date) {
+          output.push(formatDate(date, fmt));
+          success++;
+        } else {
+          output.push(`[無法解析: ${line}]`);
+          failed++;
+        }
+      }
+      
+      document.getElementById('output').textContent = output.join('\n');
+      document.getElementById('stats').innerHTML = 
+        `<span class="success">✓ 成功: ${success}</span> | <span class="error">✗ 失敗: ${failed}</span> | 總計: ${lines.filter(l=>l.trim()).length}`;
+    }
+    
+    function copyOutput() {
+      const text = document.getElementById('output').textContent;
+      navigator.clipboard.writeText(text).then(() => alert('已複製！'));
+    }
+    
+    function clearAll() {
+      document.getElementById('input').value = '';
+      document.getElementById('output').textContent = '';
+      document.getElementById('stats').textContent = '';
+    }
+  </script>
+</body>
+</html>
