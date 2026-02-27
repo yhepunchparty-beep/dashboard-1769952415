@@ -37,7 +37,7 @@
     }
     .nav h1 { font-size: 1.2rem; }
     .nav h1 span { color: var(--accent); }
-    .nav .filters { display: flex; gap: 8px; }
+    .nav .filters { display: flex; gap: 8px; flex-wrap: wrap; }
     .nav button {
       background: var(--card);
       border: 1px solid var(--border);
@@ -70,12 +70,12 @@
     .card-title { font-size: 1rem; font-weight: 600; color: var(--text); }
     .card-id { font-size: 0.75rem; color: var(--muted); font-family: monospace; }
     .card-intro { font-size: 0.9rem; color: var(--muted); margin-bottom: 12px; }
-    .card-meta { display: flex; gap: 16px; font-size: 0.8rem; }
+    .card-meta { display: flex; gap: 16px; font-size: 0.8rem; flex-wrap: wrap; }
     .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
     .tag.monetization { background: rgba(63,185,80,0.2); color: var(--green); }
     .tag.effort { background: rgba(210,153,34,0.2); color: var(--yellow); }
     .tag.status { background: rgba(88,166,255,0.2); color: var(--accent); }
-    .card-actions { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+    .card-actions { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px; flex-wrap: wrap; }
     .card-actions button {
       padding: 6px 12px;
       border-radius: 6px;
@@ -90,8 +90,8 @@
     .card-evidence { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
     .card-evidence a { color: var(--accent); }
     .empty { text-align: center; padding: 40px; color: var(--muted); }
-    .stats { display: flex; gap: 24px; margin-bottom: 24px; }
-    .stat { background: var(--card); padding: 16px 24px; border-radius: 8px; text-align: center; }
+    .stats { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+    .stat { background: var(--card); padding: 12px 20px; border-radius: 8px; text-align: center; flex: 1; min-width: 100px; }
     .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
     .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; }
     .toast {
@@ -105,33 +105,37 @@
       font-weight: 500;
       display: none;
       animation: slideIn 0.3s ease;
+      z-index: 1000;
     }
     @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .hidden { display: none !important; }
+    .header-actions { display: flex; gap: 8px; }
   </style>
 </head>
 <body>
   <div class="nav">
     <h1>💡 <span>點子庫</span></h1>
-    <div class="filters">
-      <button class="active" onclick="filter('all')">全部</button>
-      <button onclick="filter('in_progress')">進行中</button>
-      <button onclick="filter('proposed')">待審</button>
+    <div class="header-actions">
+      <div class="filters">
+        <button class="active" onclick="filter('all')">全部</button>
+        <button onclick="filter('in_progress')">進行中</button>
+        <button onclick="filter('proposed')">待審</button>
+      </div>
     </div>
   </div>
 
   <div class="container">
     <div class="stats">
       <div class="stat">
-        <div class="stat-value" id="stat-progress">1</div>
+        <div class="stat-value" id="stat-progress">0</div>
         <div class="stat-label">進行中</div>
       </div>
       <div class="stat">
-        <div class="stat-value" id="stat-proposed">211</div>
-        <div class="stat-label">待審核</div>
+        <div class="stat-value" id="stat-proposed">0</div>
+        <div class="stat-label">待審</div>
       </div>
       <div class="stat">
-        <div class="stat-value" id="stat-total">3</div>
+        <div class="stat-value" id="stat-rejected">0</div>
         <div class="stat-label">已完成</div>
       </div>
     </div>
@@ -142,7 +146,7 @@
     </div>
 
     <div class="section">
-      <div class="section-title">📋 最近新增 (待審核)</div>
+      <div class="section-title">📋 待審核</div>
       <div id="proposed-list"></div>
     </div>
   </div>
@@ -159,32 +163,131 @@
         monetization_value: 4,
         implementation_effort: 2,
         status: 'in_progress',
-        evidence: 'https://www.reddit.com/r/excel/comments/1rewz2d/my_order_date_column_is_a_formatting_nightmare/',
+        evidence: 'Reddit',
         link: 'date-fixer.html'
       },
       {
-        id: 'P-211',
-        product: 'Excel命名範本助手',
-        intro: 'Excel定義名稱是常見痛點，範本可無限複製',
+        id: 'P-001',
+        product: '家庭財務合併',
+        intro: '幫伴侶/家人合併檢視所有帳戶的簡單工具',
         monetization_value: 4,
         implementation_effort: 2,
         status: 'proposed',
         evidence: 'Reddit'
       },
       {
-        id: 'P-212',
-        product: '汽車美容廣告ROI計算機',
-        intro: '小店老闆在乎廣告效果，願意花錢買答案',
-        monetization_value: 4,
-        implementation_effort: 2,
-        status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
-        id: 'P-213',
-        product: '跨境翻譯品質監控',
-        intro: '跨境電商痛點，但實作稍複雜',
+        id: 'P-002',
+        product: '小店客服回訪助手',
+        intro: '幫小商家追蹤重複來電客户的簡單系統',
         monetization_value: 3,
+        implementation_effort: 2,
+        status: 'proposed',
+        evidence: 'Reddit'
+      },
+      {
+        id: 'P-003',
+        product: '老闆財報一目曉',
+        intro: '把複雜P&L變成簡單圖表讓老闆看懂',
+        monetization_value: 4,
+        implementation_effort: 2,
+        status: 'proposed',
+        evidence: 'Reddit'
+      },
+      {
+        id: 'P-004',
+        product: '小型承包商報價助手',
+        intro: '幫業餘師傅快速生成報價單的簡單工具',
+        monetization_value: 4,
+        implementation_effort: 2,
+        status: 'proposed',
+        evidence: 'Reddit'
+      },
+      {
+        id: 'P-005',
+        product: 'Homelab備份腳本',
+        intro: '一鍵將NAS備份到本機的自動化脚本',
+        monetization_value: 3,
+        implementation_effort: 2,
+        status: 'proposed',
+        evidence: 'Reddit'
+      },
+      {
+        id: 'P-006',
+        product: 'CBM貨櫃計算機',
+        intro: '進出口商專用的貨櫃容量快速計算工具',
+        monetization_value: 4,
+        implementation_effort: 1,
+        status: 'proposed',
+        evidence: 'Reddit'
+      },
+      {
+        id: 'P-007',
+        product: '理財數據整理助手',
+        intro: '自動整理Tiller/Yodlee銀行帳戶數據的替代工具',
+        monetization_value: 3,
+        implementation_effort: 3,
+        status: 'proposed',
+        evidence: 'Reddit'
+      },
+      {
+        id: 'P-008',
+        product: 'NAS遷移腳本助手',
+        intro: '一鍵將Docker容器從Synology遷移到Ubuntu的腳本',
+        monetization_value: 3,
+        implementation_effort: 2,
+        status: 'proposed',
+        evidence: 'Reddit'
+      },
+      {
+        id: 'P-009',
+        product: '團體預約排錯助手',
+        intro: '幫餐廳/沙龍自動偵測並解決多人預約時間衝突',
+        monetization_value: 4,
+        implementation_effort: 2,
+        status: 'proposed',
+        evidence: 'Reddit'
+      },
+      {
+        id: 'P-010',
+        product: '發布小幫手',
+        intro: '幫開發者自動發布新版本到社交媒體',
+        monetization_value: 3,
+        implementation_effort: 2,
+        status: 'proposed',
+        evidence: 'Reddit'
+      },
+      {
+        id: 'P-011',
+        product: '兒童理財助手',
+        intro: '幫父母規劃小孩教育金的簡單計算機',
+        monetization_value: 4,
+        implementation_effort: 2,
+        status: 'proposed',
+        evidence: 'Reddit'
+      },
+      {
+        id: 'P-012',
+        product: '汽車美容廣告ROI計算機',
+        intro: '幫汽車美容店計算廣告投放是否賺錢',
+        monetization_value: 4,
+        implementation_effort: 2,
+        status: 'proposed',
+        evidence: 'Reddit'
+      },
+      {
+        id: 'P-013',
+        product: '跨境翻譯品質監控',
+        intro: '自動檢查網站翻譯外掛是否有漏翻或錯誤',
+        monetization_value: 3,
+        implementation_effort: 3,
+        status: 'proposed',
+        evidence: 'Reddit'
+      },
+      {
+        id: 'P-014',
+        product: '標籤列印救星',
+        intro: '小商家網頁版標籤列印，取代麻煩的舊軟體',
+        monetization_value: 4,
         implementation_effort: 3,
         status: 'proposed',
         evidence: 'Reddit'
@@ -193,11 +296,11 @@
 
     function render() {
       const inProgress = projects.filter(p => p.status === 'in_progress');
-      const proposed = projects.filter(p => p.status === 'proposed').slice(0, 10);
+      const proposed = projects.filter(p => p.status === 'proposed');
       
       document.getElementById('stat-progress').textContent = inProgress.length;
       document.getElementById('stat-proposed').textContent = proposed.length;
-      document.getElementById('stat-total').textContent = projects.filter(p => p.status === 'done').length;
+      document.getElementById('stat-rejected').textContent = projects.filter(p => p.status === 'rejected').length;
 
       document.getElementById('in-progress-list').innerHTML = inProgress.length 
         ? inProgress.map(renderCard).join('') 
