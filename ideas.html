@@ -68,116 +68,128 @@
   </div>
   <div class="toast" id="toast"></div>
   <script>
-    const projects = [      {
-        id: 'P-001',
-        product: '家庭財務合併',
-        intro: '幫伴侶/家人合併檢視所有帳戶的簡單工具',
-        monetization_value: 4,
-        implementation_effort: 2,
-        status: 'proposed',
-        evidence: 'Reddit',
-        link: ''
-      },\n      {
-        id: 'P-002',
-        product: '小店客服回訪助手',
-        intro: '幫小商家追蹤重複來電客户的簡單系統',
-        monetization_value: 3,
-        implementation_effort: 2,
-        status: 'proposed',
-        evidence: 'Reddit',
-        link: ''
-      },\n      {
-        id: 'P-015',
-        product: '小型承包商報價助手',
-        intro: '幫業餘師傅快速生成報價單的簡單工具',
-        monetization_value: 4,
-        implementation_effort: 2,
-        status: 'proposed',
-        evidence: 'Reddit',
-        link: ''
-      },\n      {
-        id: 'P-072',
-        product: 'CBM貨櫃計算機',
-        intro: '進出口商專用的貨櫃容量快速計算工具',
-        monetization_value: 4,
-        implementation_effort: 2,
-        status: 'proposed',
-        evidence: 'Reddit',
-        link: ''
-      },\n      {
-        id: 'P-083',
-        product: '理財數據整理助手',
-        intro: '自動整理Tiller/Yodlee銀行帳戶數據的替代工具',
-        monetization_value: 4,
-        implementation_effort: 3,
-        status: 'proposed',
-        evidence: 'Reddit',
-        link: ''
-      },\n      {
-        id: 'P-084',
-        product: 'NAS遷移腳本助手',
-        intro: '一鍵將Docker容器從Synology遷移到Ubuntu的腳本',
-        monetization_value: 4,
-        implementation_effort: 2,
-        status: 'proposed',
-        evidence: 'Reddit',
-        link: ''
-      },\n      {
-        id: 'P-106',
-        product: '團體預約排錯助手',
-        intro: '幫餐廳/沙龍自動偵測並解決多人預約時間衝突',
-        monetization_value: 4,
-        implementation_effort: 3,
-        status: 'proposed',
-        evidence: 'Reddit',
-        link: ''
-      },\n      {
-        id: 'P-179',
-        product: '兒童理財助手',
-        intro: '幫父母規劃小孩教育金的簡單計算機',
-        monetization_value: 4,
-        implementation_effort: 2,
-        status: 'proposed',
-        evidence: 'Reddit',
-        link: ''
-      },\n      {
-        id: 'P-200',
-        product: '日期格式一鍵修復',
-        intro: '把雜亂日期字串自動轉成標準格式',
-        monetization_value: 4,
-        implementation_effort: 2,
-        status: 'in_progress',
-        evidence: 'Reddit',
-        link: 'date-fixer.html'
-      },\n      {
-        id: 'P-212',
-        product: '汽車美容廣告ROI計算機',
-        intro: '幫汽車美容店計算廣告投放是否賺錢',
-        monetization_value: 4,
-        implementation_effort: 2,
-        status: 'proposed',
-        evidence: 'Reddit',
-        link: ''
-      },\n      {
-        id: 'P-251',
-        product: '小店回訪提醒系統',
-        intro: '幫服務業自動追蹤未回電客戶',
-        monetization_value: 3,
-        implementation_effort: 2,
-        status: 'proposed',
-        evidence: 'Reddit',
-        link: ''
-      },\n      {
-        id: 'P-254',
-        product: '薪資扣繳計算機',
-        intro: '幫你計算報稅扣繳金額的簡單工具',
-        monetization_value: 4,
-        implementation_effort: 2,
-        status: 'proposed',
-        evidence: 'Reddit',
-        link: ''
-      }
-    ];
+    const projects = [
+  {
+    "id": "P-001",
+    "product": "家庭財務合併",
+    "intro": "幫伴侶/家人合併檢視所有帳戶的簡單工具",
+    "monetization_value": 4,
+    "implementation_effort": 2,
+    "status": "proposed",
+    "evidence": "Reddit",
+    "link": ""
+  },
+  {
+    "id": "P-002",
+    "product": "小店客服回訪助手",
+    "intro": "幫小商家追蹤重複來電客户的簡單系統",
+    "monetization_value": 3,
+    "implementation_effort": 2,
+    "status": "proposed",
+    "evidence": "Reddit",
+    "link": ""
+  },
+  {
+    "id": "P-015",
+    "product": "小型承包商報價助手",
+    "intro": "幫業餘師傅快速生成報價單的簡單工具",
+    "monetization_value": 4,
+    "implementation_effort": 2,
+    "status": "proposed",
+    "evidence": "Reddit",
+    "link": ""
+  },
+  {
+    "id": "P-072",
+    "product": "CBM貨櫃計算機",
+    "intro": "進出口商專用的貨櫃容量快速計算工具",
+    "monetization_value": 4,
+    "implementation_effort": 2,
+    "status": "proposed",
+    "evidence": "Reddit",
+    "link": ""
+  },
+  {
+    "id": "P-083",
+    "product": "理財數據整理助手",
+    "intro": "自動整理Tiller/Yodlee銀行帳戶數據的替代工具",
+    "monetization_value": 4,
+    "implementation_effort": 3,
+    "status": "proposed",
+    "evidence": "Reddit",
+    "link": ""
+  },
+  {
+    "id": "P-084",
+    "product": "NAS遷移腳本助手",
+    "intro": "一鍵將Docker容器從Synology遷移到Ubuntu的腳本",
+    "monetization_value": 4,
+    "implementation_effort": 2,
+    "status": "proposed",
+    "evidence": "Reddit",
+    "link": ""
+  },
+  {
+    "id": "P-106",
+    "product": "團體預約排錯助手",
+    "intro": "幫餐廳/沙龍自動偵測並解決多人預約時間衝突",
+    "monetization_value": 4,
+    "implementation_effort": 3,
+    "status": "proposed",
+    "evidence": "Reddit",
+    "link": ""
+  },
+  {
+    "id": "P-179",
+    "product": "兒童理財助手",
+    "intro": "幫父母規劃小孩教育金的簡單計算機",
+    "monetization_value": 4,
+    "implementation_effort": 2,
+    "status": "proposed",
+    "evidence": "Reddit",
+    "link": ""
+  },
+  {
+    "id": "P-200",
+    "product": "日期格式一鍵修復",
+    "intro": "把雜亂日期字串自動轉成標準格式",
+    "monetization_value": 4,
+    "implementation_effort": 2,
+    "status": "in_progress",
+    "evidence": "Reddit",
+    "link": "date-fixer.html"
+  },
+  {
+    "id": "P-212",
+    "product": "汽車美容廣告ROI計算機",
+    "intro": "幫汽車美容店計算廣告投放是否賺錢",
+    "monetization_value": 4,
+    "implementation_effort": 2,
+    "status": "proposed",
+    "evidence": "Reddit",
+    "link": ""
+  },
+  {
+    "id": "P-251",
+    "product": "小店回訪提醒系統",
+    "intro": "幫服務業自動追蹤未回電客戶",
+    "monetization_value": 3,
+    "implementation_effort": 2,
+    "status": "proposed",
+    "evidence": "Reddit",
+    "link": ""
+  },
+  {
+    "id": "P-254",
+    "product": "薪資扣繳計算機",
+    "intro": "幫你計算報稅扣繳金額的簡單工具",
+    "monetization_value": 4,
+    "implementation_effort": 2,
+    "status": "proposed",
+    "evidence": "Reddit",
+    "link": ""
+  }
+];
 
     function render() {
       const inProgress = projects.filter(p => p.status === 'in_progress');
