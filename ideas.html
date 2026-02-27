@@ -6,35 +6,9 @@
   <title>💡 點子庫 | Ideas</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0d1117;
-      --card: #161b22;
-      --border: #30363d;
-      --text: #c9d1d9;
-      --accent: #58a6ff;
-      --green: #3fb950;
-      --yellow: #d29922;
-      --red: #f85149;
-      --muted: #8b949e;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      padding-bottom: 60px;
-    }
-    .nav {
-      position: sticky;
-      top: 0;
-      background: rgba(13,17,23,0.95);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      backdrop-filter: blur(8px);
-    }
+    :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #58a6ff; --green: #3fb950; --yellow: #d29922; --red: #f85149; --muted: #8b949e; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 60px; }
+    .nav { position: sticky; top: 0; background: rgba(13,17,23,0.95); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
     .nav h1 { font-size: 1.2rem; }
     .nav h1 span { color: var(--accent); }
     .container { max-width: 900px; margin: 0 auto; padding: 20px; }
@@ -43,57 +17,22 @@
     .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
     .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; }
     .section { margin-bottom: 32px; }
-    .section-title {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 700;
-      margin-bottom: 16px;
-      padding-left: 12px;
-      border-left: 3px solid var(--accent);
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 12px;
-    }
-    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-    .card-title { font-size: 1rem; font-weight: 600; }
-    .card-id { font-size: 0.75rem; color: var(--muted); font-family: monospace; }
+    .section-title { font-size: 0.8rem; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 16px; padding-left: 12px; border-left: 3px solid var(--accent); }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+    .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+    .card-id { font-size: 0.75rem; color: var(--muted); font-family: monospace; margin-bottom: 8px; }
     .card-intro { font-size: 0.9rem; color: var(--muted); margin-bottom: 12px; }
     .card-meta { display: flex; gap: 12px; font-size: 0.8rem; }
     .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
     .tag.monetization { background: rgba(63,185,80,0.2); color: var(--green); }
     .tag.effort { background: rgba(210,153,34,0.2); color: var(--yellow); }
-    .tag.status { background: rgba(88,166,255,0.2); color: var(--accent); }
     .card-actions { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
-    .card-actions button {
-      padding: 6px 12px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
+    .card-actions button { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.8rem; font-weight: 500; }
     .btn-approve { background: var(--green); color: white; }
     .btn-reject { background: var(--red); color: white; }
     .btn-link { background: var(--accent); color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; }
     .empty { text-align: center; padding: 40px; color: var(--muted); }
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--green);
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-weight: 500;
-      display: none;
-      animation: slideIn 0.3s ease;
-    }
-    @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: var(--green); color: white; padding: 12px 20px; border-radius: 8px; font-weight: 500; display: none; }
     .nav-links { display: flex; gap: 16px; }
     .nav-links a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
   </style>
@@ -107,7 +46,6 @@
       <a href="date-fixer.html">📅 日期修復</a>
     </div>
   </div>
-
   <div class="container">
     <div class="stats">
       <div class="stat">
@@ -115,126 +53,94 @@
         <div class="stat-label">進行中</div>
       </div>
       <div class="stat">
-        <div class="stat-value" id="stat-proposed">14</div>
+        <div class="stat-value" id="stat-proposed">11</div>
         <div class="stat-label">待審核</div>
       </div>
     </div>
-
     <div class="section">
       <div class="section-title">🚀 進行中</div>
       <div id="in-progress-list"></div>
     </div>
-
     <div class="section">
       <div class="section-title">📋 待審核</div>
       <div id="proposed-list"></div>
     </div>
   </div>
-
   <div class="toast" id="toast"></div>
-
   <script>
-    const projects = [
-      {
+    const projects = [      {
         id: 'P-001',
         product: '家庭財務合併',
         intro: '幫伴侶/家人合併檢視所有帳戶的簡單工具',
         monetization_value: 4,
         implementation_effort: 2,
         status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
+        evidence: 'Reddit',
+        link: ''
+      },\n      {
         id: 'P-002',
         product: '小店客服回訪助手',
         intro: '幫小商家追蹤重複來電客户的簡單系統',
         monetization_value: 3,
         implementation_effort: 2,
         status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
-        id: 'P-003',
-        product: '老闆財報一目曉',
-        intro: '把複雜P&L變成簡單圖表讓老闆看懂',
-        monetization_value: 4,
-        implementation_effort: 3,
-        status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
+        evidence: 'Reddit',
+        link: ''
+      },\n      {
         id: 'P-015',
         product: '小型承包商報價助手',
         intro: '幫業餘師傅快速生成報價單的簡單工具',
         monetization_value: 4,
         implementation_effort: 2,
         status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
-        id: 'P-037',
-        product: 'Homelab備份腳本',
-        intro: '一鍵將NAS備份到本機的自動化脚本',
-        monetization_value: 3,
-        implementation_effort: 2,
-        status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
+        evidence: 'Reddit',
+        link: ''
+      },\n      {
         id: 'P-072',
         product: 'CBM貨櫃計算機',
         intro: '進出口商專用的貨櫃容量快速計算工具',
         monetization_value: 4,
         implementation_effort: 2,
         status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
+        evidence: 'Reddit',
+        link: ''
+      },\n      {
         id: 'P-083',
         product: '理財數據整理助手',
         intro: '自動整理Tiller/Yodlee銀行帳戶數據的替代工具',
         monetization_value: 4,
         implementation_effort: 3,
         status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
+        evidence: 'Reddit',
+        link: ''
+      },\n      {
         id: 'P-084',
         product: 'NAS遷移腳本助手',
         intro: '一鍵將Docker容器從Synology遷移到Ubuntu的腳本',
         monetization_value: 4,
         implementation_effort: 2,
         status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
+        evidence: 'Reddit',
+        link: ''
+      },\n      {
         id: 'P-106',
         product: '團體預約排錯助手',
         intro: '幫餐廳/沙龍自動偵測並解決多人預約時間衝突',
         monetization_value: 4,
         implementation_effort: 3,
         status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
-        id: 'P-110',
-        product: '發布小幫手',
-        intro: '幫開發者自動發布新版本到社交媒體',
-        monetization_value: 3,
-        implementation_effort: 4,
-        status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
+        evidence: 'Reddit',
+        link: ''
+      },\n      {
         id: 'P-179',
         product: '兒童理財助手',
         intro: '幫父母規劃小孩教育金的簡單計算機',
         monetization_value: 4,
         implementation_effort: 2,
         status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
+        evidence: 'Reddit',
+        link: ''
+      },\n      {
         id: 'P-200',
         product: '日期格式一鍵修復',
         intro: '把雜亂日期字串自動轉成標準格式',
@@ -243,91 +149,53 @@
         status: 'in_progress',
         evidence: 'Reddit',
         link: 'date-fixer.html'
-      },
-      {
+      },\n      {
         id: 'P-212',
         product: '汽車美容廣告ROI計算機',
         intro: '幫汽車美容店計算廣告投放是否賺錢',
         monetization_value: 4,
         implementation_effort: 2,
         status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
-        id: 'P-213',
-        product: '跨境翻譯品質監控',
-        intro: '自動檢查網站翻譯外掛是否有漏翻或錯誤',
+        evidence: 'Reddit',
+        link: ''
+      },\n      {
+        id: 'P-251',
+        product: '小店回訪提醒系統',
+        intro: '幫服務業自動追蹤未回電客戶',
         monetization_value: 3,
-        implementation_effort: 3,
+        implementation_effort: 2,
         status: 'proposed',
-        evidence: 'Reddit'
-      },
-      {
-        id: 'P-234',
-        product: '標籤列印救星',
-        intro: '小商家網頁版標籤列印，取代麻煩的舊軟體',
+        evidence: 'Reddit',
+        link: ''
+      },\n      {
+        id: 'P-254',
+        product: '薪資扣繳計算機',
+        intro: '幫你計算報稅扣繳金額的簡單工具',
         monetization_value: 4,
-        implementation_effort: 3,
+        implementation_effort: 2,
         status: 'proposed',
-        evidence: 'Reddit'
+        evidence: 'Reddit',
+        link: ''
       }
     ];
 
     function render() {
       const inProgress = projects.filter(p => p.status === 'in_progress');
       const proposed = projects.filter(p => p.status === 'proposed');
-      
       document.getElementById('stat-progress').textContent = inProgress.length;
       document.getElementById('stat-proposed').textContent = proposed.length;
-
-      document.getElementById('in-progress-list').innerHTML = inProgress.length 
-        ? inProgress.map(renderCard).join('') 
-        : '<div class="empty">無進行中的專案</div>';
-      
-      document.getElementById('proposed-list').innerHTML = proposed.length 
-        ? proposed.map(renderCard).join('') 
-        : '<div class="empty">無待審核的點子</div>';
+      document.getElementById('in-progress-list').innerHTML = inProgress.length ? inProgress.map(renderCard).join('') : '<div class="empty">無進行中的專案</div>';
+      document.getElementById('proposed-list').innerHTML = proposed.length ? proposed.map(renderCard).join('') : '<div class="empty">無待審核的點子</div>';
     }
 
     function renderCard(p) {
-      const link = p.link ? `<a href="${p.link}" class="btn-link" target="_blank">開啟 →</a>` : '';
-      return `
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">${p.product}</div>
-              <div class="card-id">#${p.id}</div>
-            </div>
-          </div>
-          <div class="card-intro">${p.intro}</div>
-          <div class="card-meta">
-            <span class="tag monetization">變現 ${p.monetization_value}/5</span>
-            <span class="tag effort">工程 ${p.implementation_effort}/5</span>
-          </div>
-          <div class="card-actions">
-            ${link}
-            <button class="btn-approve" onclick="approve('${p.id}')">✅ 通過</button>
-            <button class="btn-reject" onclick="reject('${p.id}')">❌ 否決</button>
-          </div>
-        </div>
-      `;
+      const link = p.link ? '<a href="' + p.link + '" class="btn-link" target="_blank">開啟 →</a>' : '';
+      return '<div class="card"><div class="card-title">' + p.product + '</div><div class="card-id">#' + p.id + '</div><div class="card-intro">' + p.intro + '</div><div class="card-meta"><span class="tag monetization">變現 ' + p.monetization_value + '/5</span><span class="tag effort">工程 ' + p.implementation_effort + '/5</span></div><div class="card-actions">' + link + '<button class="btn-approve" onclick="approve(\'' + p.id + '\')">✅ 通過</button><button class="btn-reject" onclick="reject(\'' + p.id + '\')">❌ 否決</button></div></div>';
     }
 
-    function approve(id) {
-      showToast('已通過: ' + id);
-    }
-
-    function reject(id) {
-      showToast('已否決: ' + id);
-    }
-
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.style.display = 'block';
-      setTimeout(() => t.style.display = 'none', 2000);
-    }
-
+    function approve(id) { showToast('已通過: ' + id); }
+    function reject(id) { showToast('已否決: ' + id); }
+    function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
     render();
   </script>
 </body>
